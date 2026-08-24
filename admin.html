@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jr Store | Panel de Administración</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body class="admin-body">
+    <script>
+        // Proteger la ruta
+        if (localStorage.getItem('jrstore_admin_auth') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <div class="admin-container">
+        <div class="admin-header">
+            <h1>Panel de Control - Jr Store</h1>
+            <div>
+                <a href="index.html" style="margin-right: 15px; color: #666; font-weight: 600;">Ver Tienda</a>
+                <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <button class="btn-add" onclick="openModal()">+ Agregar Producto</button>
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Precio</th>
+                    <th>Categoría</th>
+                    <th>Tipo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="admin-product-list">
+                <!-- Productos se inyectan aquí -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Formulario -->
+    <div class="modal" id="productModal">
+        <div class="modal-content">
+            <h2 id="modal-title">Agregar Producto</h2>
+            <input type="hidden" id="prod-id">
+            
+            <div class="form-group">
+                <label>Nombre del Producto</label>
+                <input type="text" id="prod-name" required>
+            </div>
+            <div class="form-group">
+                <label>Precio ($)</label>
+                <input type="number" id="prod-price" step="0.01" required>
+            </div>
+            <div class="form-group">
+                <label>Categoría</label>
+                <select id="prod-cat">
+                    <option value="Hombre">Hombre</option>
+                    <option value="Mujer">Mujer</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Tipo</label>
+                <select id="prod-type">
+                    <option value="ropa">Ropa</option>
+                    <option value="gorra">Gorras</option>
+                    <option value="reloj">Relojes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Estilo</label>
+                <select id="prod-style">
+                    <option value="Urbano">Urbano</option>
+                    <option value="Deportivo">Deportivo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Subir Imagen</label>
+                <input type="file" id="prod-img-file" accept="image/*">
+                <p style="font-size: 0.8rem; color: #666;">(Si no subes nada, se usará una imagen por defecto o la existente)</p>
+                <input type="hidden" id="prod-img-base64">
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+                <button class="btn-save" onclick="saveProduct()">Guardar Producto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts compartidos -->
+    <script src="js/products.js"></script>
+    <script>
+        function logout() {
+            localStorage.removeItem('jrstore_admin_auth');
+            window.location.href = 'login.html';
+        }
+
+        function renderAdminProducts() {
+            const tbody = document.getElementById('admin-product-list');
+            tbody.innerHTML = '';
+            
+            products.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${p.id}</td>
+                    <td><img src="${p.imagen}" alt="${p.nombre}"></td>
+                    <td>${p.nombre}</td>
+                    <td>$${p.precio.toFixed(2)}</td>
+                    <td>${p.categoria}</td>
+                    <td>${p.tipo}</td>
+                    <td>
+                        <button class="btn-delete" onclick="deleteProduct(${p.id})">Eliminar</button>
+                        <button class="btn-add" style="padding: 6px 12px; margin:0;" onclick="editProduct(${p.id})">Editar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function openModal(isEdit = false) {
+            document.getElementById('productModal').classList.add('active');
+            if(!isEdit) {
+                document.getElementById('modal-title').innerText = "Agregar Producto";
+                document.getElementById('prod-id').value = '';
+                document.getElementById('prod-name').value = '';
+                document.getElementById('prod-price').value = '';
+                document.getElementById('prod-img-file').value = '';
+                document.getElementById('prod-img-base64').value = '';
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        function editProduct(id) {
+            const p = products.find(prod => prod.id === id);
+            if(!p) return;
+            
+            document.getElementById('modal-title').innerText = "Editar Producto";
+            document.getElementById('prod-id').value = p.id;
+            document.getElementById('prod-name').value = p.nombre;
+            document.getElementById('prod-price').value = p.precio;
+            document.getElementById('prod-cat').value = p.categoria;
+            document.getElementById('prod-type').value = p.tipo;
+            document.getElementById('prod-style').value = p.estilo;
+            document.getElementById('prod-img-base64').value = p.imagen;
+            
+            openModal(true);
+        }
+
+        function deleteProduct(id) {
+            if(confirm('¿Seguro que deseas eliminar este producto?')) {
+                products = products.filter(p => p.id !== id);
+                saveProductsToStorage();
+                renderAdminProducts();
+            }
+        }
+
+        // Convertir archivo a Base64
+        document.getElementById('prod-img-file').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if(!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('prod-img-base64').value = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function saveProduct() {
+            const id = document.getElementById('prod-id').value;
+            const nombre = document.getElementById('prod-name').value;
+            const precio = parseFloat(document.getElementById('prod-price').value);
+            const categoria = document.getElementById('prod-cat').value;
+            const tipo = document.getElementById('prod-type').value;
+            const estilo = document.getElementById('prod-style').value;
+            let imagen = document.getElementById('prod-img-base64').value;
+            
+            if(!nombre || isNaN(precio)) {
+                alert('Por favor, ingresa nombre y precio válidos.');
+                return;
+            }
+
+            if(id) {
+                // Editar
+                const index = products.findIndex(p => p.id == id);
+                if(index > -1) {
+                    if(!imagen) imagen = products[index].imagen;
+                    products[index] = { id: parseInt(id), nombre, precio, categoria, tipo, estilo, imagen };
+                }
+            } else {
+                // Crear nuevo
+                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                if(!imagen) imagen = `https://picsum.photos/seed/${newId + 200}/400/500`;
+                products.push({ id: newId, nombre, precio, categoria, tipo, estilo, imagen });
+            }
+
+            saveProductsToStorage();
+            renderAdminProducts();
+            closeModal();
+        }
+
+        // Iniciar
+        renderAdminProducts();
+    </script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jr Store | Viste tu esencia</title>
+    <meta name="description" content="Jr Store - Tienda de ropa, gorras y relojes para hombres y mujeres. Estilo urbano y deportivo.">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">Jr <span>Store</span></a>
+        
+        <nav id="navbar">
+            <a href="#" class="active-link" onclick="setFilter('categoria', 'Todos'); setFilter('tipo', 'Todos'); document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open')); event.preventDefault();">Inicio</a>
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Hombres <i class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="#" onclick="setFilter('categoria', 'Hombre'); setFilter('tipo', 'ropa'); event.preventDefault();">Ropa</a>
+                    <a href="#" onclick="setFilter('categoria', 'Hombre'); setFilter('tipo', 'gorra'); event.preventDefault();">Gorras</a>
+                    <a href="#" onclick="setFilter('categoria', 'Hombre'); setFilter('tipo', 'reloj'); event.preventDefault();">Relojes</a>
+                </div>
+            </div>
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Mujeres <i class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="#" onclick="setFilter('categoria', 'Mujer'); setFilter('tipo', 'ropa'); event.preventDefault();">Ropa</a>
+                    <a href="#" onclick="setFilter('categoria', 'Mujer'); setFilter('tipo', 'gorra'); event.preventDefault();">Gorras</a>
+                    <a href="#" onclick="setFilter('categoria', 'Mujer'); setFilter('tipo', 'reloj'); event.preventDefault();">Relojes</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="header-actions">
+            <button class="cart-toggle" aria-label="Ver carrito" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cart-badge">0</span>
+            </button>
+            <button class="hamburger" aria-label="Abrir menú" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- HERO -->
+        <section class="hero">
+            <h1>Viste tu esencia.</h1>
+            <p>Descubre la nueva colección Urbana y Deportiva.</p>
+            <a href="#catalogo" class="btn-primary">Ver Colección</a>
+        </section>
+
+        <!-- CATALOGO -->
+        <section id="catalogo" class="catalog">
+            
+            <!-- SISTEMA DE FILTRADO -->
+            <div class="filters-container">
+                <!-- Filtro Principal: Categoría -->
+                <div class="filter-group" id="filter-category" style="display: none;">
+                    <button class="filter-btn active" data-filter="Todos" onclick="setFilter('categoria', 'Todos')">Todos</button>
+                    <button class="filter-btn" data-filter="Hombre" onclick="setFilter('categoria', 'Hombre')">Hombres</button>
+                    <button class="filter-btn" data-filter="Mujer" onclick="setFilter('categoria', 'Mujer')">Mujeres</button>
+                </div>
+                
+                <!-- Sub-Filtro: Estilo -->
+                <div class="filter-group" id="filter-style">
+                    <button class="filter-btn active" data-filter="Todos" onclick="setFilter('estilo', 'Todos')">Cualquier Estilo</button>
+                    <button class="filter-btn" data-filter="Urbano" onclick="setFilter('estilo', 'Urbano')">Urbano</button>
+                    <button class="filter-btn" data-filter="Deportivo" onclick="setFilter('estilo', 'Deportivo')">Deportivo</button>
+                </div>
+            </div>
+
+            <!-- GRID DE PRODUCTOS -->
+            <div class="product-grid" id="product-grid">
+                <!-- Los productos se inyectan vía JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; Jr Store 2026. Todos los derechos reservados. | <a href="login.html" style="color: #ccc; text-decoration: underline; font-size: 0.8rem;">Administración</a></p>
+    </footer>
+
+    <!-- CART SIDEBAR -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <aside class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h2>Tu Bolsa</h2>
+            <button class="close-cart" onclick="toggleCart()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="cart-body" id="cart-items"></div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="cart-total-price">$0.00</span>
+            </div>
+            <button class="btn-checkout" onclick="alert('Funcionalidad de pago en construcción. ¡Gracias por preferir Jr Store!')">Finalizar Compra</button>
+        </div>
+    </aside>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- JAVASCRIPT -->
+    <script src="js/products.js"></script>
+    <script src="js/cart.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>
