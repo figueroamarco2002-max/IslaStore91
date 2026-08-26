@@ -1,217 +1,408 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jr Store | Panel de Administración</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/admin.css">
-</head>
-<body class="admin-body">
-    <script>
-        // Proteger la ruta
-        if (localStorage.getItem('jrstore_admin_auth') !== 'true') {
-            window.location.href = 'login.html';
+    <title>Panel de Administración - Jr Store</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
         }
-    </script>
 
-    <div class="admin-container">
-        <div class="admin-header">
-            <h1>Panel de Control - Jr Store</h1>
-            <div>
-                <a href="index.html" style="margin-right: 15px; color: #666; font-weight: 600;">Ver Tienda</a>
-                <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
-            </div>
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: black;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        /* Estilos de la Ventana Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background: white;
+            width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        /* Regla CSS para que los selectores se vean igual que los inputs */
+        .modal input,
+        .modal select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <h2>Panel Admin - Jr Store</h2>
+            <button class="btn btn-danger" onclick="logout()">Cerrar Sesión</button>
+        </header>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Gestión de Productos</h3>
+            <button class="btn btn-primary" onclick="openModal(false)">+ Añadir Producto</button>
         </div>
 
-        <button class="btn-add" onclick="openModal()">+ Agregar Producto</button>
-
-        <table class="admin-table">
+        <table>
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Imagen</th>
-                    <th>Nombre</th>
+                    <th>Producto</th>
                     <th>Precio</th>
                     <th>Categoría</th>
-                    <th>Tipo</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="admin-product-list">
-                <!-- Productos se inyectan aquí -->
+                <tr>
+                    <td colspan="5">Cargando productos...</td>
+                </tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Modal Formulario -->
-    <div class="modal" id="productModal">
+    <!-- Ventana Modal para Añadir/Editar Producto -->
+    <div id="product-modal" class="modal">
         <div class="modal-content">
-            <h2 id="modal-title">Agregar Producto</h2>
+            <h3 id="modal-title">Añadir Producto</h3>
             <input type="hidden" id="prod-id">
-            
-            <div class="form-group">
-                <label>Nombre del Producto</label>
-                <input type="text" id="prod-name" required>
-            </div>
-            <div class="form-group">
-                <label>Precio ($)</label>
-                <input type="number" id="prod-price" step="0.01" required>
-            </div>
-            <div class="form-group">
-                <label>Categoría</label>
-                <select id="prod-cat">
-                    <option value="Hombre">Hombre</option>
-                    <option value="Mujer">Mujer</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Tipo</label>
-                <select id="prod-type">
-                    <option value="ropa">Ropa</option>
-                    <option value="gorra">Gorras</option>
-                    <option value="reloj">Relojes</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Estilo</label>
-                <select id="prod-style">
-                    <option value="Urbano">Urbano</option>
-                    <option value="Deportivo">Deportivo</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Subir Imagen</label>
-                <input type="file" id="prod-img-file" accept="image/*">
-                <p style="font-size: 0.8rem; color: #666;">(Si no subes nada, se usará una imagen por defecto o la existente)</p>
-                <input type="hidden" id="prod-img-base64">
-            </div>
 
-            <div class="form-actions">
-                <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
-                <button class="btn-save" onclick="saveProduct()">Guardar Producto</button>
+            <label>Nombre:</label>
+            <input type="text" id="prod-name" placeholder="Ej: Franela Oversize">
+
+            <label>Precio ($):</label>
+            <input type="number" step="0.01" id="prod-price" placeholder="Ej: 25.00">
+
+            <!-- NUEVO: Selector de Categoría -->
+            <label>Categoría:</label>
+            <select id="prod-cat" required>
+                <option value="1">Hombre</option>
+                <option value="2">Mujer</option>
+            </select>
+
+            <!-- NUEVO: Selector de Tipo de Prenda -->
+            <label>Tipo de prenda:</label>
+            <select id="prod-tipo" required>
+                <option value="ropa">Ropa</option>
+                <option value="gorra">Gorra</option>
+                <option value="reloj">Reloj</option>
+            </select>
+
+            <label>Estilo:</label>
+            <select id="prod-estilo" required>
+                <option value="Urbano">Urbano</option>
+                <option value="Deportivo">Deportivo</option>
+            </select>
+
+            <label>Descripción:</label>
+            <input type="text" id="prod-type" placeholder="Breve descripción">
+
+            <label>Imagen del producto:</label>
+            <input type="file" id="prod-img-file" accept="image/*">
+
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button class="btn btn-primary" style="width: 48%;" onclick="saveProduct()">Guardar</button>
+                <button class="btn btn-danger" style="width: 48%;" onclick="closeModal()">Cancelar</button>
             </div>
         </div>
     </div>
 
-    <!-- Scripts compartidos -->
-    <script src="js/products.js"></script>
     <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+        let products = [];
+
+        // Lógica para abrir/cerrar el modal
+        function openModal(isEdit) {
+            if (!isEdit) {
+                document.getElementById('modal-title').innerText = "Añadir Producto";
+                document.getElementById('prod-id').value = '';
+                document.getElementById('prod-name').value = '';
+                document.getElementById('prod-price').value = '';
+
+                // Valores por defecto al abrir para añadir uno nuevo
+                document.getElementById('prod-cat').value = '1';
+                document.getElementById('prod-tipo').value = 'ropa';
+                document.getElementById('prod-estilo').value = 'Urbano';
+
+                document.getElementById('prod-type').value = '';
+                document.getElementById('prod-img-file').value = '';
+            }
+            document.getElementById('product-modal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('product-modal').style.display = 'none';
+        }
+
         function logout() {
+            localStorage.removeItem('jrstore_admin_token');
             localStorage.removeItem('jrstore_admin_auth');
             window.location.href = 'login.html';
         }
 
-        function renderAdminProducts() {
+        async function renderAdminProducts() {
             const tbody = document.getElementById('admin-product-list');
-            tbody.innerHTML = '';
-            
-            products.forEach(p => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${p.id}</td>
-                    <td><img src="${p.imagen}" alt="${p.nombre}"></td>
-                    <td>${p.nombre}</td>
-                    <td>$${p.precio.toFixed(2)}</td>
-                    <td>${p.categoria}</td>
-                    <td>${p.tipo}</td>
-                    <td>
-                        <button class="btn-delete" onclick="deleteProduct(${p.id})">Eliminar</button>
-                        <button class="btn-add" style="padding: 6px 12px; margin:0;" onclick="editProduct(${p.id})">Editar</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
+            tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+            try {
+                const token = localStorage.getItem('jrstore_admin_token');
+                const response = await fetch(`${API_BASE_URL}/products`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) throw new Error('Error al cargar productos');
+                const data = await response.json();
+                products = data;
+                tbody.innerHTML = '';
 
-        function openModal(isEdit = false) {
-            document.getElementById('productModal').classList.add('active');
-            if(!isEdit) {
-                document.getElementById('modal-title').innerText = "Agregar Producto";
-                document.getElementById('prod-id').value = '';
-                document.getElementById('prod-name').value = '';
-                document.getElementById('prod-price').value = '';
-                document.getElementById('prod-img-file').value = '';
-                document.getElementById('prod-img-base64').value = '';
+                if (products.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay productos registrados.</td></tr>';
+                    return;
+                }
+
+                products.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${p.id}</td>
+                        <td>${p.name || p.nombre}</td>
+                        <td>$${parseFloat(p.price || p.precio || 0).toFixed(2)}</td>
+                        <td>${(p.category_id == 1 || p.category_name === 'Hombre') ? 'Hombre' : 'Mujer'}</td>
+                        <td>
+                            <button class="btn btn-edit" onclick="editProduct('${p.id}')">Editar</button>
+                            <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Eliminar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">Error al cargar productos</td></tr>';
             }
         }
 
-        function closeModal() {
-            document.getElementById('productModal').classList.remove('active');
-        }
-
-        function editProduct(id) {
-            const p = products.find(prod => prod.id === id);
-            if(!p) return;
-            
-            document.getElementById('modal-title').innerText = "Editar Producto";
-            document.getElementById('prod-id').value = p.id;
-            document.getElementById('prod-name').value = p.nombre;
-            document.getElementById('prod-price').value = p.precio;
-            document.getElementById('prod-cat').value = p.categoria;
-            document.getElementById('prod-type').value = p.tipo;
-            document.getElementById('prod-style').value = p.estilo;
-            document.getElementById('prod-img-base64').value = p.imagen;
-            
-            openModal(true);
-        }
-
-        function deleteProduct(id) {
-            if(confirm('¿Seguro que deseas eliminar este producto?')) {
-                products = products.filter(p => p.id !== id);
-                saveProductsToStorage();
-                renderAdminProducts();
+        async function deleteProduct(id) {
+            if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
+            try {
+                const token = localStorage.getItem('jrstore_admin_token');
+                const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) throw new Error('Error al eliminar');
+                await renderAdminProducts();
+            } catch (error) {
+                console.error(error);
+                alert('Error al eliminar producto');
             }
         }
 
-        // Convertir archivo a Base64
-        document.getElementById('prod-img-file').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if(!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                document.getElementById('prod-img-base64').value = event.target.result;
-            };
-            reader.readAsDataURL(file);
-        });
-
-        function saveProduct() {
+        async function saveProduct() {
             const id = document.getElementById('prod-id').value;
-            const nombre = document.getElementById('prod-name').value;
-            const precio = parseFloat(document.getElementById('prod-price').value);
-            const categoria = document.getElementById('prod-cat').value;
-            const tipo = document.getElementById('prod-type').value;
-            const estilo = document.getElementById('prod-style').value;
-            let imagen = document.getElementById('prod-img-base64').value;
-            
-            if(!nombre || isNaN(precio)) {
-                alert('Por favor, ingresa nombre y precio válidos.');
+            const name = document.getElementById('prod-name').value.trim();
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const category_id = parseInt(document.getElementById('prod-cat').value);
+            const tipo = document.getElementById('prod-tipo').value;
+            const estilo = document.getElementById('prod-estilo').value;
+            const description = document.getElementById('prod-type').value.trim();
+            const fileInput = document.getElementById('prod-img-file');
+
+            // Validaciones
+            if (!name) {
+                alert('El nombre es obligatorio');
+                return;
+            }
+            if (isNaN(price) || price <= 0) {
+                alert('Debes ingresar un precio válido mayor que 0');
                 return;
             }
 
-            if(id) {
-                // Editar
-                const index = products.findIndex(p => p.id == id);
-                if(index > -1) {
-                    if(!imagen) imagen = products[index].imagen;
-                    products[index] = { id: parseInt(id), nombre, precio, categoria, tipo, estilo, imagen };
-                }
-            } else {
-                // Crear nuevo
-                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
-                if(!imagen) imagen = `https://picsum.photos/seed/${newId + 200}/400/500`;
-                products.push({ id: newId, nombre, precio, categoria, tipo, estilo, imagen });
+            // Construir FormData
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('price', price);
+            formData.append('category_id', category_id);
+            formData.append('tipo', tipo);
+            formData.append('estilo', estilo);
+            formData.append('description', description);
+            formData.append('stock', 0);
+
+            if (fileInput && fileInput.files[0]) {
+                formData.append('image', fileInput.files[0]);
             }
 
-            saveProductsToStorage();
-            renderAdminProducts();
-            closeModal();
+            try {
+                const token = localStorage.getItem('jrstore_admin_token');
+                if (!token) {
+                    alert('No hay sesión activa. Inicia sesión nuevamente.');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const url = id ? `${API_BASE_URL}/products/${id}` : `${API_BASE_URL}/products`;
+                const method = id ? 'PUT' : 'POST';
+
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                let errorMsg = '';
+                let responseData = null;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    responseData = await response.json();
+                    errorMsg = responseData.message || responseData.error || '';
+                } else {
+                    errorMsg = await response.text();
+                }
+
+                if (!response.ok) {
+                    throw new Error(`[${response.status}] ${errorMsg || response.statusText}`);
+                }
+
+                await renderAdminProducts();
+                closeModal();
+                alert('✅ Producto guardado correctamente');
+            } catch (error) {
+                console.error('❌ Error al guardar:', error);
+                alert(`Error al guardar producto:\n${error.message}`);
+            }
         }
 
-        // Iniciar
-        renderAdminProducts();
+        async function editProduct(id) {
+            try {
+                const token = localStorage.getItem('jrstore_admin_token');
+                const response = await fetch(`${API_BASE_URL}/products/${id}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Producto no encontrado');
+                const p = await response.json();
+
+                document.getElementById('modal-title').innerText = "Editar Producto";
+                document.getElementById('prod-id').value = p.id;
+                document.getElementById('prod-name').value = p.name || p.nombre || '';
+                document.getElementById('prod-price').value = p.price || p.precio || '';
+
+                // Categoría
+                if (p.category_id == 1 || p.category_id == 2) {
+                    document.getElementById('prod-cat').value = p.category_id;
+                } else {
+                    document.getElementById('prod-cat').value = '1';
+                }
+
+                // Tipo
+                const tipoValid = (p.tipo || '').toLowerCase();
+                if (['ropa', 'gorra', 'reloj'].includes(tipoValid)) {
+                    document.getElementById('prod-tipo').value = tipoValid;
+                } else {
+                    document.getElementById('prod-tipo').value = 'ropa';
+                }
+
+                // Estilo
+                if (p.estilo === 'Urbano' || p.estilo === 'Deportivo') {
+                    document.getElementById('prod-estilo').value = p.estilo;
+                } else {
+                    document.getElementById('prod-estilo').value = 'Urbano';
+                }
+
+                document.getElementById('prod-type').value = p.description || '';
+
+                openModal(true);
+            } catch (error) {
+                console.error(error);
+                alert('Error al cargar producto para editar');
+            }
+        }
+
+        // Comprobar autenticación al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('jrstore_admin_token');
+            if (!token) {
+                window.location.href = 'login.html';
+            } else {
+                renderAdminProducts();
+            }
+        });
     </script>
+
 </body>
+
 </html>
