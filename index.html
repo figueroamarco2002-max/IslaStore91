@@ -118,12 +118,18 @@
                 <span>Total</span>
                 <span id="cart-total-price">$0.00</span>
             </div>
-            <button class="btn-checkout"
-                onclick="alert('Funcionalidad de pago en construcción. ¡Gracias por preferir Jr Store!')">Finalizar
-                Compra</button>
+            <!-- ¡AQUÍ ESTÁ LA CORRECCIÓN! -->
+            <button class="btn-checkout" onclick="checkoutWhatsApp()">Finalizar Compra</button>
         </div>
     </aside>
-
+    <!-- MODAL DE DETALLES DEL PRODUCTO -->
+    <div id="product-modal-overlay" class="modal-overlay" onclick="closeProductModal()"></div>
+    <div id="product-modal" class="product-modal">
+        <button class="close-modal" onclick="closeProductModal()"><i class="fa-solid fa-xmark"></i></button>
+        <div class="modal-content" id="modal-content-area">
+            <!-- Se inyecta con JS -->
+        </div>
+    </div>
     <!-- TOAST CONTAINER -->
     <div class="toast-container" id="toast-container"></div>
 
