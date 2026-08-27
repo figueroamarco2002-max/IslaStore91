@@ -1,5 +1,33 @@
 const pool = require('../config/db');
 
+// Prefijo de 3 letras según el tipo de prenda
+const TIPO_PREFIX = {
+  ropa: 'ROP',
+  gorra: 'GOR',
+  reloj: 'REL'
+};
+
+// Genera el siguiente código disponible para ese tipo (ej: JR-ROP-0001, JR-ROP-0002...)
+async function generateSku(tipo) {
+  const prefix = TIPO_PREFIX[(tipo || '').toLowerCase()] || 'GEN';
+  const likePattern = `JR-${prefix}-%`;
+
+  const res = await pool.query(
+    `SELECT sku FROM products WHERE sku LIKE $1 ORDER BY sku DESC LIMIT 1`,
+    [likePattern]
+  );
+
+  let nextNumber = 1;
+  if (res.rows.length > 0 && res.rows[0].sku) {
+    const partes = res.rows[0].sku.split('-');
+    const ultimoNumero = parseInt(partes[partes.length - 1], 10);
+    if (!isNaN(ultimoNumero)) nextNumber = ultimoNumero + 1;
+  }
+
+  const numeroFormateado = String(nextNumber).padStart(4, '0');
+  return `JR-${prefix}-${numeroFormateado}`;
+}
+
 const Product = {
   findAll: async (filters = {}) => {
     let query = `
@@ -46,10 +74,11 @@ const Product = {
 
   create: async (productData) => {
     const { name, description, price, stock, category_id, estilo, tipo } = productData;
+    const sku = await generateSku(tipo);
     const res = await pool.query(
-      `INSERT INTO products (name, description, price, stock, category_id, estilo, tipo)
-       VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-      [name, description, price, stock, category_id, estilo, tipo]
+      `INSERT INTO products (name, description, price, stock, category_id, estilo, tipo, sku)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+      [name, description, price, stock, category_id, estilo, tipo, sku]
     );
     return res.rows[0];
   },

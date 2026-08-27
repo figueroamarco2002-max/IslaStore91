@@ -99,6 +99,14 @@ function closeProductModal() {
   document.getElementById('product-modal').classList.remove('active');
 }
 
+// ================= MENÚ MÓVIL =================
+function toggleMenu() {
+  const nav = document.getElementById('navbar');
+  if (nav) {
+    nav.classList.toggle('active');
+  }
+}
+
 // ================= ANIMACIONES DE CARRITO =================
 function showToast() {
   const container = document.getElementById('toast-container');

@@ -35,3 +35,11 @@ async function setFilter(tipoFiltro, valor) {
         renderProducts();
     }
 }
+// Cierra el menú móvil y lleva al usuario hasta el catálogo filtrado
+function irAlCatalogo() {
+    const nav = document.getElementById('navbar');
+    if (nav) nav.classList.remove('active');
+
+    const catalogo = document.getElementById('catalogo');
+    if (catalogo) catalogo.scrollIntoView({ behavior: 'smooth' });
+}

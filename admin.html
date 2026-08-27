@@ -124,16 +124,42 @@
         <table>
             <thead>
                 <tr>
+                    <th>Imagen</th>
+                    <th>SKU</th>
                     <th>ID</th>
                     <th>Producto</th>
                     <th>Precio</th>
+                    <th>Stock</th>
                     <th>Categoría</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="admin-product-list">
                 <tr>
-                    <td colspan="5">Cargando productos...</td>
+                    <td colspan="8">Cargando productos...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+            <h3>Mensajes de Contacto</h3>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Teléfono</th>
+                    <th>Comentario</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="admin-contact-list">
+                <tr>
+                    <td colspan="7">Cargando mensajes...</td>
                 </tr>
             </tbody>
         </table>
@@ -150,6 +176,9 @@
 
             <label>Precio ($):</label>
             <input type="number" step="0.01" id="prod-price" placeholder="Ej: 25.00">
+
+            <label>Cantidad en stock:</label>
+            <input type="number" step="1" min="0" id="prod-stock" placeholder="Ej: 5">
 
             <!-- NUEVO: Selector de Categoría -->
             <label>Categoría:</label>
@@ -201,6 +230,7 @@
                 document.getElementById('prod-cat').value = '1';
                 document.getElementById('prod-tipo').value = 'ropa';
                 document.getElementById('prod-estilo').value = 'Urbano';
+                document.getElementById('prod-stock').value = 1;
 
                 document.getElementById('prod-type').value = '';
                 document.getElementById('prod-img-file').value = '';
@@ -220,7 +250,7 @@
 
         async function renderAdminProducts() {
             const tbody = document.getElementById('admin-product-list');
-            tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8">Cargando...</td></tr>';
             try {
                 const token = localStorage.getItem('jrstore_admin_token');
                 const response = await fetch(`${API_BASE_URL}/products`, {
@@ -232,16 +262,20 @@
                 tbody.innerHTML = '';
 
                 if (products.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay productos registrados.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No hay productos registrados.</td></tr>';
                     return;
                 }
 
                 products.forEach(p => {
+                    const imagenSrc = p.imagen || p.image_url || 'https://placehold.co/50x50/eeeeee/999999?text=Sin+Img';
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
+                        <td><img src="${imagenSrc}" alt="${p.name || p.nombre}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                        <td><strong>${p.sku || '-'}</strong></td>
                         <td>${p.id}</td>
                         <td>${p.name || p.nombre}</td>
                         <td>$${parseFloat(p.price || p.precio || 0).toFixed(2)}</td>
+                        <td>${p.stock ?? 0}</td>
                         <td>${(p.category_id == 1 || p.category_name === 'Hombre') ? 'Hombre' : 'Mujer'}</td>
                         <td>
                             <button class="btn btn-edit" onclick="editProduct('${p.id}')">Editar</button>
@@ -252,7 +286,7 @@
                 });
             } catch (error) {
                 console.error(error);
-                tbody.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">Error al cargar productos</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" style="color:red; text-align:center;">Error al cargar productos</td></tr>';
             }
         }
 
@@ -276,6 +310,7 @@
             const id = document.getElementById('prod-id').value;
             const name = document.getElementById('prod-name').value.trim();
             const price = parseFloat(document.getElementById('prod-price').value);
+            const stock = parseInt(document.getElementById('prod-stock').value) || 0;
             const category_id = parseInt(document.getElementById('prod-cat').value);
             const tipo = document.getElementById('prod-tipo').value;
             const estilo = document.getElementById('prod-estilo').value;
@@ -300,7 +335,7 @@
             formData.append('tipo', tipo);
             formData.append('estilo', estilo);
             formData.append('description', description);
-            formData.append('stock', 0);
+            formData.append('stock', stock);
 
             if (fileInput && fileInput.files[0]) {
                 formData.append('image', fileInput.files[0]);
@@ -360,6 +395,7 @@
                 document.getElementById('prod-id').value = p.id;
                 document.getElementById('prod-name').value = p.name || p.nombre || '';
                 document.getElementById('prod-price').value = p.price || p.precio || '';
+                document.getElementById('prod-stock').value = p.stock ?? 0;
 
                 // Categoría
                 if (p.category_id == 1 || p.category_id == 2) {
@@ -392,6 +428,77 @@
             }
         }
 
+        // ================= MENSAJES DE CONTACTO =================
+        async function renderAdminContacts() {
+            const tbody = document.getElementById('admin-contact-list');
+            tbody.innerHTML = '<tr><td colspan="7">Cargando...</td></tr>';
+            try {
+                const token = localStorage.getItem('jrstore_admin_token');
+                const response = await fetch(`${API_BASE_URL}/contact`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) throw new Error('Error al cargar mensajes');
+                const contactos = await response.json();
+                tbody.innerHTML = '';
+
+                if (contactos.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay mensajes.</td></tr>';
+                    return;
+                }
+
+                contactos.forEach(c => {
+                    const fecha = new Date(c.created_at).toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' });
+                    const tr = document.createElement('tr');
+                    if (!c.leido) tr.style.background = '#fff8e1';
+                    tr.innerHTML = `
+                        <td>${fecha}</td>
+                        <td>${c.nombre}</td>
+                        <td><a href="mailto:${c.correo}">${c.correo}</a></td>
+                        <td>${c.telefono ? `<a href="https://wa.me/${c.telefono.replace(/\D/g, '')}" target="_blank">${c.telefono}</a>` : '-'}</td>
+                        <td style="max-width:250px; white-space:normal;">${c.comentario}</td>
+                        <td>${c.leido ? '✅ Leído' : '🟡 Nuevo'}</td>
+                        <td>
+                            ${!c.leido ? `<button class="btn btn-primary" onclick="marcarLeido('${c.id}')">Marcar leído</button>` : ''}
+                            <button class="btn btn-danger" onclick="eliminarContacto('${c.id}')">Eliminar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="7" style="color:red; text-align:center;">Error al cargar mensajes</td></tr>';
+            }
+        }
+
+        async function marcarLeido(id) {
+            try {
+                const token = localStorage.getItem('jrstore_admin_token');
+                await fetch(`${API_BASE_URL}/contact/${id}/leido`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                await renderAdminContacts();
+            } catch (error) {
+                console.error(error);
+                alert('Error al actualizar el mensaje');
+            }
+        }
+
+        async function eliminarContacto(id) {
+            if (!confirm('¿Eliminar este mensaje?')) return;
+            try {
+                const token = localStorage.getItem('jrstore_admin_token');
+                await fetch(`${API_BASE_URL}/contact/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                await renderAdminContacts();
+            } catch (error) {
+                console.error(error);
+                alert('Error al eliminar el mensaje');
+            }
+        }
+
         // Comprobar autenticación al cargar
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('jrstore_admin_token');
@@ -399,6 +506,7 @@
                 window.location.href = 'login.html';
             } else {
                 renderAdminProducts();
+                renderAdminContacts();
             }
         });
     </script>

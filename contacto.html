@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | Jr Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* TRUCO PARA EL ESPACIO EN BLANCO */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        main {
+            flex: 1;
+            background: #ffffff;
+        }
+
+        /* ESTILOS DEL CONTENEDOR */
+        .contact-container {
+            max-width: 800px;
+            margin: 60px auto;
+            padding: 20px;
+            background: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .contact-container h1 {
+            color: #333;
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+        }
+
+        .contact-container p {
+            color: #666;
+            font-weight: 500;
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+        }
+
+        /* ESTILOS DEL MENSAJE DE ÉXITO PROFESIONAL */
+        .mensaje-exito {
+            background-color: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 1rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.4s ease;
+        }
+
+        .mensaje-exito.mostrar {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ESTILOS DEL MENSAJE DE ERROR */
+        .mensaje-error {
+            background-color: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 1rem;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.4s ease;
+        }
+
+        .mensaje-error.mostrar {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ESTILOS DEL FORMULARIO */
+        .contact-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-full-width {
+            grid-column: 1 / -1;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #f9f9f9;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            color: #333;
+            outline: none;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            border-color: #e65c00;
+            background: #fff;
+        }
+
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: #aaa;
+        }
+
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 180px;
+        }
+
+        .btn-enviar {
+            background: #e65c00;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.1s;
+            justify-self: start;
+        }
+
+        .btn-enviar:hover {
+            background: #cc5200;
+            transform: scale(1.02);
+        }
+
+        .btn-enviar:disabled {
+            background: #f0a366;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Responsividad */
+        @media (max-width: 600px) {
+            .contact-form {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-enviar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">Jr <span>Store</span></a>
+        <nav id="navbar">
+            <a href="index.html" style="color: #333; font-weight: 600; text-decoration: none;">
+                <i class="fa-solid fa-arrow-left"></i> Volver al Inicio
+            </a>
+        </nav>
+    </header>
+
+    <!-- MAIN CONTACTO -->
+    <main>
+        <section class="contact-container">
+            <h1>Contacto</h1>
+            <p>Si tiene alguna pregunta, no dude en contactarnos y le responderemos en breve.</p>
+
+            <!-- CAJA DE MENSAJE DE ÉXITO (Oculta por defecto) -->
+            <div id="alerta-exito" class="mensaje-exito" style="display: none;">
+                <i class="fa-solid fa-circle-check" style="font-size: 1.4rem;"></i>
+                <span>¡Mensaje enviado con éxito! Nos pondremos en contacto contigo muy pronto.</span>
+            </div>
+
+            <!-- CAJA DE MENSAJE DE ERROR (Oculta por defecto) -->
+            <div id="alerta-error" class="mensaje-error" style="display: none;">
+                <i class="fa-solid fa-circle-exclamation" style="font-size: 1.4rem;"></i>
+                <span id="texto-error">Ocurrió un error al enviar tu mensaje. Intenta de nuevo.</span>
+            </div>
+
+            <form class="contact-form" id="contact-form" onsubmit="enviarContacto(event)">
+                <div>
+                    <input type="text" name="nombre" placeholder="Nombre" required>
+                </div>
+                <div>
+                    <input type="email" name="correo" placeholder="Correo electrónico *" required>
+                </div>
+                <div class="form-full-width">
+                    <input type="tel" name="telefono" placeholder="Número de teléfono">
+                </div>
+                <div class="form-full-width">
+                    <textarea name="comentario" placeholder="Comentario" required></textarea>
+                </div>
+                <div class="form-full-width">
+                    <button type="submit" class="btn-enviar" id="btn-enviar">Enviar Mensaje</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; Jr Store 2026. Todos los derechos reservados. |
+            <a href="index.html"
+                style="color: #ccc; text-decoration: underline; font-size: 0.8rem; margin: 0 5px;">Inicio</a>
+        </p>
+    </footer>
+
+    <!-- SCRIPT DE ENVÍO REAL AL BACKEND -->
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        async function enviarContacto(event) {
+            event.preventDefault();
+
+            const form = event.target;
+            const btn = document.getElementById('btn-enviar');
+            const alertaExito = document.getElementById('alerta-exito');
+            const alertaError = document.getElementById('alerta-error');
+            const textoError = document.getElementById('texto-error');
+
+            // Ocultar alertas previas
+            alertaExito.classList.remove('mostrar');
+            alertaExito.style.display = 'none';
+            alertaError.classList.remove('mostrar');
+            alertaError.style.display = 'none';
+
+            // Armar el objeto con los datos del formulario
+            const datos = {
+                nombre: form.nombre.value.trim(),
+                correo: form.correo.value.trim(),
+                telefono: form.telefono.value.trim(),
+                comentario: form.comentario.value.trim()
+            };
+
+            // Deshabilitar el botón mientras se envía
+            btn.disabled = true;
+            btn.textContent = 'Enviando...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/contact`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                const resultado = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(resultado.error || 'No se pudo enviar el mensaje');
+                }
+
+                // Éxito: mostrar caja verde y limpiar formulario
+                alertaExito.style.display = 'flex';
+                setTimeout(() => alertaExito.classList.add('mostrar'), 10);
+                form.reset();
+
+            } catch (error) {
+                console.error('❌ Error al enviar contacto:', error);
+                textoError.textContent = error.message || 'Ocurrió un error al enviar tu mensaje. Intenta de nuevo.';
+                alertaError.style.display = 'flex';
+                setTimeout(() => alertaError.classList.add('mostrar'), 10);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Enviar Mensaje';
+            }
+        }
+    </script>
+</body>
+
+</html>
