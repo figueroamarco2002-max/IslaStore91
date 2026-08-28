@@ -51,6 +51,10 @@ const Product = {
       conditions.push(`p.tipo = $${values.length + 1}`);
       values.push(filters.tipo);
     }
+    if (filters.search && filters.search.trim() !== '') {
+      conditions.push(`p.name ILIKE $${values.length + 1}`);
+      values.push(`%${filters.search.trim()}%`);
+    }
 
     if (conditions.length) {
       query += ' AND ' + conditions.join(' AND ');

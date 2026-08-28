@@ -49,6 +49,9 @@
         </nav>
 
         <div class="header-actions">
+            <button class="search-toggle" aria-label="Buscar" onclick="toggleSearch()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
             <button class="cart-toggle" aria-label="Ver carrito" onclick="toggleCart()">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="cart-badge" id="cart-badge">0</span>
@@ -59,12 +62,37 @@
         </div>
     </header>
 
+    <!-- PANEL DE BÚSQUEDA -->
+    <div id="search-panel" class="search-panel">
+        <div class="search-panel-inner">
+            <form class="search-input-row" onsubmit="ejecutarBusquedaCompleta(event)">
+                <input type="text" id="search-input" placeholder="Buscar productos..." oninput="onSearchInput()"
+                    autocomplete="off">
+                <button type="submit" aria-label="Buscar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button type="button" class="search-close-btn" onclick="toggleSearch()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </form>
+            <div id="search-live-results" class="search-live-results"></div>
+        </div>
+    </div>
+
     <main>
         <!-- HERO -->
         <section class="hero">
             <h1>Viste tu esencia.</h1>
             <p>Descubre la nueva colección Urbana y Deportiva.</p>
             <a href="#catalogo" class="btn-primary">Ver Colección</a>
+        </section>
+
+        <!-- RESULTADOS DE BÚSQUEDA -->
+        <section id="search-results-section" class="catalog">
+            <div class="category-header" style="justify-content: center; margin-bottom: 1.5rem;">
+                <h2 id="search-results-title">Resultados de búsqueda</h2>
+            </div>
+            <div class="product-grid" id="search-results-grid"></div>
         </section>
 
         <!-- CARRUSEL: GORRAS -->
@@ -106,6 +134,7 @@
                 </button>
             </div>
         </section>
+
         <!-- BANNER INSTAGRAM -->
         <section class="ig-banner">
             <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer" class="ig-handle-btn">
@@ -113,7 +142,6 @@
             </a>
             <h2>El estilo se vive,<br>se comparte y <span class="accent">se inspira</span></h2>
         </section>
-
 
         <!-- CARRUSEL: CAMISETAS DEPORTIVO -->
         <section class="category-section">
@@ -163,7 +191,7 @@
             </div>
         </section>
 
-        <!-- SECCIONES DE MUJERES (mismo formato que hombres) -->
+        <!-- SECCIONES DE MUJERES -->
         <section id="mujeres-productos" class="catalog" style="padding-top: 2.5rem;">
             <div class="category-header" style="justify-content: center; margin-bottom: 1rem;">
                 <h2>Productos para Mujeres</h2>
@@ -250,7 +278,7 @@
             </div>
         </section>
 
-        <!-- CATALOGO CON FILTROS (explorar todo) -->
+        <!-- CATALOGO CON FILTROS -->
         <section id="catalogo" class="catalog">
 
             <div class="category-header" style="justify-content: center; margin-bottom: 1rem;">
@@ -258,7 +286,9 @@
             </div>
 
             <!-- SISTEMA DE FILTRADO -->
-            <div class="filters-container">
+            <div class="filters-container"
+                style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
+
                 <!-- Filtro Principal: Categoría -->
                 <div class="filter-group" id="filter-category" style="display: none;">
                     <button class="filter-btn active" data-filter="Todos"
@@ -338,6 +368,7 @@
     <script src="js/filters.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/home-sections.js"></script>
+    <script src="js/search.js"></script>
 </body>
 
 </html>

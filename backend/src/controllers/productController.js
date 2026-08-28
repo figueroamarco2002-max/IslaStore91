@@ -6,9 +6,9 @@ const path = require('path');
 
 // Obtener productos con filtros
 exports.getProducts = async (req, res) => {
-    const { categoria, estilo, tipo } = req.query;
+    const { categoria, estilo, tipo, search } = req.query;
     try {
-        const products = await Product.findAll({ categoria, estilo, tipo });
+        const products = await Product.findAll({ categoria, estilo, tipo, search });
         for (let p of products) {
             const images = await ProductImage.findByProduct(p.id);
             p.imagen = images.length > 0 ? images[0].image_url : null;

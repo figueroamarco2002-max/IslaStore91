@@ -345,7 +345,7 @@ nav a.active-link {
     border-color: var(--text-main);
 }
 
-/* ================= SEARCH & SORT BAR ================= */
+/* ================= SEARCH & SORT BAR (barra gen\u00e9rica de cat\u00e1logo, no la de b\u00fasqueda del header) ================= */
 .catalog-controls {
     display: flex;
     flex-direction: column;
@@ -849,47 +849,6 @@ nav a.active-link {
     background: var(--accent-color);
 }
 
-/* ================= TOAST NOTIFICATION ================= */
-.toast-container {
-    position: fixed;
-    top: 80px;
-    right: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.toast {
-    background: var(--text-main);
-    color: white;
-    padding: 1rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    box-shadow: var(--shadow-md);
-    transform: translateX(120%);
-    transition: transform 0.3s ease;
-}
-
-.toast.show {
-    transform: translateX(0);
-}
-
-.toast i {
-    color: var(--success-color);
-}
-
-.toast-error {
-    background: var(--danger-color);
-}
-
-.toast-error i {
-    color: white;
-}
-
 /* ================= FOOTER ================= */
 footer {
     background: var(--text-main);
@@ -1377,5 +1336,178 @@ footer {
 
 .btn-outline-white:hover {
     background: white;
+    color: var(--text-main);
+}
+
+/* ================= BÚSQUEDA (icono + panel desplegable) ================= */
+.search-toggle {
+    font-size: 1.1rem;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.search-toggle:hover {
+    color: var(--accent-color);
+}
+
+.search-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--surface-color);
+    box-shadow: var(--shadow-md);
+    z-index: 1050;
+    padding: 1rem 5%;
+    transform: translateY(-100%);
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s;
+}
+
+.search-panel.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+.search-panel-inner {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.search-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.search-input-row input {
+    flex: 1;
+    padding: 0.9rem 1.2rem;
+    border: 2px solid var(--border-color);
+    border-radius: 30px;
+    font-family: inherit;
+    font-size: 1rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+.search-input-row input:focus {
+    border-color: var(--accent-color);
+}
+
+.search-close-btn {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    padding: 0.5rem;
+}
+
+.search-close-btn:hover {
+    color: var(--text-main);
+}
+
+.search-live-results {
+    margin-top: 1rem;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.search-result-item:hover {
+    background: var(--bg-color);
+}
+
+.search-result-item .name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.search-result-item .price {
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.search-empty-msg {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 1.5rem;
+    font-size: 0.9rem;
+}
+
+/* ================= SECCIÓN RESULTADOS DE BÚSQUEDA (oculta hasta que se busque algo) ================= */
+#search-results-section {
+    display: none;
+}
+
+#search-results-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+    #search-results-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem 1.5rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    #search-results-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.search-result-card {
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.search-result-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.search-result-card .img-container {
+    padding-top: 115%;
+    background: var(--bg-color);
+    border-radius: 4px;
+}
+
+.search-result-card .img-container img {
+    transition: transform 0.4s ease;
+}
+
+.search-result-card:hover .img-container img {
+    transform: scale(1.04);
+}
+
+.search-result-card .product-info {
+    padding: 0.9rem 0.2rem 0;
+    text-align: left;
+}
+
+.search-result-card .product-title {
+    font-weight: 500;
+    font-size: 0.95rem;
+    line-height: 1.35;
+    color: var(--text-main);
+    margin-bottom: 0.35rem;
+}
+
+.search-result-card .product-price {
+    font-weight: 400;
+    font-size: 0.95rem;
     color: var(--text-main);
 }
