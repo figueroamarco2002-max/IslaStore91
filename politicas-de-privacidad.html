@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Políticas de Privacidad | Jr Store</title>
+    <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="Cómo protegemos y usamos tu información">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">Jr <span>Store</span></a>
+
+        <nav id="navbar">
+            <a href="index.html" class="active-link">Inicio</a>
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Hombres <i
+                        class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','ropa');">Ropa</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','gorra');">Gorras</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','reloj');">Relojes</a>
+                </div>
+            </div>
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Mujeres <i
+                        class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','ropa');">Ropa</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','gorra');">Gorras</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','reloj');">Relojes</a>
+                </div>
+            </div>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="search-toggle" aria-label="Buscar" onclick="toggleSearch()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="cart-toggle" aria-label="Ver carrito" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cart-badge">0</span>
+            </button>
+            <button class="hamburger" aria-label="Abrir menú" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- PANEL DE BÚSQUEDA -->
+    <div id="search-panel" class="search-panel">
+        <div class="search-panel-inner">
+            <form class="search-input-row"
+                onsubmit="event.preventDefault(); window.location.href='index.html#catalogo';">
+                <input type="text" id="search-input" placeholder="Buscar productos..." autocomplete="off">
+                <button type="submit" aria-label="Buscar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button type="button" class="search-close-btn" onclick="toggleSearch()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <section class="section-hero"
+            style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;">
+            <h1>Políticas de Privacidad</h1>
+            <p>Cómo protegemos y usamos tu información</p>
+        </section>
+
+        <nav class="breadcrumb">
+            <a href="index.html">Inicio</a>
+            <span class="separator">/</span>
+            <span class="current">Políticas de Privacidad</span>
+        </nav>
+
+        <section class="catalog" style="padding-top: 1rem; padding-bottom: 4rem;">
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div
+                    style="background: var(--surface-color); padding: 2.5rem; border-radius: 16px; box-shadow: var(--shadow-sm); margin-bottom: 2rem;">
+                    <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 2rem;">
+                        En Jr Store respetamos tu privacidad. Esta política explica qué información recopilamos, cómo la
+                        usamos y qué derechos tienes sobre tus datos personales.
+                    </p>
+
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">
+                        Información que recopilamos</h3>
+                    <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+                        Cuando realizas una compra o nos contactas, podemos recopilar: nombre completo, número de
+                        teléfono, dirección de entrega, dirección de correo electrónico (opcional) e historial de
+                        pedidos.
+                    </p>
+
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">Cómo
+                        usamos tu información</h3>
+                    <ul
+                        style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                        <li>Procesar y entregar tus pedidos.</li>
+                        <li>Coordinar pagos y envíos.</li>
+                        <li>Responder consultas y brindar soporte.</li>
+                        <li>Enviarte información sobre promociones (solo si das tu consentimiento).</li>
+                    </ul>
+
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">
+                        Protección de datos</h3>
+                    <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+                        Tus datos personales se almacenan de forma segura y nunca son vendidos ni compartidos con
+                        terceros ajenos a la operación de entrega y pago. Solo el equipo autorizado de Jr Store tiene
+                        acceso a esta información.
+                    </p>
+
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">
+                        Cookies y navegación</h3>
+                    <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+                        Nuestro sitio puede utilizar cookies para mejorar tu experiencia de navegación. Estas cookies no
+                        recopilan información personal identificable y puedes desactivarlas desde la configuración de tu
+                        navegador.
+                    </p>
+
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">Tus
+                        derechos</h3>
+                    <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+                        tienes derecho a acceder, rectificar o solicitar la eliminación de tus datos personales en
+                        cualquier momento. Para ejercer estos derechos, escríbenos  a través de nuestra página de <a
+                            href="contacto.html" style="color: var(--accent-color);">Contacto</a>.
+                    </p>
+
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">
+                        Cambios en esta política</h3>
+                    <p style="color: var(--text-muted); line-height: 1.7;">
+                        Podemos actualizar esta política ocasionalmente. Te recomendamos revisarla periódicamente.
+                        Cambios significativos serán notificados por WhatsApp o en nuestro sitio web.
+                    </p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo-footer">Jr <span>Store</span></div>
+                <p>Viste tu esencia. Estilo urbano y deportivo para quienes marcan la diferencia.</p>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer"
+                        aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/584147807688" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Navegación</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="la-coleccion.html">La colección</a></li>
+                    <li><a href="el-ritual.html">El Ritual</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="como-comprar.html">¿Cómo comprar?</a></li>
+                    <li><a href="metodo-de-pago.html">Método de pago</a></li>
+                    <li><a href="preguntas-frecuentes.html">Preguntas Frecuentes</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Envíos y Entregas</h4>
+                <ul>
+                    <li><a href="entregas-personales.html">Entregas Personales</a></li>
+                    <li><a href="envios-nacionales.html">Envíos Nacionales</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="politicas-de-devolucion.html">Políticas de Devolución</a></li>
+                    <li><a href="terminos-y-condiciones.html">Términos y Condiciones</a></li>
+                    <li><a href="politicas-de-privacidad.html">Políticas de Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Jr Store. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <script src="js/config.js"></script>
+<script src="js/nav-types.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        function toggleMenu() {
+            document.getElementById('navbar').classList.toggle('active');
+            document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+        }
+        function toggleSearch() {
+            document.getElementById('search-panel').classList.toggle('active');
+        }
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.nav-dropdown')) {
+                document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+

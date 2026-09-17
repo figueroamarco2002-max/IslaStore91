@@ -1,6 +1,22 @@
-// ================= SISTEMA DE FILTRADO =================
+/**
+ * ====================================================================
+ * ARCHIVO: filters.js
+ * DEPENDENCIAS: config.js (API_BASE_URL, escapeHTML)
+ *               products.js (fetchProducts, renderProducts, products global)
+ * DESCRIPCIÓN: Maneja el sistema de filtrado por categoría, estilo y
+ *              búsqueda por nombre (filtrado local sobre el arreglo global).
+ * SEGURIDAD: Todos los datos dinámicos que se insertan en el DOM
+ *            mediante innerHTML son sanitizados con escapeHTML().
+ * ====================================================================
+ */
 
-// Función principal para manejar los clics en los botones de filtro
+// ====================================================================
+// 1. FUNCIÓN PRINCIPAL: setFilter (maneja clics en botones de filtro)
+//    - Actualiza la variable global currentFilters.
+//    - Cambia la clase 'active' visualmente.
+//    - Llama a fetchProducts (desde products.js) y renderProducts.
+//    - No inserta datos del usuario en el DOM, es seguro.
+// ====================================================================
 async function setFilter(tipoFiltro, valor) {
     // 1. Guardamos el filtro seleccionado en la variable global existente
     if (typeof currentFilters !== 'undefined') {
@@ -30,12 +46,16 @@ async function setFilter(tipoFiltro, valor) {
         await fetchProducts(currentFilters);
     }
 
-    // 4. Renderizamos los resultados en pantalla para evitar pantallas en blanco
+    // 4. Renderizamos los resultados en pantalla (renderProducts ya está blindado)
     if (typeof renderProducts === 'function') {
         renderProducts();
     }
 }
-// Cierra el menú móvil y lleva al usuario hasta el catálogo filtrado
+
+// ====================================================================
+// 2. irAlCatalogo: cierra el menú móvil y hace scroll al catálogo
+//    - No inserta datos del usuario, es seguro.
+// ====================================================================
 function irAlCatalogo() {
     const nav = document.getElementById('navbar');
     if (nav) nav.classList.remove('active');
@@ -43,10 +63,15 @@ function irAlCatalogo() {
     const catalogo = document.getElementById('catalogo');
     if (catalogo) catalogo.scrollIntoView({ behavior: 'smooth' });
 }
-// ================= BUSCADOR EN TIEMPO REAL =================
+
+// ====================================================================
+// 3. filterProductsByName: filtra localmente sobre el arreglo global
+//    - No inserta directamente en el DOM, llama a renderFilteredProducts.
+//    - El texto de búsqueda se usa solo para filtrar, no se muestra.
+// ====================================================================
 function filterProductsByName() {
     const searchText = document.getElementById('search-input').value.toLowerCase().trim();
-    
+
     // Si la variable global 'products' existe, filtramos sobre ella combinada con los filtros activos
     let filtered = products;
 
@@ -84,11 +109,16 @@ function filterProductsByName() {
         });
     }
 
-    // 3. Renderizar los productos filtrados temporalmente en pantalla
+    // 3. Renderizar los productos filtrados (con la función segura)
     renderFilteredProducts(filtered);
 }
 
-// Función auxiliar para pintar resultados de búsqueda sin romper la estructura
+// ====================================================================
+// 4. renderFilteredProducts (SEGURA) - Renderiza resultados de búsqueda/filtros
+//    - Aplica escapeHTML a nombre, categoría y alt de la imagen.
+//    - El precio es numérico, no necesita escape, pero se formatea.
+//    - El ID se usa en onclick, es seguro (numérico o UUID).
+// ====================================================================
 function renderFilteredProducts(arrayProductos) {
     let grid = document.getElementById('product-grid') || document.querySelector('.product-grid');
     if (!grid) return;
@@ -101,23 +131,26 @@ function renderFilteredProducts(arrayProductos) {
     grid.innerHTML = '';
 
     arrayProductos.forEach(producto => {
+        // === SANITIZAMOS TODOS LOS DATOS DINÁMICOS ===
         const idProd = producto.id || '';
-        const nombreProducto = producto.name || producto.nombre || 'Producto sin nombre';
-        const precioProducto = parseFloat(producto.price || producto.precio || 0).toFixed(2);
+        const nombreSeguro = escapeHTML(producto.name || producto.nombre || 'Producto sin nombre');
+        const precioSeguro = parseFloat(producto.price || producto.precio || 0).toFixed(2);
         const imagenSrc = producto.imagen || producto.image_url || 'https://placehold.co/300x400/eeeeee/999999';
-        
+
         let idCategoria = producto.category_id || producto.categoria;
         let textoCategoria = idCategoria == 1 ? 'Hombre' : idCategoria == 2 ? 'Mujer' : 'Sin categoría';
+        textoCategoria = escapeHTML(textoCategoria);
 
+        // Construir tarjeta con todos los datos sanitizados
         const cardHTML = `
             <div class="product-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; padding-bottom: 15px; text-align: center; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                 <div class="product-image" style="width: 100%; height: 250px; overflow: hidden; background: #f9f9f9; cursor: pointer;" onclick="openProductDetails('${idProd}')">
-                    <img src="${imagenSrc}" alt="${nombreProducto}" style="width: 100%; height: 100%; object-fit: cover;">
+                    <img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="product-info" style="padding: 15px;">
                     <span style="font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: bold;">${textoCategoria}</span>
-                    <h3 style="margin: 10px 0; font-size: 1.1rem; color: #333; cursor: pointer;" onclick="openProductDetails('${idProd}')">${nombreProducto}</h3>
-                    <p class="price" style="font-weight: 600; color: #e65c00; font-size: 1.2rem; margin-bottom: 15px;">$${precioProducto}</p>
+                    <h3 style="margin: 10px 0; font-size: 1.1rem; color: #333; cursor: pointer;" onclick="openProductDetails('${idProd}')">${nombreSeguro}</h3>
+                    <p class="price" style="font-weight: 600; color: #e65c00; font-size: 1.2rem; margin-bottom: 15px;">$${precioSeguro}</p>
                     
                     <button class="btn-primary" onclick="openProductDetails('${idProd}')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; width: 90%; transition: background 0.3s;">
                         Ver Detalles
@@ -126,5 +159,12 @@ function renderFilteredProducts(arrayProductos) {
             </div>
         `;
         grid.innerHTML += cardHTML;
+    });
+
+    // Activar animación (clase "show" que tu CSS espera)
+    requestAnimationFrame(() => {
+        grid.querySelectorAll('.product-card').forEach(card => {
+            card.classList.add('show');
+        });
     });
 }

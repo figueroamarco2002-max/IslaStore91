@@ -7,6 +7,11 @@
     <title>Jr Store | Viste tu esencia</title>
     <meta name="description"
         content="Jr Store - Tienda de ropa, gorras y relojes para hombres y mujeres. Estilo urbano y deportivo.">
+
+    <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
@@ -95,188 +100,10 @@
             <div class="product-grid" id="search-results-grid"></div>
         </section>
 
-        <!-- CARRUSEL: GORRAS -->
-        <section class="category-section">
-            <div class="category-header">
-                <h2>Gorras</h2>
-            </div>
-            <div class="carousel-wrapper">
-                <button class="carousel-arrow left" aria-label="Anterior"
-                    onclick="scrollCarousel('carousel-gorras', -1)">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <div class="carousel-track" id="carousel-gorras">
-                    <!-- Se inyecta vía JS -->
-                </div>
-                <button class="carousel-arrow right" aria-label="Siguiente"
-                    onclick="scrollCarousel('carousel-gorras', 1)">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- CARRUSEL: CAMISETAS URBANO -->
-        <section class="category-section">
-            <div class="category-header">
-                <h2>Camisetas Urbano</h2>
-            </div>
-            <div class="carousel-wrapper">
-                <button class="carousel-arrow left" aria-label="Anterior"
-                    onclick="scrollCarousel('carousel-urbano', -1)">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <div class="carousel-track" id="carousel-urbano">
-                    <!-- Se inyecta vía JS -->
-                </div>
-                <button class="carousel-arrow right" aria-label="Siguiente"
-                    onclick="scrollCarousel('carousel-urbano', 1)">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- BANNER INSTAGRAM -->
-        <section class="ig-banner">
-            <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer" class="ig-handle-btn">
-                <i class="fa-brands fa-instagram"></i> @JrStore
-            </a>
-            <h2>El estilo se vive,<br>se comparte y <span class="accent">se inspira</span></h2>
-        </section>
-
-        <!-- CARRUSEL: CAMISETAS DEPORTIVO -->
-        <section class="category-section">
-            <div class="category-header">
-                <h2>Camisetas Deportivo</h2>
-            </div>
-            <div class="carousel-wrapper">
-                <button class="carousel-arrow left" aria-label="Anterior"
-                    onclick="scrollCarousel('carousel-deportivo', -1)">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <div class="carousel-track" id="carousel-deportivo">
-                    <!-- Se inyecta vía JS -->
-                </div>
-                <button class="carousel-arrow right" aria-label="Siguiente"
-                    onclick="scrollCarousel('carousel-deportivo', 1)">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- CARRUSEL: RELOJES -->
-        <section class="category-section">
-            <div class="category-header">
-                <h2>Relojes</h2>
-            </div>
-            <div class="carousel-wrapper">
-                <button class="carousel-arrow left" aria-label="Anterior"
-                    onclick="scrollCarousel('carousel-relojes', -1)">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-                <div class="carousel-track" id="carousel-relojes">
-                    <!-- Se inyecta vía JS -->
-                </div>
-                <button class="carousel-arrow right" aria-label="Siguiente"
-                    onclick="scrollCarousel('carousel-relojes', 1)">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- BANNER MUJERES -->
-        <section class="women-banner">
-            <div class="women-banner-content">
-                <h2>De las Mujeres</h2>
-                <button class="btn-outline-white" onclick="scrollToMujeres()">Ver Todo</button>
-            </div>
-        </section>
-
-        <!-- SECCIONES DE MUJERES -->
-        <section id="mujeres-productos" class="catalog" style="padding-top: 2.5rem;">
-            <div class="category-header" style="justify-content: center; margin-bottom: 1rem;">
-                <h2>Productos para Mujeres</h2>
-            </div>
-
-            <!-- CARRUSEL: GORRAS MUJERES -->
-            <div class="category-section" style="padding-top: 0.5rem;">
-                <div class="category-header">
-                    <h2>Gorras</h2>
-                </div>
-                <div class="carousel-wrapper">
-                    <button class="carousel-arrow left" aria-label="Anterior"
-                        onclick="scrollCarousel('carousel-gorras-mujer', -1)">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <div class="carousel-track" id="carousel-gorras-mujer">
-                        <!-- Se inyecta vía JS -->
-                    </div>
-                    <button class="carousel-arrow right" aria-label="Siguiente"
-                        onclick="scrollCarousel('carousel-gorras-mujer', 1)">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- CARRUSEL: CAMISETAS URBANO MUJERES -->
-            <div class="category-section" style="padding-top: 0.5rem;">
-                <div class="category-header">
-                    <h2>Camisetas Urbano</h2>
-                </div>
-                <div class="carousel-wrapper">
-                    <button class="carousel-arrow left" aria-label="Anterior"
-                        onclick="scrollCarousel('carousel-urbano-mujer', -1)">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <div class="carousel-track" id="carousel-urbano-mujer">
-                        <!-- Se inyecta vía JS -->
-                    </div>
-                    <button class="carousel-arrow right" aria-label="Siguiente"
-                        onclick="scrollCarousel('carousel-urbano-mujer', 1)">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- CARRUSEL: CAMISETAS DEPORTIVO MUJERES -->
-            <div class="category-section" style="padding-top: 0.5rem;">
-                <div class="category-header">
-                    <h2>Camisetas Deportivo</h2>
-                </div>
-                <div class="carousel-wrapper">
-                    <button class="carousel-arrow left" aria-label="Anterior"
-                        onclick="scrollCarousel('carousel-deportivo-mujer', -1)">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <div class="carousel-track" id="carousel-deportivo-mujer">
-                        <!-- Se inyecta vía JS -->
-                    </div>
-                    <button class="carousel-arrow right" aria-label="Siguiente"
-                        onclick="scrollCarousel('carousel-deportivo-mujer', 1)">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- CARRUSEL: RELOJES MUJERES -->
-            <div class="category-section" style="padding-top: 0.5rem;">
-                <div class="category-header">
-                    <h2>Relojes</h2>
-                </div>
-                <div class="carousel-wrapper">
-                    <button class="carousel-arrow left" aria-label="Anterior"
-                        onclick="scrollCarousel('carousel-relojes-mujer', -1)">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <div class="carousel-track" id="carousel-relojes-mujer">
-                        <!-- Se inyecta vía JS -->
-                    </div>
-                    <button class="carousel-arrow right" aria-label="Siguiente"
-                        onclick="scrollCarousel('carousel-relojes-mujer', 1)">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
+        <!-- CONTENEDOR DINÁMICO DE SECCIONES: incluye también los banners de
+             "Mujeres" e Instagram, intercalados por home-sections.js en los
+             puntos correctos según las secciones activas -->
+        <div id="home-sections-container"></div>
 
         <!-- CATALOGO CON FILTROS -->
         <section id="catalogo" class="catalog">
@@ -319,10 +146,59 @@
 
     <!-- FOOTER -->
     <footer>
-        <p>&copy; Jr Store 2026. Todos los derechos reservados. |
-            <a href="contacto.html" style="color: #ccc; text-decoration: underline; font-size: 0.8rem;">Contacto</a> |
-            <a href="login.html" style="color: #ccc; text-decoration: underline; font-size: 0.8rem;">Administración</a>
-        </p>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo-footer">Jr <span>Store</span></div>
+                <p>Viste tu esencia. Estilo urbano y deportivo para quienes marcan la diferencia.</p>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer"
+                        aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/584147807688" target="_blank" rel="noopener noreferrer"
+                        aria-label="WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Navegación</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="la-coleccion.html">La colección</a></li>
+                    <li><a href="el-ritual.html">El Ritual</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="como-comprar.html">¿Cómo comprar?</a></li>
+                    <li><a href="metodo-de-pago.html">Método de pago</a></li>
+                    <li><a href="preguntas-frecuentes.html">Preguntas Frecuentes</a></li>
+                    <li><a href="contacto.html">Contacto</a></li>
+                    <li><a href="login.html">Administración</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Envíos y Entregas</h4>
+                <ul>
+                    <li><a href="entregas-personales.html">Entregas Personales</a></li>
+                    <li><a href="envios-nacionales.html">Envíos Nacionales</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="politicas-de-devolucion.html">Políticas de Devolución</a></li>
+                    <li><a href="terminos-y-condiciones.html">Términos y Condiciones</a></li>
+                    <li><a href="politicas-de-privacidad.html">Políticas de Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Jr Store. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
     <!-- CART SIDEBAR -->
@@ -363,6 +239,8 @@
             tipo: 'Todos'
         };
     </script>
+    <script src="js/config.js"></script>
+    <script src="js/nav-types.js"></script>
     <script src="js/products.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/filters.js"></script>

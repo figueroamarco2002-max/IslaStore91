@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página no encontrada | Jr Store</title>
+
+    <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .not-found-section {
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 3rem 5%;
+        }
+
+        .not-found-code {
+            font-size: 7rem;
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text-main);
+            letter-spacing: -2px;
+        }
+
+        .not-found-code span {
+            color: var(--accent-color);
+        }
+
+        .not-found-section h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 1rem 0 0.5rem;
+            color: var(--text-main);
+        }
+
+        .not-found-section p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 420px;
+            margin-bottom: 2rem;
+        }
+
+        .not-found-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-main);
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: 2px solid var(--border-color);
+            transition: var(--transition);
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-main);
+        }
+
+        @media (min-width: 768px) {
+            .not-found-code {
+                font-size: 9rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">Jr <span>Store</span></a>
+
+        <nav id="navbar">
+            <a href="index.html">Inicio</a>
+            <a href="index.html#catalogo">Catálogo</a>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="hamburger" aria-label="Abrir menú"
+                onclick="document.getElementById('navbar').classList.toggle('active')">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 404 -->
+    <main>
+        <section class="not-found-section">
+            <div class="not-found-code">4<span>0</span>4</div>
+            <h1>Esta página no existe</h1>
+            <p>El enlace que seguiste puede estar roto, o la página fue movida. Vuelve al inicio o explora nuestro
+                catálogo.</p>
+            <div class="not-found-actions">
+                <a href="index.html" class="btn-primary">Volver al inicio</a>
+                <a href="index.html#catalogo" class="btn-secondary">Ver catálogo</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Jr Store. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>

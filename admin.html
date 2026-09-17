@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Jr Store</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -73,7 +75,6 @@
             color: white;
         }
 
-        /* Estilos de la Ventana Modal */
         .modal {
             display: none;
             position: fixed;
@@ -95,7 +96,6 @@
             overflow-y: auto;
         }
 
-        /* Regla CSS para que los selectores se vean igual que los inputs */
         .modal input,
         .modal select {
             width: 100%;
@@ -118,7 +118,7 @@
 
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h3>Gestión de Productos</h3>
-            <button class="btn btn-primary" onclick="openModal(false)">+ Añadir Producto</button>
+            <button class="btn btn-primary" onclick="openProductModal(false)">+ Añadir Producto</button>
         </div>
 
         <table>
@@ -142,9 +142,94 @@
         </table>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
-            <h3>Mensajes de Contacto</h3>
+            <h3>Gestión de Categorías</h3>
+            <button class="btn btn-primary" onclick="openCategoryModal(false)">+ Añadir Categoría</button>
         </div>
 
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Slug</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="admin-category-list">
+                <tr>
+                    <td colspan="4">Cargando categorías...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+            <h3>Gestión de Secciones de Home</h3>
+            <button class="btn btn-primary" onclick="openHomeSectionModal(false)">+ Añadir Sección</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Categoría</th>
+                    <th>Estilo</th>
+                    <th>Tipo</th>
+                    <th>Visible</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="admin-homesections-list">
+                <tr>
+                    <td colspan="6">Cargando secciones...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+            <h3>Gestión de Tipos de Producto</h3>
+            <button class="btn btn-primary" onclick="openTypeModal(false)">+ Añadir Tipo</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Clave</th>
+                    <th>Etiqueta</th>
+                    <th>Orden</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="admin-types-list">
+                <tr>
+                    <td colspan="5">Cargando tipos...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+            <h3>Gestión de Estilos</h3>
+            <button class="btn btn-primary" onclick="openStyleModal(false)">+ Añadir Estilo</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Clave</th>
+                    <th>Etiqueta</th>
+                    <th>Orden</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="admin-styles-list">
+                <tr>
+                    <td colspan="5">Cargando estilos...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+            <h3>Mensajes de Contacto</h3>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -163,84 +248,139 @@
                 </tr>
             </tbody>
         </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
+            <h3>Secciones de la Tienda</h3>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sección</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody id="admin-sections-list">
+                <tr>
+                    <td colspan="2">Cargando...</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <!-- Ventana Modal para Añadir/Editar Producto -->
     <div id="product-modal" class="modal">
         <div class="modal-content">
             <h3 id="modal-title">Añadir Producto</h3>
             <input type="hidden" id="prod-id">
-
             <label>Nombre:</label>
             <input type="text" id="prod-name" placeholder="Ej: Franela Oversize">
-
             <label>Precio ($):</label>
             <input type="number" step="0.01" id="prod-price" placeholder="Ej: 25.00">
-
             <label>Cantidad en stock:</label>
             <input type="number" step="1" min="0" id="prod-stock" placeholder="Ej: 5">
-
-            <!-- NUEVO: Selector de Categoría -->
             <label>Categoría:</label>
-            <select id="prod-cat" required>
-                <option value="1">Hombre</option>
-                <option value="2">Mujer</option>
-            </select>
-
-            <!-- NUEVO: Selector de Tipo de Prenda -->
+            <select id="prod-cat" required></select>
             <label>Tipo de prenda:</label>
-            <select id="prod-tipo" required>
-                <option value="ropa">Ropa</option>
-                <option value="gorra">Gorra</option>
-                <option value="reloj">Reloj</option>
-            </select>
-
+            <select id="prod-tipo" required></select>
             <label>Estilo:</label>
-            <select id="prod-estilo" required>
-                <option value="Urbano">Urbano</option>
-                <option value="Deportivo">Deportivo</option>
-            </select>
-
+            <select id="prod-estilo" required></select>
             <label>Descripción:</label>
             <input type="text" id="prod-type" placeholder="Breve descripción">
-
             <label>Imagen del producto:</label>
             <input type="file" id="prod-img-file" accept="image/*">
-
             <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                 <button class="btn btn-primary" style="width: 48%;" onclick="saveProduct()">Guardar</button>
-                <button class="btn btn-danger" style="width: 48%;" onclick="closeModal()">Cancelar</button>
+                <button class="btn btn-danger" style="width: 48%;" onclick="closeProductModal()">Cancelar</button>
             </div>
         </div>
     </div>
 
+    <div id="category-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="category-modal-title">Añadir Categoría</h3>
+            <input type="hidden" id="cat-id">
+            <label>Nombre:</label>
+            <input type="text" id="cat-name" placeholder="Ej: Accesorios">
+            <label>Slug (opcional):</label>
+            <input type="text" id="cat-slug" placeholder="Se genera automáticamente si se deja vacío">
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button class="btn btn-primary" style="width: 48%;" onclick="saveCategory()">Guardar</button>
+                <button class="btn btn-danger" style="width: 48%;" onclick="closeCategoryModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="home-section-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="home-section-modal-title">Añadir Sección</h3>
+            <input type="hidden" id="hs-id">
+            <label>Categoría:</label>
+            <select id="hs-category" required>
+                <option value="hombre">Hombre</option>
+                <option value="mujer">Mujer</option>
+            </select>
+            <label>Estilo:</label>
+            <select id="hs-style" required></select>
+            <label>Tipo de prenda:</label>
+            <select id="hs-type" required></select>
+            <label style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                <input type="checkbox" id="hs-visible" style="width:auto;" checked>
+                Visible en el home
+            </label>
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button class="btn btn-primary" style="width: 48%;" onclick="saveHomeSection()">Guardar</button>
+                <button class="btn btn-danger" style="width: 48%;" onclick="closeHomeSectionModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="type-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="type-modal-title">Añadir Tipo</h3>
+            <input type="hidden" id="type-id">
+            <label>Clave (interna, minúsculas):</label>
+            <input type="text" id="type-key" placeholder="Ej: zapatos">
+            <label>Etiqueta (visible al público):</label>
+            <input type="text" id="type-label" placeholder="Ej: Zapatos">
+            <label>Orden:</label>
+            <input type="number" id="type-order" value="0" step="1">
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button class="btn btn-primary" style="width: 48%;" onclick="saveType()">Guardar</button>
+                <button class="btn btn-danger" style="width: 48%;" onclick="closeTypeModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="style-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="style-modal-title">Añadir Estilo</h3>
+            <input type="hidden" id="style-id">
+            <label>Clave (interna, minúsculas):</label>
+            <input type="text" id="style-key" placeholder="Ej: casual">
+            <label>Etiqueta (visible al público):</label>
+            <input type="text" id="style-label" placeholder="Ej: Casual">
+            <label>Orden:</label>
+            <input type="number" id="style-order" value="0" step="1">
+            <div style="display: flex; justify-content: space-between; margin-top: 15px;">
+                <button class="btn btn-primary" style="width: 48%;" onclick="saveStyle()">Guardar</button>
+                <button class="btn btn-danger" style="width: 48%;" onclick="closeStyleModal()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
     <script>
-        const API_BASE_URL = 'http://localhost:3000/api';
+        function escapeHTML(str) {
+            if (str === null || str === undefined) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         let products = [];
-
-        // Lógica para abrir/cerrar el modal
-        function openModal(isEdit) {
-            if (!isEdit) {
-                document.getElementById('modal-title').innerText = "Añadir Producto";
-                document.getElementById('prod-id').value = '';
-                document.getElementById('prod-name').value = '';
-                document.getElementById('prod-price').value = '';
-
-                // Valores por defecto al abrir para añadir uno nuevo
-                document.getElementById('prod-cat').value = '1';
-                document.getElementById('prod-tipo').value = 'ropa';
-                document.getElementById('prod-estilo').value = 'Urbano';
-                document.getElementById('prod-stock').value = 1;
-
-                document.getElementById('prod-type').value = '';
-                document.getElementById('prod-img-file').value = '';
-            }
-            document.getElementById('product-modal').style.display = 'block';
-        }
-
-        function closeModal() {
-            document.getElementById('product-modal').style.display = 'none';
-        }
+        let categories = [];
 
         function logout() {
             localStorage.removeItem('jrstore_admin_token');
@@ -248,14 +388,45 @@
             window.location.href = 'login.html';
         }
 
+        function getToken() {
+            const token = localStorage.getItem('jrstore_admin_token');
+            if (!token) {
+                alert('No hay sesión activa. Inicia sesión nuevamente.');
+                window.location.href = 'login.html';
+                return null;
+            }
+            return token;
+        }
+
+        function openProductModal(isEdit) {
+            if (!isEdit) {
+                document.getElementById('modal-title').innerText = "Añadir Producto";
+                document.getElementById('prod-id').value = '';
+                document.getElementById('prod-name').value = '';
+                document.getElementById('prod-price').value = '';
+                document.getElementById('prod-stock').value = 1;
+                document.getElementById('prod-tipo').value = 'ropa';
+                document.getElementById('prod-estilo').value = 'Urbano';
+                document.getElementById('prod-type').value = '';
+                document.getElementById('prod-img-file').value = '';
+                if (categories.length > 0) {
+                    document.getElementById('prod-cat').value = categories[0].id;
+                }
+            }
+            document.getElementById('product-modal').style.display = 'block';
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').style.display = 'none';
+        }
+
         async function renderAdminProducts() {
             const tbody = document.getElementById('admin-product-list');
             tbody.innerHTML = '<tr><td colspan="8">Cargando...</td></tr>';
+            const token = getToken();
+            if (!token) return;
             try {
-                const token = localStorage.getItem('jrstore_admin_token');
-                const response = await fetch(`${API_BASE_URL}/products`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const response = await fetch(`${API_BASE_URL}/products`, { headers: { 'Authorization': `Bearer ${token}` } });
                 if (!response.ok) throw new Error('Error al cargar productos');
                 const data = await response.json();
                 products = data;
@@ -267,16 +438,22 @@
                 }
 
                 products.forEach(p => {
-                    const imagenSrc = p.imagen || p.image_url || 'https://placehold.co/50x50/eeeeee/999999?text=Sin+Img';
+                    const imagenRaw = p.imagen || p.image_url || 'https://placehold.co/50x50/eeeeee/999999?text=Sin+Img';
+                    const imagenSrc = escapeHTML(imagenRaw);
+                    const nombreSeguro = escapeHTML(p.name || p.nombre);
+                    const skuSeguro = escapeHTML(p.sku || '-');
+                    const cat = categories.find(c => c.id == p.category_id);
+                    const catNombre = cat ? escapeHTML(cat.name) : (p.category_id == 1 ? 'Hombre' : 'Mujer');
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td><img src="${imagenSrc}" alt="${p.name || p.nombre}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
-                        <td><strong>${p.sku || '-'}</strong></td>
+                        <td><img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                        <td><strong>${skuSeguro}</strong></td>
                         <td>${p.id}</td>
-                        <td>${p.name || p.nombre}</td>
+                        <td>${nombreSeguro}</td>
                         <td>$${parseFloat(p.price || p.precio || 0).toFixed(2)}</td>
                         <td>${p.stock ?? 0}</td>
-                        <td>${(p.category_id == 1 || p.category_name === 'Hombre') ? 'Hombre' : 'Mujer'}</td>
+                        <td>${catNombre}</td>
                         <td>
                             <button class="btn btn-edit" onclick="editProduct('${p.id}')">Editar</button>
                             <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Eliminar</button>
@@ -287,22 +464,6 @@
             } catch (error) {
                 console.error(error);
                 tbody.innerHTML = '<tr><td colspan="8" style="color:red; text-align:center;">Error al cargar productos</td></tr>';
-            }
-        }
-
-        async function deleteProduct(id) {
-            if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
-            try {
-                const token = localStorage.getItem('jrstore_admin_token');
-                const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (!response.ok) throw new Error('Error al eliminar');
-                await renderAdminProducts();
-            } catch (error) {
-                console.error(error);
-                alert('Error al eliminar producto');
             }
         }
 
@@ -317,17 +478,9 @@
             const description = document.getElementById('prod-type').value.trim();
             const fileInput = document.getElementById('prod-img-file');
 
-            // Validaciones
-            if (!name) {
-                alert('El nombre es obligatorio');
-                return;
-            }
-            if (isNaN(price) || price <= 0) {
-                alert('Debes ingresar un precio válido mayor que 0');
-                return;
-            }
+            if (!name) { alert('El nombre es obligatorio'); return; }
+            if (isNaN(price) || price <= 0) { alert('Debes ingresar un precio válido mayor que 0'); return; }
 
-            // Construir FormData
             const formData = new FormData();
             formData.append('name', name);
             formData.append('price', price);
@@ -336,107 +489,627 @@
             formData.append('estilo', estilo);
             formData.append('description', description);
             formData.append('stock', stock);
+            if (fileInput && fileInput.files[0]) formData.append('image', fileInput.files[0]);
 
-            if (fileInput && fileInput.files[0]) {
-                formData.append('image', fileInput.files[0]);
-            }
-
+            const token = getToken();
+            if (!token) return;
             try {
-                const token = localStorage.getItem('jrstore_admin_token');
-                if (!token) {
-                    alert('No hay sesión activa. Inicia sesión nuevamente.');
-                    window.location.href = 'login.html';
-                    return;
-                }
-
                 const url = id ? `${API_BASE_URL}/products/${id}` : `${API_BASE_URL}/products`;
                 const method = id ? 'PUT' : 'POST';
-
-                const response = await fetch(url, {
-                    method,
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    body: formData
-                });
-
-                let errorMsg = '';
-                let responseData = null;
-                const contentType = response.headers.get('content-type');
-                if (contentType && contentType.includes('application/json')) {
-                    responseData = await response.json();
-                    errorMsg = responseData.message || responseData.error || '';
-                } else {
-                    errorMsg = await response.text();
-                }
-
+                const response = await fetch(url, { method, headers: { 'Authorization': `Bearer ${token}` }, body: formData });
                 if (!response.ok) {
-                    throw new Error(`[${response.status}] ${errorMsg || response.statusText}`);
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.error || data.message || 'Error al guardar');
                 }
-
                 await renderAdminProducts();
-                closeModal();
+                closeProductModal();
                 alert('✅ Producto guardado correctamente');
             } catch (error) {
-                console.error('❌ Error al guardar:', error);
+                console.error(error);
                 alert(`Error al guardar producto:\n${error.message}`);
             }
         }
 
         async function editProduct(id) {
+            const token = getToken();
+            if (!token) return;
             try {
-                const token = localStorage.getItem('jrstore_admin_token');
-                const response = await fetch(`${API_BASE_URL}/products/${id}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
+                const response = await fetch(`${API_BASE_URL}/products/${id}`, { headers: { 'Authorization': `Bearer ${token}` } });
                 if (!response.ok) throw new Error('Producto no encontrado');
                 const p = await response.json();
-
                 document.getElementById('modal-title').innerText = "Editar Producto";
                 document.getElementById('prod-id').value = p.id;
-                document.getElementById('prod-name').value = p.name || p.nombre || '';
-                document.getElementById('prod-price').value = p.price || p.precio || '';
+                document.getElementById('prod-name').value = p.name || '';
+                document.getElementById('prod-price').value = p.price || '';
                 document.getElementById('prod-stock').value = p.stock ?? 0;
-
-                // Categoría
-                if (p.category_id == 1 || p.category_id == 2) {
-                    document.getElementById('prod-cat').value = p.category_id;
-                } else {
-                    document.getElementById('prod-cat').value = '1';
-                }
-
-                // Tipo
-                const tipoValid = (p.tipo || '').toLowerCase();
-                if (['ropa', 'gorra', 'reloj'].includes(tipoValid)) {
-                    document.getElementById('prod-tipo').value = tipoValid;
-                } else {
-                    document.getElementById('prod-tipo').value = 'ropa';
-                }
-
-                // Estilo
-                if (p.estilo === 'Urbano' || p.estilo === 'Deportivo') {
-                    document.getElementById('prod-estilo').value = p.estilo;
-                } else {
-                    document.getElementById('prod-estilo').value = 'Urbano';
-                }
-
+                document.getElementById('prod-cat').value = p.category_id;
+                // Los selects ya se llenaron dinámicamente desde /api/types y
+                // /api/styles (fillTypeAndStyleSelects), así que basta con
+                // asignar el valor tal cual viene del producto.
+                document.getElementById('prod-tipo').value = (p.tipo || '').toLowerCase();
+                document.getElementById('prod-estilo').value = (p.estilo || '').toLowerCase();
                 document.getElementById('prod-type').value = p.description || '';
-
-                openModal(true);
+                openProductModal(true);
             } catch (error) {
                 console.error(error);
                 alert('Error al cargar producto para editar');
             }
         }
 
-        // ================= MENSAJES DE CONTACTO =================
+        async function deleteProduct(id) {
+            if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
+            const token = getToken();
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/products/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                if (!response.ok) throw new Error('Error al eliminar');
+                await renderAdminProducts();
+            } catch (error) {
+                console.error(error);
+                alert('Error al eliminar producto');
+            }
+        }
+
+        function openCategoryModal(isEdit) {
+            if (!isEdit) {
+                document.getElementById('category-modal-title').innerText = "Añadir Categoría";
+                document.getElementById('cat-id').value = '';
+                document.getElementById('cat-name').value = '';
+                document.getElementById('cat-slug').value = '';
+            }
+            document.getElementById('category-modal').style.display = 'block';
+        }
+
+        function closeCategoryModal() {
+            document.getElementById('category-modal').style.display = 'none';
+        }
+
+        async function renderAdminCategories() {
+            const tbody = document.getElementById('admin-category-list');
+            tbody.innerHTML = '<tr><td colspan="4">Cargando...</td></tr>';
+            const token = getToken();
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/categories`, { headers: { 'Authorization': `Bearer ${token}` } });
+                if (!response.ok) throw new Error('Error al cargar categorías');
+                categories = await response.json();
+                tbody.innerHTML = '';
+
+                if (categories.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay categorías.</td></tr>';
+                } else {
+                    categories.forEach(c => {
+                        const nombreSeguro = escapeHTML(c.name);
+                        const slugSeguro = escapeHTML(c.slug);
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${c.id}</td>
+                            <td>${nombreSeguro}</td>
+                            <td>${slugSeguro}</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editCategory('${c.id}')">Editar</button>
+                                <button class="btn btn-danger" onclick="deleteCategory('${c.id}')">Eliminar</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+                const selectCat = document.getElementById('prod-cat');
+                selectCat.innerHTML = categories.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('');
+                if (categories.length === 0) {
+                    selectCat.innerHTML = '<option value="">Sin categorías</option>';
+                }
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="4" style="color:red; text-align:center;">Error al cargar categorías</td></tr>';
+            }
+        }
+
+        async function saveCategory() {
+            const id = document.getElementById('cat-id').value;
+            const name = document.getElementById('cat-name').value.trim();
+            const slug = document.getElementById('cat-slug').value.trim();
+
+            if (!name) { alert('El nombre es obligatorio'); return; }
+
+            const token = getToken();
+            if (!token) return;
+
+            const body = { name };
+            if (slug) body.slug = slug;
+
+            try {
+                const url = id ? `${API_BASE_URL}/categories/${id}` : `${API_BASE_URL}/categories`;
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(body)
+                });
+
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.error || data.message || 'Error al guardar categoría');
+                }
+
+                await renderAdminCategories();
+                closeCategoryModal();
+                alert('✅ Categoría guardada correctamente');
+            } catch (error) {
+                console.error(error);
+                alert(`Error al guardar categoría:\n${error.message}`);
+            }
+        }
+
+        async function editCategory(id) {
+            const token = getToken();
+            if (!token) return;
+            try {
+                const cat = categories.find(c => c.id == id);
+                if (!cat) throw new Error('Categoría no encontrada');
+                document.getElementById('category-modal-title').innerText = "Editar Categoría";
+                document.getElementById('cat-id').value = cat.id;
+                document.getElementById('cat-name').value = cat.name;
+                document.getElementById('cat-slug').value = cat.slug || '';
+                openCategoryModal(true);
+            } catch (error) {
+                console.error(error);
+                alert('Error al cargar categoría');
+            }
+        }
+
+        async function deleteCategory(id) {
+            if (!confirm('¿Seguro que deseas eliminar esta categoría? Los productos asociados no se podrán eliminar si tienen esta categoría.')) return;
+            const token = getToken();
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/categories/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.error || data.message || 'Error al eliminar categoría');
+                }
+                await renderAdminCategories();
+            } catch (error) {
+                console.error(error);
+                alert(`Error al eliminar categoría:\n${error.message}`);
+            }
+        }
+
+        /* ============================================================
+           GESTIÓN DE SECCIONES DE HOME (tabla `sections`, vía /api/sections)
+           No confundir con SECTION_LABELS / renderSectionSettings más abajo,
+           que es el sistema aparte de `section_settings` (llave-valor).
+           ============================================================ */
+        let homeSections = [];
+
+        function openHomeSectionModal(isEdit) {
+            if (!isEdit) {
+                document.getElementById('home-section-modal-title').innerText = "Añadir Sección";
+                document.getElementById('hs-id').value = '';
+                document.getElementById('hs-category').value = 'hombre';
+                document.getElementById('hs-style').value = 'urbano';
+                document.getElementById('hs-type').value = 'ropa';
+                document.getElementById('hs-visible').checked = true;
+            }
+            document.getElementById('home-section-modal').style.display = 'block';
+        }
+
+        function closeHomeSectionModal() {
+            document.getElementById('home-section-modal').style.display = 'none';
+        }
+
+        async function renderHomeSections() {
+            const tbody = document.getElementById('admin-homesections-list');
+            tbody.innerHTML = '<tr><td colspan="6">Cargando...</td></tr>';
+            const token = getToken();
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/sections`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) throw new Error('Error al cargar secciones');
+                homeSections = await response.json();
+                tbody.innerHTML = '';
+
+                if (homeSections.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay secciones registradas.</td></tr>';
+                    return;
+                }
+
+                homeSections.forEach(s => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${s.id}</td>
+                        <td>${escapeHTML(s.category)}</td>
+                        <td>${escapeHTML(s.style)}</td>
+                        <td>${escapeHTML(s.product_type)}</td>
+                        <td>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <input type="checkbox" ${s.visible ? 'checked' : ''} onchange="toggleHomeSectionVisible('${s.id}', this.checked)">
+                                ${s.visible ? 'Visible' : 'Oculta'}
+                            </label>
+                        </td>
+                        <td>
+                            <button class="btn btn-edit" onclick="editHomeSection('${s.id}')">Editar</button>
+                            <button class="btn btn-danger" onclick="deleteHomeSection('${s.id}')">Eliminar</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="6" style="color:red; text-align:center;">Error al cargar secciones</td></tr>';
+            }
+        }
+
+        async function saveHomeSection() {
+            const id = document.getElementById('hs-id').value;
+            const category = document.getElementById('hs-category').value;
+            const style = document.getElementById('hs-style').value;
+            const product_type = document.getElementById('hs-type').value;
+            const visible = document.getElementById('hs-visible').checked;
+
+            const token = getToken();
+            if (!token) return;
+
+            try {
+                const url = id ? `${API_BASE_URL}/sections/${id}` : `${API_BASE_URL}/sections`;
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ category, style, product_type, visible })
+                });
+
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    const detalle = data.errors ? data.errors.map(e => e.msg).join(', ') : (data.error || data.message);
+                    throw new Error(detalle || 'Error al guardar sección');
+                }
+
+                await renderHomeSections();
+                closeHomeSectionModal();
+                alert('✅ Sección guardada correctamente');
+            } catch (error) {
+                console.error(error);
+                alert(`Error al guardar sección:\n${error.message}`);
+            }
+        }
+
+        function editHomeSection(id) {
+            const s = homeSections.find(s => String(s.id) === String(id));
+            if (!s) {
+                alert('Sección no encontrada');
+                return;
+            }
+            document.getElementById('home-section-modal-title').innerText = "Editar Sección";
+            document.getElementById('hs-id').value = s.id;
+            document.getElementById('hs-category').value = s.category;
+            document.getElementById('hs-style').value = s.style;
+            document.getElementById('hs-type').value = s.product_type;
+            document.getElementById('hs-visible').checked = !!s.visible;
+            openHomeSectionModal(true);
+        }
+
+        async function toggleHomeSectionVisible(id, visible) {
+            const token = getToken();
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/sections/${id}/toggle`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ visible })
+                });
+                if (!response.ok) throw new Error('Error al actualizar visibilidad');
+                await renderHomeSections();
+            } catch (error) {
+                console.error(error);
+                alert('Error al actualizar visibilidad de la sección');
+                await renderHomeSections();
+            }
+        }
+
+        async function deleteHomeSection(id) {
+            if (!confirm('¿Seguro que deseas eliminar esta sección?')) return;
+            const token = getToken();
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/sections/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.error || data.message || 'Error al eliminar sección');
+                }
+                await renderHomeSections();
+            } catch (error) {
+                console.error(error);
+                alert(`Error al eliminar sección:\n${error.message}`);
+            }
+        }
+
+        /* ============================================================
+           TIPOS Y ESTILOS DE PRODUCTO (tablas dinámicas)
+           ============================================================ */
+        let productTypes = [];
+        let productStyles = [];
+
+        async function fetchTypesAndStyles() {
+            try {
+                const [typesRes, stylesRes] = await Promise.all([
+                    fetch(`${API_BASE_URL}/types`),
+                    fetch(`${API_BASE_URL}/styles`)
+                ]);
+                productTypes = typesRes.ok ? await typesRes.json() : [];
+                productStyles = stylesRes.ok ? await stylesRes.json() : [];
+            } catch (error) {
+                console.error('Error al cargar tipos/estilos', error);
+                productTypes = [];
+                productStyles = [];
+            }
+        }
+
+        function fillTypeAndStyleSelects() {
+            const typeSelects = [document.getElementById('prod-tipo'), document.getElementById('hs-type')];
+            const styleSelects = [document.getElementById('prod-estilo'), document.getElementById('hs-style')];
+
+            typeSelects.forEach(sel => {
+                if (!sel) return;
+                const prevValue = sel.value;
+                sel.innerHTML = productTypes.map(t => `<option value="${escapeHTML(t.key)}">${escapeHTML(t.label)}</option>`).join('');
+                if (productTypes.some(t => t.key === prevValue)) sel.value = prevValue;
+            });
+
+            styleSelects.forEach(sel => {
+                if (!sel) return;
+                const prevValue = sel.value;
+                sel.innerHTML = productStyles.map(s => `<option value="${escapeHTML(s.key)}">${escapeHTML(s.label)}</option>`).join('');
+                if (productStyles.some(s => s.key === prevValue)) sel.value = prevValue;
+            });
+        }
+
+        function openTypeModal(isEdit) {
+            if (!isEdit) {
+                document.getElementById('type-modal-title').innerText = "Añadir Tipo";
+                document.getElementById('type-id').value = '';
+                document.getElementById('type-key').value = '';
+                document.getElementById('type-label').value = '';
+                document.getElementById('type-order').value = 0;
+            }
+            document.getElementById('type-modal').style.display = 'block';
+        }
+
+        function closeTypeModal() {
+            document.getElementById('type-modal').style.display = 'none';
+        }
+
+        async function renderProductTypes() {
+            const tbody = document.getElementById('admin-types-list');
+            tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+            try {
+                await fetchTypesAndStyles();
+                tbody.innerHTML = '';
+
+                if (productTypes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay tipos registrados.</td></tr>';
+                } else {
+                    productTypes.forEach(t => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${t.id}</td>
+                            <td>${escapeHTML(t.key)}</td>
+                            <td>${escapeHTML(t.label)}</td>
+                            <td>${t.sort_order ?? 0}</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editType('${t.id}')">Editar</button>
+                                <button class="btn btn-danger" onclick="deleteType('${t.id}')">Eliminar</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+                fillTypeAndStyleSelects();
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">Error al cargar tipos</td></tr>';
+            }
+        }
+
+        async function saveType() {
+            const id = document.getElementById('type-id').value;
+            const key = document.getElementById('type-key').value.trim();
+            const label = document.getElementById('type-label').value.trim();
+            const sort_order = parseInt(document.getElementById('type-order').value, 10) || 0;
+
+            if (!key || !label) {
+                alert('La clave y la etiqueta son obligatorias');
+                return;
+            }
+
+            const token = getToken();
+            if (!token) return;
+
+            try {
+                const url = id ? `${API_BASE_URL}/types/${id}` : `${API_BASE_URL}/types`;
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ key, label, sort_order })
+                });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    const detalle = data.errors ? data.errors.map(e => e.msg).join(', ') : (data.error || data.message);
+                    throw new Error(detalle || 'Error al guardar tipo');
+                }
+                await renderProductTypes();
+                closeTypeModal();
+                alert('✅ Tipo guardado correctamente');
+            } catch (error) {
+                console.error(error);
+                alert(`Error al guardar tipo:\n${error.message}`);
+            }
+        }
+
+        function editType(id) {
+            const t = productTypes.find(t => String(t.id) === String(id));
+            if (!t) { alert('Tipo no encontrado'); return; }
+            document.getElementById('type-modal-title').innerText = "Editar Tipo";
+            document.getElementById('type-id').value = t.id;
+            document.getElementById('type-key').value = t.key;
+            document.getElementById('type-label').value = t.label;
+            document.getElementById('type-order').value = t.sort_order ?? 0;
+            openTypeModal(true);
+        }
+
+        async function deleteType(id) {
+            if (!confirm('¿Seguro que deseas eliminar este tipo? Si hay productos o secciones usándolo, no se podrá eliminar.')) return;
+            const token = getToken();
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/types/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.error || data.message || 'Error al eliminar tipo');
+                }
+                await renderProductTypes();
+            } catch (error) {
+                console.error(error);
+                alert(`Error al eliminar tipo:\n${error.message}`);
+            }
+        }
+
+        function openStyleModal(isEdit) {
+            if (!isEdit) {
+                document.getElementById('style-modal-title').innerText = "Añadir Estilo";
+                document.getElementById('style-id').value = '';
+                document.getElementById('style-key').value = '';
+                document.getElementById('style-label').value = '';
+                document.getElementById('style-order').value = 0;
+            }
+            document.getElementById('style-modal').style.display = 'block';
+        }
+
+        function closeStyleModal() {
+            document.getElementById('style-modal').style.display = 'none';
+        }
+
+        async function renderProductStyles() {
+            const tbody = document.getElementById('admin-styles-list');
+            tbody.innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+            try {
+                await fetchTypesAndStyles();
+                tbody.innerHTML = '';
+
+                if (productStyles.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No hay estilos registrados.</td></tr>';
+                } else {
+                    productStyles.forEach(s => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${s.id}</td>
+                            <td>${escapeHTML(s.key)}</td>
+                            <td>${escapeHTML(s.label)}</td>
+                            <td>${s.sort_order ?? 0}</td>
+                            <td>
+                                <button class="btn btn-edit" onclick="editStyle('${s.id}')">Editar</button>
+                                <button class="btn btn-danger" onclick="deleteStyle('${s.id}')">Eliminar</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+                fillTypeAndStyleSelects();
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="5" style="color:red; text-align:center;">Error al cargar estilos</td></tr>';
+            }
+        }
+
+        async function saveStyle() {
+            const id = document.getElementById('style-id').value;
+            const key = document.getElementById('style-key').value.trim();
+            const label = document.getElementById('style-label').value.trim();
+            const sort_order = parseInt(document.getElementById('style-order').value, 10) || 0;
+
+            if (!key || !label) {
+                alert('La clave y la etiqueta son obligatorias');
+                return;
+            }
+
+            const token = getToken();
+            if (!token) return;
+
+            try {
+                const url = id ? `${API_BASE_URL}/styles/${id}` : `${API_BASE_URL}/styles`;
+                const method = id ? 'PUT' : 'POST';
+                const response = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ key, label, sort_order })
+                });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    const detalle = data.errors ? data.errors.map(e => e.msg).join(', ') : (data.error || data.message);
+                    throw new Error(detalle || 'Error al guardar estilo');
+                }
+                await renderProductStyles();
+                closeStyleModal();
+                alert('✅ Estilo guardado correctamente');
+            } catch (error) {
+                console.error(error);
+                alert(`Error al guardar estilo:\n${error.message}`);
+            }
+        }
+
+        function editStyle(id) {
+            const s = productStyles.find(s => String(s.id) === String(id));
+            if (!s) { alert('Estilo no encontrado'); return; }
+            document.getElementById('style-modal-title').innerText = "Editar Estilo";
+            document.getElementById('style-id').value = s.id;
+            document.getElementById('style-key').value = s.key;
+            document.getElementById('style-label').value = s.label;
+            document.getElementById('style-order').value = s.sort_order ?? 0;
+            openStyleModal(true);
+        }
+
+        async function deleteStyle(id) {
+            if (!confirm('¿Seguro que deseas eliminar este estilo? Si hay productos o secciones usándolo, no se podrá eliminar.')) return;
+            const token = getToken();
+            if (!token) return;
+            try {
+                const response = await fetch(`${API_BASE_URL}/styles/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!response.ok) {
+                    const data = await response.json().catch(() => ({}));
+                    throw new Error(data.error || data.message || 'Error al eliminar estilo');
+                }
+                await renderProductStyles();
+            } catch (error) {
+                console.error(error);
+                alert(`Error al eliminar estilo:\n${error.message}`);
+            }
+        }
+
         async function renderAdminContacts() {
             const tbody = document.getElementById('admin-contact-list');
             tbody.innerHTML = '<tr><td colspan="7">Cargando...</td></tr>';
+            const token = getToken();
+            if (!token) return;
             try {
-                const token = localStorage.getItem('jrstore_admin_token');
-                const response = await fetch(`${API_BASE_URL}/contact`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const response = await fetch(`${API_BASE_URL}/contact`, { headers: { 'Authorization': `Bearer ${token}` } });
                 if (!response.ok) throw new Error('Error al cargar mensajes');
                 const contactos = await response.json();
                 tbody.innerHTML = '';
@@ -448,14 +1121,19 @@
 
                 contactos.forEach(c => {
                     const fecha = new Date(c.created_at).toLocaleString('es-VE', { dateStyle: 'short', timeStyle: 'short' });
+                    const nombreSeguro = escapeHTML(c.nombre);
+                    const correoSeguro = escapeHTML(c.correo);
+                    const telefonoSeguro = escapeHTML(c.telefono || '');
+                    const comentarioSeguro = escapeHTML(c.comentario);
+
                     const tr = document.createElement('tr');
                     if (!c.leido) tr.style.background = '#fff8e1';
                     tr.innerHTML = `
                         <td>${fecha}</td>
-                        <td>${c.nombre}</td>
-                        <td><a href="mailto:${c.correo}">${c.correo}</a></td>
-                        <td>${c.telefono ? `<a href="https://wa.me/${c.telefono.replace(/\D/g, '')}" target="_blank">${c.telefono}</a>` : '-'}</td>
-                        <td style="max-width:250px; white-space:normal;">${c.comentario}</td>
+                        <td>${nombreSeguro}</td>
+                        <td><a href="mailto:${correoSeguro}">${correoSeguro}</a></td>
+                        <td>${telefonoSeguro ? `<a href="https://wa.me/${telefonoSeguro.replace(/\D/g, '')}" target="_blank">${telefonoSeguro}</a>` : '-'}</td>
+                        <td style="max-width:250px; white-space:normal;">${comentarioSeguro}</td>
                         <td>${c.leido ? '✅ Leído' : '🟡 Nuevo'}</td>
                         <td>
                             ${!c.leido ? `<button class="btn btn-primary" onclick="marcarLeido('${c.id}')">Marcar leído</button>` : ''}
@@ -471,12 +1149,10 @@
         }
 
         async function marcarLeido(id) {
+            const token = getToken();
+            if (!token) return;
             try {
-                const token = localStorage.getItem('jrstore_admin_token');
-                await fetch(`${API_BASE_URL}/contact/${id}/leido`, {
-                    method: 'PUT',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                await fetch(`${API_BASE_URL}/contact/${id}/leido`, { method: 'PUT', headers: { 'Authorization': `Bearer ${token}` } });
                 await renderAdminContacts();
             } catch (error) {
                 console.error(error);
@@ -486,12 +1162,10 @@
 
         async function eliminarContacto(id) {
             if (!confirm('¿Eliminar este mensaje?')) return;
+            const token = getToken();
+            if (!token) return;
             try {
-                const token = localStorage.getItem('jrstore_admin_token');
-                await fetch(`${API_BASE_URL}/contact/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                await fetch(`${API_BASE_URL}/contact/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
                 await renderAdminContacts();
             } catch (error) {
                 console.error(error);
@@ -499,15 +1173,80 @@
             }
         }
 
-        // Comprobar autenticación al cargar
+        const SECTION_LABELS = {
+            gorras_hombre: 'Gorras (Hombres)',
+            urbano_hombre: 'Camisetas Urbano (Hombres)',
+            deportivo_hombre: 'Camisetas Deportivo (Hombres)',
+            relojes_hombre: 'Relojes (Hombres)',
+            ig_banner: 'Banner de Instagram',
+            mujeres_banner: 'Banner "De las Mujeres"',
+            gorras_mujer: 'Gorras (Mujeres)',
+            urbano_mujer: 'Camisetas Urbano (Mujeres)',
+            deportivo_mujer: 'Camisetas Deportivo (Mujeres)',
+            relojes_mujer: 'Relojes (Mujeres)'
+        };
+
+        async function renderSectionSettings() {
+            const tbody = document.getElementById('admin-sections-list');
+            tbody.innerHTML = '<tr><td colspan="2">Cargando...</td></tr>';
+            try {
+                const response = await fetch(`${API_BASE_URL}/settings`);
+                if (!response.ok) throw new Error('Error al cargar secciones');
+                const settings = await response.json();
+                tbody.innerHTML = '';
+
+                Object.keys(SECTION_LABELS).forEach(key => {
+                    const habilitado = settings[key] !== false;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${SECTION_LABELS[key]}</td>
+                        <td>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                                <input type="checkbox" ${habilitado ? 'checked' : ''} onchange="toggleSection('${key}', this.checked)">
+                                ${habilitado ? 'Visible' : 'Oculta'}
+                            </label>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error(error);
+                tbody.innerHTML = '<tr><td colspan="2" style="color:red;">Error al cargar secciones</td></tr>';
+            }
+        }
+
+        async function toggleSection(key, enabled) {
+            const token = getToken();
+            if (!token) return;
+            try {
+                await fetch(`${API_BASE_URL}/settings/${key}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ enabled })
+                });
+                await renderSectionSettings();
+            } catch (error) {
+                console.error(error);
+                alert('Error al actualizar la sección');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('jrstore_admin_token');
             if (!token) {
                 window.location.href = 'login.html';
-            } else {
-                renderAdminProducts();
-                renderAdminContacts();
+                return;
             }
+            // Tipos y estilos primero: los selects de producto y de sección
+            // dependen de que ya existan las opciones antes de renderizarse.
+            Promise.all([renderProductTypes(), renderProductStyles()]).then(() => {
+                renderAdminCategories().then(() => {
+                    renderAdminProducts();
+                });
+                renderHomeSections();
+            });
+            renderAdminContacts();
+            renderSectionSettings();
         });
     </script>
 

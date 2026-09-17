@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros | Jr Store</title>
+    <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="Conoce la historia y el equipo detrás de Jr Store">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header>
+        <a href="index.html" class="logo">Jr <span>Store</span></a>
+
+        <nav id="navbar">
+            <a href="index.html" class="active-link">Inicio</a>
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Hombres <i
+                        class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','ropa');">Ropa</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','gorra');">Gorras</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','reloj');">Relojes</a>
+                </div>
+            </div>
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Mujeres <i
+                        class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','ropa');">Ropa</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','gorra');">Gorras</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','reloj');">Relojes</a>
+                </div>
+            </div>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+
+        <div class="header-actions">
+            <button class="search-toggle" aria-label="Buscar" onclick="toggleSearch()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="cart-toggle" aria-label="Ver carrito" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cart-badge">0</span>
+            </button>
+            <button class="hamburger" aria-label="Abrir menú" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- PANEL DE BÚSQUEDA -->
+    <div id="search-panel" class="search-panel">
+        <div class="search-panel-inner">
+            <form class="search-input-row"
+                onsubmit="event.preventDefault(); window.location.href='index.html#catalogo';">
+                <input type="text" id="search-input" placeholder="Buscar productos..." autocomplete="off">
+                <button type="submit" aria-label="Buscar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button type="button" class="search-close-btn" onclick="toggleSearch()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <main>
+        <section class="section-hero"
+            style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;">
+            <h1>Sobre Nosotros</h1>
+            <p>Conoce la historia y el equipo detrás de Jr Store</p>
+        </section>
+
+        <nav class="breadcrumb">
+            <a href="index.html">Inicio</a>
+            <span class="separator">/</span>
+            <span class="current">Sobre Nosotros</span>
+        </nav>
+
+        <section class="catalog" style="padding-top: 1rem; padding-bottom: 4rem;">
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div style="margin-bottom: 3rem;">
+                    <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1rem; color: var(--text-main);">
+                        Nuestra Historia</h2>
+                    <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1rem;">
+                        Jr Store nació en 2026 de un sueño entre amigos: crear un espacio donde la ropa, las gorras y los relojes no fueran solo accesorios, sino la verdadera expresión del estilo urbano y deportivo de nuestra generación. Lo que empezó como charlas de sobremesa y proyectos compartidos se ha convertido en una marca con alma, pensada para quienes caminan por la vida con actitud, autenticidad y pasión por lo propio.
+                    </p>
+                    <p style="color: var(--text-muted); line-height: 1.8;">
+                        Hoy seguimos creciendo, siempre fieles a nuestra esencia: vestir a quienes no siguen tendencias,
+                        las crean.
+                    </p>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr; gap: 2rem; margin-bottom: 3rem;">
+                    <div
+                        style="background: var(--surface-color); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow-sm);">
+                        <i class="fa-solid fa-bullseye"
+                            style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">Misión</h3>
+                        <p style="color: var(--text-muted); line-height: 1.7;">Empoderar a cada persona para que exprese
+                            su identidad a través de prendas únicas, combinando estilo urbano con funcionalidad
+                            deportiva.</p>
+                    </div>
+                    <div
+                        style="background: var(--surface-color); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow-sm);">
+                        <i class="fa-solid fa-eye"
+                            style="font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">Visión</h3>
+                        <p style="color: var(--text-muted); line-height: 1.7;">Ser la tienda de referencia en moda
+                            urbana y deportiva, reconocida por nuestra autenticidad, calidad y conexión genuina con
+                            nuestra comunidad.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--text-main);">
+                        Nuestros Valores</h2>
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <i class="fa-solid fa-heart"
+                                style="font-size: 1.8rem; color: var(--accent-color); margin-bottom: 0.75rem;"></i>
+                            <h4 style="font-weight: 700; margin-bottom: 0.5rem;">Autenticidad</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">Cada pieza refleja quienes somos de
+                                verdad.</p>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <i class="fa-solid fa-gem"
+                                style="font-size: 1.8rem; color: var(--accent-color); margin-bottom: 0.75rem;"></i>
+                            <h4 style="font-weight: 700; margin-bottom: 0.5rem;">Calidad</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">Seleccionamos materiales que duran y
+                                se sienten bien.</p>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <i class="fa-solid fa-users"
+                                style="font-size: 1.8rem; color: var(--accent-color); margin-bottom: 0.75rem;"></i>
+                            <h4 style="font-weight: 700; margin-bottom: 0.5rem;">Comunidad</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">Creamos vínculos, no solo vendemos
+                                ropa.</p>
+                        </div>
+                        <div style="text-align: center; padding: 1.5rem;">
+                            <i class="fa-solid fa-bolt"
+                                style="font-size: 1.8rem; color: var(--accent-color); margin-bottom: 0.75rem;"></i>
+                            <h4 style="font-weight: 700; margin-bottom: 0.5rem;">Actitud</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem;">El estilo es una forma de ver la
+                                vida.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo-footer">Jr <span>Store</span></div>
+                <p>Viste tu esencia. Estilo urbano y deportivo para quienes marcan la diferencia.</p>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer"
+                        aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/584147807688" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Navegación</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="la-coleccion.html">La colección</a></li>
+                    <li><a href="el-ritual.html">El Ritual</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="como-comprar.html">¿Cómo comprar?</a></li>
+                    <li><a href="metodo-de-pago.html">Método de pago</a></li>
+                    <li><a href="preguntas-frecuentes.html">Preguntas Frecuentes</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Envíos y Entregas</h4>
+                <ul>
+                    <li><a href="entregas-personales.html">Entregas Personales</a></li>
+                    <li><a href="envios-nacionales.html">Envíos Nacionales</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="politicas-de-devolucion.html">Políticas de Devolución</a></li>
+                    <li><a href="terminos-y-condiciones.html">Términos y Condiciones</a></li>
+                    <li><a href="politicas-de-privacidad.html">Políticas de Privacidad</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Jr Store. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <script src="js/config.js"></script>
+<script src="js/nav-types.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        function toggleMenu() {
+            document.getElementById('navbar').classList.toggle('active');
+            document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+        }
+        function toggleSearch() {
+            document.getElementById('search-panel').classList.toggle('active');
+        }
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.nav-dropdown')) {
+                document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+            }
+        });
+    </script>
+</body>
+
+</html>
+

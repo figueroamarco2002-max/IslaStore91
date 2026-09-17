@@ -1,0 +1,311 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- ============================================
+    CONFIGURACIÓN BÁSICA
+    ============================================ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entregas Personales | Jr Store</title>
+    <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="Recibe tu pedido de forma rápida y sin costo adicional">
+
+    <!-- ============================================
+    FUENTES Y BIBLIOTECAS EXTERNAS
+    ============================================ -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- ============================================
+    HOJA DE ESTILOS PRINCIPAL
+    ============================================ -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <!-- ============================================
+    HEADER / BARRA DE NAVEGACIÓN
+    ============================================ -->
+    <header>
+        <a href="index.html" class="logo">Jr <span>Store</span></a>
+
+        <nav id="navbar">
+            <a href="index.html" class="active-link">Inicio</a>
+
+            <!-- Dropdown Hombres -->
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Hombres <i
+                        class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','ropa');">Ropa</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','gorra');">Gorras</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','reloj');">Relojes</a>
+                </div>
+            </div>
+
+            <!-- Dropdown Mujeres -->
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Mujeres <i
+                        class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','ropa');">Ropa</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','gorra');">Gorras</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','reloj');">Relojes</a>
+                </div>
+            </div>
+
+            <a href="contacto.html">Contacto</a>
+        </nav>
+
+        <!-- Acciones del header -->
+        <div class="header-actions">
+            <button class="search-toggle" aria-label="Buscar" onclick="toggleSearch()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="cart-toggle" aria-label="Ver carrito" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cart-badge">0</span>
+            </button>
+            <button class="hamburger" aria-label="Abrir menú" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================
+    PANEL DE BÚSQUEDA
+    ============================================ -->
+    <div id="search-panel" class="search-panel">
+        <div class="search-panel-inner">
+            <form class="search-input-row"
+                onsubmit="event.preventDefault(); window.location.href='index.html#catalogo';">
+                <input type="text" id="search-input" placeholder="Buscar productos..." autocomplete="off">
+                <button type="submit" aria-label="Buscar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button type="button" class="search-close-btn" onclick="toggleSearch()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================
+    CONTENIDO PRINCIPAL
+    ============================================ -->
+    <main>
+
+        <!-- SECCIÓN HERO -->
+        <section class="section-hero"
+            style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;">
+            <h1>Entregas Personales</h1>
+            <p>Recibe tu pedido de forma rápida y sin costo adicional</p>
+        </section>
+
+        <!-- MIGAS DE PAN -->
+        <nav class="breadcrumb">
+            <a href="index.html">Inicio</a>
+            <span class="separator">/</span>
+            <span class="current">Entregas Personales</span>
+        </nav>
+
+        <!-- SECCIÓN PRINCIPAL -->
+        <section class="catalog" style="padding-top: 1rem; padding-bottom: 4rem;">
+
+            <div style="max-width: 800px; margin: 0 auto;">
+
+                <!-- ============================================
+                TEXTO INTRODUCTORIO
+                ============================================ -->
+                <p
+                    style="text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 3rem; line-height: 1.8;">
+                    La opción más rápida y económica. Coordinamos un punto de encuentro seguro y te entregamos tu pedido
+                    en persona.
+                </p>
+
+                <!-- ============================================
+                CUADRO DE ZONAS DE ENTREGA (ELIMINADO)
+                ============================================ -->
+
+                <!-- ============================================
+                PASOS (3) - se mantienen igual
+                ============================================ -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem;">
+
+                    <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                        <div
+                            style="min-width: 50px; height: 50px; background: var(--accent-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">
+                            1
+                        </div>
+                        <div>
+                            <h4 style="font-weight: 700; margin-bottom: 0.25rem;">Confirma tu pedido</h4>
+                            <p style="color: var(--text-muted); line-height: 1.6;">Una vez que finalices tu compra por
+                                WhatsApp, te pedimos tu ubicación general para coordinar.</p>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                        <div
+                            style="min-width: 50px; height: 50px; background: var(--accent-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">
+                            2
+                        </div>
+                        <div>
+                            <h4 style="font-weight: 700; margin-bottom: 0.25rem;">Coordinamos el punto</h4>
+                            <p style="color: var(--text-muted); line-height: 1.6;">Te proponemos un lugar seguro y
+                                accesible. Puedes sugerir alternativas si te queda más cómodo.</p>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
+                        <div
+                            style="min-width: 50px; height: 50px; background: var(--accent-color); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800;">
+                            3
+                        </div>
+                        <div>
+                            <h4 style="font-weight: 700; margin-bottom: 0.25rem;">Recibe tu pedido</h4>
+                            <p style="color: var(--text-muted); line-height: 1.6;">En el horario acordado, te entregamos
+                                tu bolsa Jr Store lista para usar. Sin filas, sin esperas.</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ============================================
+                HORARIOS DE ENTREGA (se mantiene)
+                ============================================ -->
+                <div
+                    style="background: linear-gradient(135deg, var(--accent-color), #e65c00); color: white; padding: 2rem; border-radius: 16px; text-align: center;">
+                    <i class="fa-solid fa-clock" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">Horarios de entrega</h3>
+                    <p style="opacity: 0.9;">Lunes a Viernes de 9:00 a.m. a 6:00 p.m.</p>
+                    <p style="opacity: 0.9; font-size: 0.9rem; margin-top: 0.5rem;">Los fines de semana bajo
+                        coordinación previa</p>
+                </div>
+
+            </div>
+            <!-- FIN contenedor central -->
+
+        </section>
+        <!-- FIN sección catalog -->
+
+    </main>
+    <!-- FIN contenido principal -->
+
+
+    <!-- ============================================
+    FOOTER / PIE DE PÁGINA
+    ============================================ -->
+    <footer>
+        <div class="footer-content">
+
+            <!-- Columna 1: Marca y redes sociales -->
+            <div class="footer-brand">
+                <div class="logo-footer">Jr <span>Store</span></div>
+                <p>Viste tu esencia. Estilo urbano y deportivo para quienes marcan la diferencia.</p>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer"
+                        aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/584147807688" target="_blank" rel="noopener noreferrer"
+                        aria-label="WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Columna 2: Navegación -->
+            <div class="footer-links">
+                <h4>Navegación</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="la-coleccion.html">La colección</a></li>
+                    <li><a href="el-ritual.html">El Ritual</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 3: Soporte -->
+            <div class="footer-links">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="como-comprar.html">¿Cómo comprar?</a></li>
+                    <li><a href="metodo-de-pago.html">Método de pago</a></li>
+                    <li><a href="preguntas-frecuentes.html">Preguntas Frecuentes</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 4: Envíos y Entregas -->
+            <div class="footer-links">
+                <h4>Envíos y Entregas</h4>
+                <ul>
+                    <li><a href="entregas-personales.html">Entregas Personales</a></li>
+                    <li><a href="envios-nacionales.html">Envíos Nacionales</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 5: Legal -->
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="politicas-de-devolucion.html">Políticas de Devolución</a></li>
+                    <li><a href="terminos-y-condiciones.html">Términos y Condiciones</a></li>
+                    <li><a href="politicas-de-privacidad.html">Políticas de Privacidad</a></li>
+                </ul>
+            </div>
+
+        </div>
+        <!-- FIN footer-content -->
+
+        <!-- Barra inferior -->
+        <div class="footer-bottom">
+            <p>&copy; 2026 Jr Store. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <!-- FIN FOOTER -->
+
+
+    <!-- ============================================
+    SCRIPTS
+    ============================================ -->
+    <script src="js/config.js"></script>
+<script src="js/nav-types.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        /**
+         * Abre/cierra el menú móvil
+         */
+        function toggleMenu() {
+            document.getElementById('navbar').classList.toggle('active');
+            document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+        }
+
+        /**
+         * Abre/cierra el panel de búsqueda
+         */
+        function toggleSearch() {
+            document.getElementById('search-panel').classList.toggle('active');
+        }
+
+        /**
+         * Cierra dropdowns al hacer clic fuera
+         */
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.nav-dropdown')) {
+                document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+            }
+        });
+    </script>
+
+</body>
+
+</html>

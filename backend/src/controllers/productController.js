@@ -3,8 +3,27 @@ const ProductImage = require('../models/ProductImage');
 const Category = require('../models/Category');
 const fs = require('fs');
 const path = require('path');
+const { subirImagen } = require('../utils/supabaseStorage');
+const { sendError, isValidId, sanitizeUrl } = require('../utils/security');
 
-// Obtener productos con filtros
+const UPLOADS_DIR = path.join(__dirname, '..', '..', 'uploads');
+
+function eliminarArchivoLocalSeguro(imageUrl) {
+    if (!imageUrl || !imageUrl.includes('/uploads/')) return;
+
+    const relative = imageUrl.split('/uploads/')[1];
+    if (!relative) return;
+
+    const filePath = path.normalize(path.join(UPLOADS_DIR, relative));
+
+    if (!filePath.startsWith(UPLOADS_DIR + path.sep) && filePath !== UPLOADS_DIR) {
+        console.error('Intento de eliminar archivo fuera de uploads:', imageUrl);
+        return;
+    }
+
+    fs.unlink(filePath, (err) => { if (err) console.error(err); });
+}
+
 exports.getProducts = async (req, res) => {
     const { categoria, estilo, tipo, search } = req.query;
     try {
@@ -15,14 +34,14 @@ exports.getProducts = async (req, res) => {
         }
         res.json(products);
     } catch (error) {
-        console.error('Error en getProducts:', error);
-        res.status(500).json({ error: 'Error al obtener productos', detalle: error.message });
+        return sendError(res, 500, 'Error al obtener productos', error);
     }
 };
 
-// Obtener un producto por ID
 exports.getProductById = async (req, res) => {
-    const { id } = req.params;
+    const id = isValidId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'ID de producto inválido' });
+
     try {
         const product = await Product.findById(id);
         if (!product) {
@@ -32,20 +51,19 @@ exports.getProductById = async (req, res) => {
         product.imagenes = images;
         res.json(product);
     } catch (error) {
-        console.error('Error en getProductById:', error);
-        res.status(500).json({ error: 'Error al obtener producto', detalle: error.message });
+        return sendError(res, 500, 'Error al obtener producto', error);
     }
 };
 
-// ✅ CREAR PRODUCTO (CORREGIDO)
 exports.createProduct = async (req, res) => {
-    // Extraer campos del body (multer los coloca en req.body)
     const { name, description, price, stock, category_id, estilo, tipo, image } = req.body;
 
     try {
-        // --- 1. Validaciones y conversiones ---
         if (!name || typeof name !== 'string' || name.trim() === '') {
             return res.status(400).json({ error: 'El nombre es obligatorio' });
+        }
+        if (name.trim().length > 150) {
+            return res.status(400).json({ error: 'El nombre es demasiado largo' });
         }
 
         const priceNum = parseFloat(price);
@@ -53,21 +71,32 @@ exports.createProduct = async (req, res) => {
             return res.status(400).json({ error: 'El precio debe ser un número mayor que 0' });
         }
 
-        // Convertir category_id a entero
         const categoryIdNum = parseInt(category_id, 10);
         if (isNaN(categoryIdNum) || categoryIdNum < 1) {
-            return res.status(400).json({ error: 'category_id debe ser un número entero positivo (1=Hombre, 2=Mujer)' });
+            return res.status(400).json({ error: 'category_id debe ser un número entero positivo' });
         }
 
-        // Convertir stock a entero (si no viene, usamos 0)
         const stockNum = parseInt(stock, 10) || 0;
+        if (stockNum < 0) {
+            return res.status(400).json({ error: 'El stock no puede ser negativo' });
+        }
 
-        // Limpiar strings
-        const cleanDescription = (description && typeof description === 'string') ? description.trim() : '';
-        const cleanEstilo = (estilo && typeof estilo === 'string') ? estilo.trim() : '';
-        const cleanTipo = (tipo && typeof tipo === 'string') ? tipo.trim() : '';
+        // Si viene una URL externa de imagen, se valida y se normaliza.
+        // Se guarda la versión normalizada (url.href), nunca el texto tal
+        // como lo mandó el usuario, para que no pueda contener comillas
+        // u otros caracteres que rompan el atributo src="" al renderizarse.
+        let sanitizedImageUrl = null;
+        if (image && typeof image === 'string' && image.trim() !== '') {
+            sanitizedImageUrl = sanitizeUrl(image);
+            if (!sanitizedImageUrl) {
+                return res.status(400).json({ error: 'La URL de la imagen no es válida' });
+            }
+        }
 
-        // --- 2. Preparar datos para el modelo ---
+        const cleanDescription = (description && typeof description === 'string') ? description.trim().slice(0, 5000) : '';
+        const cleanEstilo = (estilo && typeof estilo === 'string') ? estilo.trim().slice(0, 100) : '';
+        const cleanTipo = (tipo && typeof tipo === 'string') ? tipo.trim().slice(0, 100) : '';
+
         const productData = {
             name: name.trim(),
             description: cleanDescription,
@@ -78,50 +107,36 @@ exports.createProduct = async (req, res) => {
             tipo: cleanTipo
         };
 
-        console.log('📦 Datos a insertar:', productData); // ← LOG para depurar
-
-        // --- 3. Insertar en la base de datos ---
         const product = await Product.create(productData);
-        console.log('✅ Producto creado:', product);
 
-        // --- 4. Manejar imagen (si existe) ---
         let imageUrl = null;
         if (req.file) {
-            // Si se subió un archivo con multer
-            imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-        } else if (image && typeof image === 'string' && image.trim() !== '') {
-            // Si se envió una URL externa
-            imageUrl = image.trim();
+            imageUrl = await subirImagen(req.file);
+        } else if (sanitizedImageUrl) {
+            imageUrl = sanitizedImageUrl;
         }
 
         if (imageUrl) {
             await ProductImage.create(product.id, imageUrl, true);
         }
 
-        // --- 5. Responder ---
         res.status(201).json({
             message: 'Producto creado exitosamente',
             product: product,
             image: imageUrl
         });
     } catch (error) {
-        console.error('❌ Error en createProduct:', error);
-        // Enviar el error real al frontend (para depuración)
-        res.status(500).json({
-            error: 'Error al crear producto',
-            detalle: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
+        return sendError(res, 500, 'Error al crear producto', error);
     }
 };
 
-// Actualizar producto
 exports.updateProduct = async (req, res) => {
-    const { id } = req.params;
+    const id = isValidId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'ID de producto inválido' });
+
     const { name, description, price, stock, category_id, estilo, tipo, image } = req.body;
 
     try {
-        // Conversiones y validaciones similares
         if (!name || typeof name !== 'string' || name.trim() === '') {
             return res.status(400).json({ error: 'El nombre es obligatorio' });
         }
@@ -134,15 +149,26 @@ exports.updateProduct = async (req, res) => {
             return res.status(400).json({ error: 'category_id debe ser un número entero positivo' });
         }
         const stockNum = parseInt(stock, 10) || 0;
+        if (stockNum < 0) {
+            return res.status(400).json({ error: 'El stock no puede ser negativo' });
+        }
+
+        let sanitizedImageUrl = null;
+        if (image && typeof image === 'string' && image.trim() !== '') {
+            sanitizedImageUrl = sanitizeUrl(image);
+            if (!sanitizedImageUrl) {
+                return res.status(400).json({ error: 'La URL de la imagen no es válida' });
+            }
+        }
 
         const productData = {
             name: name.trim(),
-            description: (description && typeof description === 'string') ? description.trim() : '',
+            description: (description && typeof description === 'string') ? description.trim().slice(0, 5000) : '',
             price: priceNum,
             stock: stockNum,
             category_id: categoryIdNum,
-            estilo: (estilo && typeof estilo === 'string') ? estilo.trim() : '',
-            tipo: (tipo && typeof tipo === 'string') ? tipo.trim() : ''
+            estilo: (estilo && typeof estilo === 'string') ? estilo.trim().slice(0, 100) : '',
+            tipo: (tipo && typeof tipo === 'string') ? tipo.trim().slice(0, 100) : ''
         };
 
         const product = await Product.update(id, productData);
@@ -150,14 +176,13 @@ exports.updateProduct = async (req, res) => {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
 
-        // Manejar imagen
         if (req.file) {
+            const nuevaUrl = await subirImagen(req.file);
             await ProductImage.deleteByProduct(id);
-            const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-            await ProductImage.create(id, imageUrl, true);
-        } else if (image && typeof image === 'string' && image.trim() !== '') {
+            await ProductImage.create(id, nuevaUrl, true);
+        } else if (sanitizedImageUrl) {
             await ProductImage.deleteByProduct(id);
-            await ProductImage.create(id, image.trim(), true);
+            await ProductImage.create(id, sanitizedImageUrl, true);
         }
 
         res.json({
@@ -165,24 +190,18 @@ exports.updateProduct = async (req, res) => {
             product: product
         });
     } catch (error) {
-        console.error('❌ Error en updateProduct:', error);
-        res.status(500).json({
-            error: 'Error al actualizar producto',
-            detalle: error.message
-        });
+        return sendError(res, 500, 'Error al actualizar producto', error);
     }
 };
 
-// Eliminar producto
 exports.deleteProduct = async (req, res) => {
-    const { id } = req.params;
+    const id = isValidId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'ID de producto inválido' });
+
     try {
         const images = await ProductImage.findByProduct(id);
         for (let img of images) {
-            if (img.image_url && img.image_url.includes('/uploads/')) {
-                const filePath = path.join(__dirname, '..', '..', 'uploads', img.image_url.split('/uploads/')[1]);
-                fs.unlink(filePath, (err) => { if (err) console.error(err); });
-            }
+            eliminarArchivoLocalSeguro(img.image_url);
         }
         await ProductImage.deleteByProduct(id);
         const product = await Product.delete(id);
@@ -191,7 +210,6 @@ exports.deleteProduct = async (req, res) => {
         }
         res.json({ message: 'Producto eliminado correctamente' });
     } catch (error) {
-        console.error('❌ Error en deleteProduct:', error);
-        res.status(500).json({ error: 'Error al eliminar producto', detalle: error.message });
+        return sendError(res, 500, 'Error al eliminar producto', error);
     }
 };

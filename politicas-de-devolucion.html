@@ -1,0 +1,332 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- ============================================
+    CONFIGURACIÓN BÁSICA
+    ============================================ -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Políticas de Devolución | Jr Store</title>
+    <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="Condiciones y proceso para cambios y devoluciones">
+
+    <!-- ============================================
+    FUENTES Y BIBLIOTECAS EXTERNAS
+    ============================================ -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- ============================================
+    HOJA DE ESTILOS PRINCIPAL
+    ============================================ -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <!-- ============================================
+    HEADER / BARRA DE NAVEGACIÓN
+    ============================================ -->
+    <header>
+        <a href="index.html" class="logo">Jr <span>Store</span></a>
+
+        <nav id="navbar">
+            <a href="index.html" class="active-link">Inicio</a>
+
+            <!-- Dropdown Hombres -->
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Hombres <i
+                        class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','ropa');">Ropa</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','gorra');">Gorras</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Hombre'); sessionStorage.setItem('filter_tipo','reloj');">Relojes</a>
+                </div>
+            </div>
+
+            <!-- Dropdown Mujeres -->
+            <div class="nav-dropdown">
+                <a href="#" onclick="this.parentElement.classList.toggle('open'); event.preventDefault();">Mujeres <i
+                        class="fa-solid fa-chevron-down" style="font-size: 0.8em;"></i></a>
+                <div class="dropdown-content">
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','ropa');">Ropa</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','gorra');">Gorras</a>
+                    <a href="index.html#catalogo"
+                        onclick="sessionStorage.setItem('filter_categoria','Mujer'); sessionStorage.setItem('filter_tipo','reloj');">Relojes</a>
+                </div>
+            </div>
+
+            <a href="contacto.html">Contacto</a>
+        </nav>
+
+        <!-- Acciones del header -->
+        <div class="header-actions">
+            <button class="search-toggle" aria-label="Buscar" onclick="toggleSearch()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <button class="cart-toggle" aria-label="Ver carrito" onclick="toggleCart()">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cart-badge">0</span>
+            </button>
+            <button class="hamburger" aria-label="Abrir menú" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================
+    PANEL DE BÚSQUEDA
+    ============================================ -->
+    <div id="search-panel" class="search-panel">
+        <div class="search-panel-inner">
+            <form class="search-input-row"
+                onsubmit="event.preventDefault(); window.location.href='index.html#catalogo';">
+                <input type="text" id="search-input" placeholder="Buscar productos..." autocomplete="off">
+                <button type="submit" aria-label="Buscar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+                <button type="button" class="search-close-btn" onclick="toggleSearch()">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================
+    CONTENIDO PRINCIPAL
+    ============================================ -->
+    <main>
+
+        <!-- SECCIÓN HERO -->
+        <section class="section-hero"
+            style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;">
+            <h1>Políticas de Devolución</h1>
+            <p>Condiciones y proceso para cambios y devoluciones</p>
+        </section>
+
+        <!-- MIGAS DE PAN -->
+        <nav class="breadcrumb">
+            <a href="index.html">Inicio</a>
+            <span class="separator">/</span>
+            <span class="current">Políticas de Devolución</span>
+        </nav>
+
+        <!-- SECCIÓN PRINCIPAL -->
+        <section class="catalog" style="padding-top: 1rem; padding-bottom: 4rem;">
+
+            <div style="max-width: 800px; margin: 0 auto;">
+                <div
+                    style="background: var(--surface-color); padding: 2.5rem; border-radius: 16px; box-shadow: var(--shadow-sm); margin-bottom: 2rem;">
+
+                    <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--text-main);">
+                        Cambios y Devoluciones
+                    </h2>
+                    <p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem;">
+                        En Jr Store queremos que estés 100% satisfecho con tu compra. Si algo no sale como esperabas,
+                        acá te contamos cómo proceder.
+                    </p>
+
+                    <!-- PLAZO -->
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">
+                        Plazo para solicitar cambio
+                    </h3>
+                    <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 1.5rem;">
+                        Tienes <strong>3 días corridos</strong> desde la fecha de recepción de tu pedido para solicitar
+                        un cambio de talla, color o producto. Pasado ese plazo, no podremos procesar la solicitud.
+                    </p>
+
+                    <!-- CONDICIONES -->
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">
+                        Condiciones del producto
+                    </h3>
+                    <ul
+                        style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                        <li>La prenda debe estar <strong>sin usar</strong> y en las mismas condiciones en que fue
+                            recibida.</li>
+                        <li>Debe conservar <strong>etiquetas originales</strong> adheridas.</li>
+                        <li>Debe incluir el <strong>empaque original</strong> o equivalente que proteja la prenda
+                            durante el envío de retorno.</li>
+                        <li>No se aceptan cambios en productos de la categoría "Ofertas" o con descuento especial salvo
+                            defecto de fábrica.</li>
+                    </ul>
+
+                    <!-- ============================================
+                    PROCESO DE CAMBIO (MEJORADO CON DETALLE DE COSTOS)
+                    ============================================ -->
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">
+                        Proceso de cambio
+                    </h3>
+                    <ol
+                        style="color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; padding-left: 1.5rem;">
+                        <li><strong>Contáctanos</strong> por WhatsApp indicando tu número de pedido y el motivo del
+                            cambio.</li>
+                        <li>Te confirmamos la <strong>disponibilidad</strong> de la talla o producto de reemplazo.</li>
+                        <li>Te damos las indicaciones para que nos <strong>envíes la prenda</strong> que deseas
+                            devolver.</li>
+                        <li><strong>Revisión:</strong> Una vez que recibamos el producto en nuestras instalaciones, lo
+                            verificamos para asegurarnos de que cumple con las condiciones (sin uso y con etiquetas).
+                        </li>
+                        <li><strong>Envío del reemplazo:</strong> Tras la revisión, te enviamos la prenda correcta a tu
+                            dirección.</li>
+                    </ol>
+
+                    <!-- NUEVO: DETALLE DE COSTOS DE ENVÍO (claro y separado) -->
+                    <div
+                        style="background: var(--bg-color); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 4px solid var(--accent-color);">
+                        <h4 style="font-weight: 700; margin-bottom: 0.75rem; color: var(--text-main);">
+                            <i class="fa-solid fa-truck" style="color: var(--accent-color); margin-right: 0.5rem;"></i>
+                            ¿Quién paga los envíos en un cambio?
+                        </h4>
+                        <ul
+                            style="color: var(--text-muted); line-height: 1.8; padding-left: 1.5rem; list-style-type: disc;">
+                            <li><strong>Si el cambio es por talla o color</strong> en envíos nacionales:
+                                <ul style="padding-left: 1.5rem; list-style-type: circle; margin-top: 0.25rem;">
+                                    <li>El <strong>cliente</strong> asume el costo del envío de la prenda que devuelve
+                                        (de tu casa a Jr Store).</li>
+                                    <li>Una vez revisada y aprobada, <strong>Jr Store</strong> asume el costo del envío
+                                        del reemplazo (de Jr Store a tu casa) sin cobro adicional.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Si el cambio es por defecto de fábrica</strong>, tanto el envío de retorno como
+                                el del reemplazo corren por cuenta de Jr Store (sin costo para ti).</li>
+                            <li><strong>Para entregas personales</strong>, el cambio se coordina sin costo de envío,
+                                siempre que estés dentro de las zonas habilitadas.</li>
+                        </ul>
+                    </div>
+
+                    <!-- PRODUCTOS CON DEFECTO -->
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-main);">
+                        Productos con defecto
+                    </h3>
+                    <p style="color: var(--text-muted); line-height: 1.7; margin-bottom: 0;">
+                        Si recibes un producto con defecto de fábrica, tienes <strong>7 días</strong> para reportarlo.
+                        En estos casos, asumimos el costo del envío de retorno y te enviamos el reemplazo sin costo
+                        adicional.
+                    </p>
+
+                </div>
+                <!-- FIN del bloque principal -->
+
+                <!-- BANNER DE AYUDA -->
+                <div style="background: var(--bg-color); padding: 1.5rem; border-radius: 12px; text-align: center;">
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">
+                        ¿Tienes dudas sobre una devolución?
+                        <a href="contacto.html" style="color: var(--accent-color); font-weight: 600;">Escríbenos</a> y
+                        te ayudamos.
+                    </p>
+                </div>
+
+            </div>
+            <!-- FIN contenedor central -->
+
+        </section>
+        <!-- FIN sección catalog -->
+
+    </main>
+    <!-- FIN contenido principal -->
+
+
+    <!-- ============================================
+    FOOTER / PIE DE PÁGINA
+    ============================================ -->
+    <footer>
+        <div class="footer-content">
+
+            <!-- Columna 1: Marca y redes sociales -->
+            <div class="footer-brand">
+                <div class="logo-footer">Jr <span>Store</span></div>
+                <p>Viste tu esencia. Estilo urbano y deportivo para quienes marcan la diferencia.</p>
+                <div class="social-icons">
+                    <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer"
+                        aria-label="Instagram">
+                        <i class="fa-brands fa-instagram"></i>
+                    </a>
+                    <a href="https://wa.me/584147807688" target="_blank" rel="noopener noreferrer"
+                        aria-label="WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Columna 2: Navegación -->
+            <div class="footer-links">
+                <h4>Navegación</h4>
+                <ul>
+                    <li><a href="index.html">Inicio</a></li>
+                    <li><a href="sobre-nosotros.html">Sobre Nosotros</a></li>
+                    <li><a href="la-coleccion.html">La colección</a></li>
+                    <li><a href="el-ritual.html">El Ritual</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 3: Soporte -->
+            <div class="footer-links">
+                <h4>Soporte</h4>
+                <ul>
+                    <li><a href="como-comprar.html">¿Cómo comprar?</a></li>
+                    <li><a href="metodo-de-pago.html">Método de pago</a></li>
+                    <li><a href="preguntas-frecuentes.html">Preguntas Frecuentes</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 4: Envíos y Entregas -->
+            <div class="footer-links">
+                <h4>Envíos y Entregas</h4>
+                <ul>
+                    <li><a href="entregas-personales.html">Entregas Personales</a></li>
+                    <li><a href="envios-nacionales.html">Envíos Nacionales</a></li>
+                </ul>
+            </div>
+
+            <!-- Columna 5: Legal -->
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="politicas-de-devolucion.html">Políticas de Devolución</a></li>
+                    <li><a href="terminos-y-condiciones.html">Términos y Condiciones</a></li>
+                    <li><a href="politicas-de-privacidad.html">Políticas de Privacidad</a></li>
+                </ul>
+            </div>
+
+        </div>
+        <!-- FIN footer-content -->
+
+        <!-- Barra inferior -->
+        <div class="footer-bottom">
+            <p>&copy; 2026 Jr Store. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    <!-- FIN FOOTER -->
+
+
+    <!-- ============================================
+    SCRIPTS
+    ============================================ -->
+    <script src="js/config.js"></script>
+<script src="js/nav-types.js"></script>
+    <script src="js/cart.js"></script>
+    <script>
+        function toggleMenu() {
+            document.getElementById('navbar').classList.toggle('active');
+            document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+        }
+        function toggleSearch() {
+            document.getElementById('search-panel').classList.toggle('active');
+        }
+        document.addEventListener('click', function (e) {
+            if (!e.target.closest('.nav-dropdown')) {
+                document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
+            }
+        });
+    </script>
+
+</body>
+
+</html>
