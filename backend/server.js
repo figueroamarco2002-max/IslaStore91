@@ -107,7 +107,7 @@ app.get(/^(?!\/api).*/, (req, res) => {
 // ----------------------------------------------------------------
 // 6. 404 PARA RUTAS NO ENCONTRADAS (API)
 // ----------------------------------------------------------------
-app.use('/api/*', (req, res) => {
+app.use('/api', (req, res) => {
     res.status(404).json({ error: 'Ruta no encontrada' });
 });
 
