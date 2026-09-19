@@ -116,14 +116,14 @@ function updateCartUI() {
             const itemId = item.id;
 
             cartItemsContainer.innerHTML += `
-                <div class="cart-item" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                <div class="cart-item" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #BEA8A7; padding-bottom: 10px;">
                     <img src="${imagenSrc}" alt="${altSeguro}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
                     <div class="cart-item-info" style="flex-grow: 1;">
-                        <h4 class="cart-item-title" style="margin: 0; font-size: 0.95rem; color: #333;">${nombreSeguro}</h4>
-                        <span class="cart-item-price" style="color: #e65c00; font-weight: bold;">$${precioSeguro}</span>
-                        <span class="cart-item-qty" style="color: #666; font-size: 0.85rem;">x ${qty}</span>
+                        <h4 class="cart-item-title" style="margin: 0; font-size: 0.95rem; color: #2A0800;">${nombreSeguro}</h4>
+                        <span class="cart-item-price" style="color: #775144; font-weight: bold;">$${precioSeguro}</span>
+                        <span class="cart-item-qty" style="color: #775144; font-size: 0.85rem;">x ${qty}</span>
                     </div>
-                    <button class="remove-item" onclick="removeFromCart('${itemId}')" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 1.1rem;">
+                    <button class="remove-item" onclick="removeFromCart('${itemId}')" style="background: none; border: none; color: #775144; cursor: pointer; font-size: 1.1rem;">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>

@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jr Store | Viste tu esencia</title>
     <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23F4D8D8'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%232A0800' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23775144' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
     <!-- Google Fonts: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -14,14 +14,20 @@
     <style>
         /* ================= VARIABLES ================= */
         :root {
-            --bg-color: #f8f9fa;
+            --color-very-dark: #2A0800;
+            --color-dark: #775144;
+            --color-medium: #C09891;
+            --color-light: #BEA8A7;
+            --color-very-light: #F4D8D8;
+
+            --bg-color: #F4D8D8;
             --surface-color: #ffffff;
-            --text-main: #1a1a1a;
-            --text-muted: #666666;
-            --accent-color: #ff6b00;
-            --border-color: #e5e5e5;
-            --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
-            --shadow-md: 0 8px 24px rgba(0,0,0,0.12);
+            --text-main: #2A0800;
+            --text-muted: #775144;
+            --accent-color: #775144;
+            --border-color: #BEA8A7;
+            --shadow-sm: 0 2px 8px rgba(42, 8, 0, 0.07);
+            --shadow-md: 0 8px 24px rgba(42, 8, 0, 0.14);
             --transition: all 0.3s ease;
         }
 
@@ -159,8 +165,8 @@
         }
 
         .btn-primary {
-            background: var(--accent-color);
-            color: white;
+            background: var(--text-main);
+            color: var(--color-very-light);
             padding: 0.8rem 2rem;
             font-weight: 600;
             font-size: 1rem;
@@ -169,9 +175,10 @@
         }
 
         .btn-primary:hover {
-            background: #e65c00;
+            background: var(--accent-color);
+            color: #ffffff;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.4);
+            box-shadow: 0 4px 12px rgba(42, 8, 0, 0.3);
         }
 
         /* ================= FILTERS ================= */

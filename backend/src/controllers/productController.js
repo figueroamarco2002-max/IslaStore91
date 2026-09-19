@@ -24,6 +24,17 @@ function eliminarArchivoLocalSeguro(imageUrl) {
     fs.unlink(filePath, (err) => { if (err) console.error(err); });
 }
 
+// Con upload.fields(), req.files es un objeto { images: [...], image: [...] }
+// en vez del req.file de antes. 'images' (plural, varias fotos) tiene
+// prioridad; 'image' (singular) se mantiene por compatibilidad con
+// formularios que todavía no se actualizaron a mandar varias.
+function extraerArchivosSubidos(req) {
+    if (!req.files) return [];
+    if (req.files.images && req.files.images.length > 0) return req.files.images;
+    if (req.files.image && req.files.image.length > 0) return req.files.image;
+    return [];
+}
+
 exports.getProducts = async (req, res) => {
     const { categoria, estilo, tipo, search } = req.query;
     try {
@@ -31,6 +42,7 @@ exports.getProducts = async (req, res) => {
         for (let p of products) {
             const images = await ProductImage.findByProduct(p.id);
             p.imagen = images.length > 0 ? images[0].image_url : null;
+            p.images = images.map(img => img.image_url);
         }
         res.json(products);
     } catch (error) {
@@ -48,7 +60,7 @@ exports.getProductById = async (req, res) => {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
         const images = await ProductImage.findByProduct(id);
-        product.imagenes = images;
+        product.images = images.map(img => img.image_url);
         res.json(product);
     } catch (error) {
         return sendError(res, 500, 'Error al obtener producto', error);
@@ -109,21 +121,27 @@ exports.createProduct = async (req, res) => {
 
         const product = await Product.create(productData);
 
-        let imageUrl = null;
-        if (req.file) {
-            imageUrl = await subirImagen(req.file);
+        // Fotos: 100% opcionales. Si llegan archivos (uno o varios), se suben
+        // todos a Supabase; la primera se marca como portada (is_primary).
+        // Si no llega ningún archivo pero sí una URL externa, se mantiene el
+        // comportamiento anterior (una sola foto por URL).
+        const archivosSubidos = extraerArchivosSubidos(req);
+        let imageUrls = [];
+
+        if (archivosSubidos.length > 0) {
+            imageUrls = await Promise.all(archivosSubidos.map(file => subirImagen(file)));
         } else if (sanitizedImageUrl) {
-            imageUrl = sanitizedImageUrl;
+            imageUrls = [sanitizedImageUrl];
         }
 
-        if (imageUrl) {
-            await ProductImage.create(product.id, imageUrl, true);
+        for (let i = 0; i < imageUrls.length; i++) {
+            await ProductImage.create(product.id, imageUrls[i], i === 0);
         }
 
         res.status(201).json({
             message: 'Producto creado exitosamente',
             product: product,
-            image: imageUrl
+            images: imageUrls
         });
     } catch (error) {
         return sendError(res, 500, 'Error al crear producto', error);
@@ -176,10 +194,19 @@ exports.updateProduct = async (req, res) => {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
 
-        if (req.file) {
-            const nuevaUrl = await subirImagen(req.file);
+        // Igual que en createProduct: si llegan archivos (uno o varios), se
+        // suben todos y reemplazan el set de fotos anterior. Si no llega
+        // ningún archivo pero sí una URL externa, se mantiene el
+        // comportamiento anterior. Si no llega nada, las fotos actuales del
+        // producto no se tocan.
+        const archivosSubidos = extraerArchivosSubidos(req);
+
+        if (archivosSubidos.length > 0) {
+            const imageUrls = await Promise.all(archivosSubidos.map(file => subirImagen(file)));
             await ProductImage.deleteByProduct(id);
-            await ProductImage.create(id, nuevaUrl, true);
+            for (let i = 0; i < imageUrls.length; i++) {
+                await ProductImage.create(id, imageUrls[i], i === 0);
+            }
         } else if (sanitizedImageUrl) {
             await ProductImage.deleteByProduct(id);
             await ProductImage.create(id, sanitizedImageUrl, true);

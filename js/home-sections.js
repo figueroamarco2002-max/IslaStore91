@@ -5,9 +5,8 @@
  * DESCRIPCIÓN: Obtiene las secciones visibles desde /api/sections,
  *              genera dinámicamente los carruseles de productos y los
  *              inicializa respetando la visibilidad configurada.
- *              También intercala los banners de "Mujeres" e Instagram
- *              en puntos específicos del recorrido, en vez de tenerlos
- *              fijos en el HTML.
+ *              También intercala los banners de "Mujeres", Instagram
+ *              y "Próxima Vez" en puntos específicos del recorrido.
  * SEGURIDAD: Todos los datos dinámicos se sanitizan con escapeHTML().
  * ====================================================================
  */
@@ -39,7 +38,7 @@ function buildCarouselCardHTML(producto) {
     const idProd = producto.id || '';
     const nombreSeguro = escapeHTML(producto.name || producto.nombre || 'Producto sin nombre');
     const precioSeguro = parseFloat(producto.price || producto.precio || 0).toFixed(2);
-    const imagenSrc = producto.imagen || producto.image_url || 'https://placehold.co/300x400/eeeeee/999999';
+    const imagenSrc = getProductImages(producto)[0];
     const altSeguro = nombreSeguro;
 
     return `
@@ -76,7 +75,7 @@ async function initCarousel(containerId, filters) {
 
     const productos = await fetchProductsFiltered(filters);
     if (!productos || productos.length === 0) {
-        track.innerHTML = '<p style="padding: 1rem; color: #999;">No hay productos disponibles en esta categoría todavía.</p>';
+        track.innerHTML = '<p style="padding: 1rem; color: #775144;">No hay productos disponibles en esta categoría todavía.</p>';
         return;
     }
 
@@ -188,13 +187,81 @@ function buildIgBannerHTML() {
 }
 
 // ====================================================================
+// 8.2 FETCH Y HTML DEL BANNER "PRÓXIMA VEZ"
+// ====================================================================
+async function fetchProximaVez() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/proxima-vez`);
+        if (!response.ok) throw new Error('Error al cargar Próxima Vez');
+        return await response.json();
+    } catch (error) {
+        console.error('❌ Error fetchProximaVez:', error);
+        return null;
+    }
+}
+
+function scrollProximaVez(direction) {
+    const track = document.getElementById('proxima-vez-track');
+    if (!track) return;
+    track.scrollBy({ left: direction * 280, behavior: 'smooth' });
+}
+
+function buildProximaVezBannerHTML(data) {
+    if (!data || !data.banner_visible || !data.images || data.images.length === 0) {
+        return '';
+    }
+
+    const title    = escapeHTML(data.title    || 'Próxima Vez');
+    const subtitle = escapeHTML(data.subtitle || '');
+
+    const cardsHTML = data.images.map(img => `
+        <div class="pv-card">
+            <img src="${escapeHTML(img.image_url)}" alt="Próxima colección" loading="lazy">
+            <div class="pv-card-overlay">
+                <i class="fa-solid fa-clock"></i>
+                <span>Muy pronto</span>
+            </div>
+        </div>
+    `).join('');
+
+    return `
+    <section class="proxima-vez-section" data-section-key="proxima_vez_banner">
+        <div class="proxima-vez-header">
+            <div class="proxima-vez-badge">
+                <i class="fa-solid fa-clock"></i>
+                Próximamente
+            </div>
+            <h2 class="proxima-vez-title">${title}</h2>
+            ${subtitle ? `<p class="proxima-vez-subtitle">${subtitle}</p>` : ''}
+        </div>
+        <div class="proxima-vez-carousel-wrapper">
+            <button class="pv-arrow left" aria-label="Anterior" onclick="scrollProximaVez(-1)">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="proxima-vez-track" id="proxima-vez-track">
+                ${cardsHTML}
+            </div>
+            <button class="pv-arrow right" aria-label="Siguiente" onclick="scrollProximaVez(1)">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    </section>
+    `;
+}
+
+// ====================================================================
 // 9. INICIALIZAR TODAS LAS SECCIONES DINÁMICAS (+ banners intercalados)
 // ====================================================================
 async function initDynamicSections() {
     const container = document.getElementById('home-sections-container');
     if (!container) return;
 
-    const sections = await fetchSections();
+    // Cargamos secciones y datos de "Próxima Vez" en paralelo
+    const [sections, proximaVezData] = await Promise.all([
+        fetchSections(),
+        fetchProximaVez()
+    ]);
+
     const visibleSections = sections.filter(s => s.visible !== false);
 
     if (visibleSections.length === 0) {
@@ -227,9 +294,28 @@ async function initDynamicSections() {
     // Si no hay secciones de mujer o de gorras urbanas visibles hoy, los
     // banners no desaparecen silenciosamente: se agregan al final.
     if (!womenBannerInserted) html += buildWomenBannerHTML();
-    if (!igBannerInserted) html += buildIgBannerHTML();
+    if (!igBannerInserted)    html += buildIgBannerHTML();
+
+    // El banner "Próxima Vez" siempre va al final, después del ig-banner.
+    // Si no hay imágenes activas o banner_visible = false, buildProximaVezBannerHTML
+    // devuelve '' y no se renderiza nada.
+    html += buildProximaVezBannerHTML(proximaVezData);
 
     container.innerHTML = html;
+
+    // Animar entrada del banner "Próxima Vez" con IntersectionObserver
+    const pvSection = container.querySelector('.proxima-vez-section');
+    if (pvSection) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    pvSection.classList.add('pv-visible');
+                    observer.disconnect();
+                }
+            });
+        }, { threshold: 0.15 });
+        observer.observe(pvSection);
+    }
 
     visibleSections.forEach(section => {
         const carouselId = `carousel-${section.id}`;

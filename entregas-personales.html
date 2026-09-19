@@ -8,8 +8,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Entregas Personales | Jr Store</title>
-    <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+    <!-- ========== FAVICON ========== -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFFFFF'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%230D0D0D' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%233D3D3D' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
     <meta name="description" content="Recibe tu pedido de forma rápida y sin costo adicional">
 
     <!-- ============================================
@@ -123,22 +124,14 @@
 
             <div style="max-width: 800px; margin: 0 auto;">
 
-                <!-- ============================================
-                TEXTO INTRODUCTORIO
-                ============================================ -->
+                <!-- TEXTO INTRODUCTORIO -->
                 <p
                     style="text-align: center; color: var(--text-muted); font-size: 1.1rem; margin-bottom: 3rem; line-height: 1.8;">
                     La opción más rápida y económica. Coordinamos un punto de encuentro seguro y te entregamos tu pedido
                     en persona.
                 </p>
 
-                <!-- ============================================
-                CUADRO DE ZONAS DE ENTREGA (ELIMINADO)
-                ============================================ -->
-
-                <!-- ============================================
-                PASOS (3) - se mantienen igual
-                ============================================ -->
+                <!-- PASOS (3) -->
                 <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-bottom: 2.5rem;">
 
                     <div style="display: flex; gap: 1.5rem; align-items: flex-start;">
@@ -179,27 +172,25 @@
 
                 </div>
 
-                <!-- ============================================
-                HORARIOS DE ENTREGA (se mantiene)
-                ============================================ -->
+                <!-- HORARIOS DE ENTREGA -->
                 <div
-                    style="background: linear-gradient(135deg, var(--accent-color), #e65c00); color: white; padding: 2rem; border-radius: 16px; text-align: center;">
-                    <i class="fa-solid fa-clock" style="font-size: 2rem; margin-bottom: 1rem;"></i>
-                    <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem;">Horarios de entrega</h3>
-                    <p style="opacity: 0.9;">Lunes a Viernes de 9:00 a.m. a 6:00 p.m.</p>
-                    <p style="opacity: 0.9; font-size: 0.9rem; margin-top: 0.5rem;">Los fines de semana bajo
+                    style="background: linear-gradient(135deg, var(--color-dark), var(--color-very-dark)); color: var(--color-very-light); padding: 2rem; border-radius: 16px; text-align: center;">
+                    <i class="fa-solid fa-clock"
+                        style="font-size: 2rem; margin-bottom: 1rem; color: var(--color-medium);"></i>
+                    <h3
+                        style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--color-very-light);">
+                        Horarios de entrega</h3>
+                    <p style="opacity: 0.9; color: var(--color-light);">Lunes a Viernes de 9:00 a.m. a 6:00 p.m.</p>
+                    <p style="opacity: 0.9; font-size: 0.9rem; margin-top: 0.5rem; color: var(--color-light);">Los fines
+                        de semana bajo
                         coordinación previa</p>
                 </div>
 
             </div>
-            <!-- FIN contenedor central -->
 
         </section>
-        <!-- FIN sección catalog -->
 
     </main>
-    <!-- FIN contenido principal -->
-
 
     <!-- ============================================
     FOOTER / PIE DE PÁGINA
@@ -264,41 +255,27 @@
             </div>
 
         </div>
-        <!-- FIN footer-content -->
 
         <!-- Barra inferior -->
         <div class="footer-bottom">
             <p>&copy; 2026 Jr Store. Todos los derechos reservados.</p>
         </div>
     </footer>
-    <!-- FIN FOOTER -->
 
-
-    <!-- ============================================
-    SCRIPTS
-    ============================================ -->
+    <!-- SCRIPTS -->
     <script src="js/config.js"></script>
-<script src="js/nav-types.js"></script>
+    <script src="js/nav-types.js"></script>
     <script src="js/cart.js"></script>
     <script>
-        /**
-         * Abre/cierra el menú móvil
-         */
         function toggleMenu() {
             document.getElementById('navbar').classList.toggle('active');
             document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));
         }
 
-        /**
-         * Abre/cierra el panel de búsqueda
-         */
         function toggleSearch() {
             document.getElementById('search-panel').classList.toggle('active');
         }
 
-        /**
-         * Cierra dropdowns al hacer clic fuera
-         */
         document.addEventListener('click', function (e) {
             if (!e.target.closest('.nav-dropdown')) {
                 document.querySelectorAll('.nav-dropdown').forEach(d => d.classList.remove('open'));

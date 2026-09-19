@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -8,9 +8,18 @@
     <link rel="icon" type="image/svg+xml"
         href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
     <style>
+        :root {
+            --color-very-dark: #2A0800;
+            --color-dark: #775144;
+            --color-medium: #C09891;
+            --color-light: #BEA8A7;
+            --color-very-light: #F4D8D8;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f6f9;
+            background-color: var(--color-very-light);
+            color: var(--color-very-dark);
             margin: 0;
             padding: 20px;
         }
@@ -18,10 +27,11 @@
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--color-light);
+            box-shadow: 0 4px 16px rgba(42, 8, 0, 0.08);
         }
 
         header {
@@ -29,8 +39,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
+            border-bottom: 2px solid var(--color-light);
+            padding-bottom: 12px;
         }
 
         table {
@@ -41,38 +51,52 @@
 
         th,
         td {
-            border: 1px solid #ddd;
+            border: 1px solid var(--color-light);
             padding: 10px;
             text-align: left;
         }
 
         th {
-            background-color: #007bff;
-            color: white;
+            background-color: var(--color-very-dark);
+            color: var(--color-very-light);
         }
 
         .btn {
-            padding: 8px 12px;
+            padding: 8px 14px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             text-decoration: none;
             font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s ease, transform 0.1s ease;
         }
 
         .btn-danger {
-            background: #dc3545;
-            color: white;
+            background: var(--color-dark);
+            color: var(--color-very-light);
+        }
+
+        .btn-danger:hover {
+            background: var(--color-very-dark);
         }
 
         .btn-edit {
-            background: #ffc107;
-            color: black;
+            background: var(--color-medium);
+            color: var(--color-very-dark);
+        }
+
+        .btn-edit:hover {
+            background: var(--color-light);
         }
 
         .btn-primary {
-            background: #007bff;
-            color: white;
+            background: var(--color-very-dark);
+            color: var(--color-very-light);
+        }
+
+        .btn-primary:hover {
+            background: var(--color-dark);
         }
 
         .modal {
@@ -82,16 +106,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(42, 8, 0, 0.5);
+            z-index: 9999;
         }
 
         .modal-content {
-            background: white;
-            width: 400px;
+            background: #ffffff;
+            width: 420px;
             margin: 50px auto;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--color-light);
+            box-shadow: 0 10px 30px rgba(42, 8, 0, 0.2);
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -99,11 +125,18 @@
         .modal input,
         .modal select {
             width: 100%;
-            padding: 8px;
+            padding: 9px;
             margin: 5px 0 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border: 1px solid var(--color-light);
+            border-radius: 6px;
             box-sizing: border-box;
+            color: var(--color-very-dark);
+        }
+
+        .modal input:focus,
+        .modal select:focus {
+            outline: none;
+            border-color: var(--color-dark);
         }
     </style>
 </head>
@@ -265,6 +298,60 @@
                 </tr>
             </tbody>
         </table>
+
+        <!-- ======================================================
+             SECCIÓN: BANNER "PRÓXIMA VEZ"
+             ====================================================== -->
+        <div style="margin-top: 50px; border-top: 2px solid var(--color-light); padding-top: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3>🕒 Banner "Próxima Vez"</h3>
+            </div>
+
+            <!-- Config: título, subtítulo y visibilidad global -->
+            <div style="background: var(--color-very-light); border: 1px solid var(--color-light); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+                <h4 style="margin: 0 0 16px; font-size: 1rem;">Configuración del banner</h4>
+
+                <label style="display:block; margin-bottom:4px; font-weight:600;">Título:</label>
+                <input type="text" id="pv-title" maxlength="200" placeholder="Ej: Próxima Vez"
+                    style="width:100%; padding:8px; border:1px solid var(--color-light); border-radius:4px; box-sizing:border-box; margin-bottom:14px; background:#fff;">
+
+                <label style="display:block; margin-bottom:4px; font-weight:600;">Subtítulo:</label>
+                <input type="text" id="pv-subtitle" maxlength="300" placeholder="Ej: Esto es lo que viene..."
+                    style="width:100%; padding:8px; border:1px solid var(--color-light); border-radius:4px; box-sizing:border-box; margin-bottom:14px; background:#fff;">
+
+                <label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin-bottom:16px;">
+                    <input type="checkbox" id="pv-visible" style="width:18px; height:18px;">
+                    <span style="font-weight:600;">Banner visible en la tienda</span>
+                </label>
+
+                <button class="btn btn-primary" onclick="saveProximaVezSettings()">Guardar Configuración</button>
+                <span id="pv-settings-msg" style="margin-left:12px; color:var(--color-dark); font-size:0.9rem; font-weight:600;"></span>
+            </div>
+
+            <!-- Subida de imágenes -->
+            <div style="background: var(--color-very-light); border: 1px solid var(--color-light); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+                <h4 style="margin: 0 0 8px; font-size: 1rem;">Subir imágenes (máx. 10 en total, 5 MB c/u)</h4>
+                <p style="color:var(--color-dark); font-size:0.85rem; margin-bottom:14px;">Se aceptan todos los formatos de imagen. Las imágenes se agregan al carrusel.</p>
+
+                <input type="file" id="pv-img-input" accept="image/*" multiple
+                    style="margin-bottom:12px;"
+                    onchange="previewProximaVezImages()">
+
+                <!-- Preview antes de subir -->
+                <div id="pv-preview-container"
+                    style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;"></div>
+
+                <button class="btn btn-primary" id="pv-upload-btn" onclick="uploadProximaVezImages()" disabled>Subir Imágenes</button>
+                <span id="pv-upload-msg" style="margin-left:12px; color:var(--color-dark); font-size:0.9rem; font-weight:600;"></span>
+            </div>
+
+            <!-- Galería de imágenes ya subidas -->
+            <h4 style="margin: 0 0 14px; font-size: 1rem;">Imágenes del carrusel</h4>
+            <div id="pv-gallery"
+                style="display:grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap:14px;">
+                <p style="color:var(--color-dark);">Cargando...</p>
+            </div>
+        </div>
     </div>
 
     <div id="product-modal" class="modal">
@@ -285,8 +372,12 @@
             <select id="prod-estilo" required></select>
             <label>Descripción:</label>
             <input type="text" id="prod-type" placeholder="Breve descripción">
-            <label>Imagen del producto:</label>
-            <input type="file" id="prod-img-file" accept="image/*">
+            <label>Fotos del producto (opcional, puedes elegir varias):</label>
+            <input type="file" id="prod-img-file" accept="image/jpeg,image/png,image/webp,image/gif" multiple
+                onchange="previewSelectedImages()">
+            <div id="prod-img-preview" style="display: flex; gap: 8px; flex-wrap: wrap; margin: -8px 0 15px;"></div>
+            <small id="prod-img-hint"
+                style="display: block; margin-top: -10px; margin-bottom: 15px; color: #775144;"></small>
             <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                 <button class="btn btn-primary" style="width: 48%;" onclick="saveProduct()">Guardar</button>
                 <button class="btn btn-danger" style="width: 48%;" onclick="closeProductModal()">Cancelar</button>
@@ -398,6 +489,43 @@
             return token;
         }
 
+        // ============================================================
+        // GALERÍA DE FOTOS DEL MODAL DE PRODUCTO (varias fotos, opcional)
+        // ============================================================
+
+        // Miniatura reutilizable para el preview (fotos ya guardadas o
+        // recién seleccionadas, antes de subirlas).
+        function buildPreviewThumbHTML(src) {
+            const srcSeguro = escapeHTML(src);
+            return `<img src="${srcSeguro}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">`;
+        }
+
+        // Se ejecuta al elegir archivos en el <input type="file">. Como el
+        // backend reemplaza TODAS las fotos anteriores cuando llegan
+        // archivos nuevos, el preview deja claro que estas fotos van a
+        // sustituir a las que hubiera antes.
+        function previewSelectedImages() {
+            const fileInput = document.getElementById('prod-img-file');
+            const preview = document.getElementById('prod-img-preview');
+            const hint = document.getElementById('prod-img-hint');
+            const files = Array.from(fileInput.files || []);
+
+            if (files.length === 0) {
+                // Sin archivos nuevos seleccionados: no se toca el preview,
+                // que puede estar mostrando las fotos ya guardadas.
+                return;
+            }
+
+            preview.innerHTML = files.map(file => buildPreviewThumbHTML(URL.createObjectURL(file))).join('');
+            hint.textContent = `${files.length} foto(s) nueva(s) seleccionada(s). Al guardar, reemplazarán todas las fotos actuales del producto.`;
+        }
+
+        function resetProductImageFields() {
+            document.getElementById('prod-img-file').value = '';
+            document.getElementById('prod-img-preview').innerHTML = '';
+            document.getElementById('prod-img-hint').textContent = '';
+        }
+
         function openProductModal(isEdit) {
             if (!isEdit) {
                 document.getElementById('modal-title').innerText = "Añadir Producto";
@@ -408,7 +536,7 @@
                 document.getElementById('prod-tipo').value = 'ropa';
                 document.getElementById('prod-estilo').value = 'Urbano';
                 document.getElementById('prod-type').value = '';
-                document.getElementById('prod-img-file').value = '';
+                resetProductImageFields();
                 if (categories.length > 0) {
                     document.getElementById('prod-cat').value = categories[0].id;
                 }
@@ -444,10 +572,19 @@
                     const skuSeguro = escapeHTML(p.sku || '-');
                     const cat = categories.find(c => c.id == p.category_id);
                     const catNombre = cat ? escapeHTML(cat.name) : (p.category_id == 1 ? 'Hombre' : 'Mujer');
+                    // Si el producto tiene más de una foto, se muestra un
+                    // pequeño contador sobre la miniatura de portada.
+                    const totalFotos = Array.isArray(p.images) ? p.images.length : (imagenRaw ? 1 : 0);
+                    const badgeFotos = totalFotos > 1
+                        ? `<span style="display:block; font-size: 0.75rem; color: #775144; text-align:center;">+${totalFotos - 1} foto(s)</span>`
+                        : '';
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td><img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;"></td>
+                        <td>
+                            <img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                            ${badgeFotos}
+                        </td>
                         <td><strong>${skuSeguro}</strong></td>
                         <td>${p.id}</td>
                         <td>${nombreSeguro}</td>
@@ -489,7 +626,12 @@
             formData.append('estilo', estilo);
             formData.append('description', description);
             formData.append('stock', stock);
-            if (fileInput && fileInput.files[0]) formData.append('image', fileInput.files[0]);
+            // Fotos 100% opcionales: si se eligió una o varias, se mandan
+            // todas bajo el mismo campo 'images' (el backend las sube todas
+            // a Supabase y reemplaza el set de fotos anterior del producto).
+            if (fileInput && fileInput.files.length > 0) {
+                Array.from(fileInput.files).forEach(file => formData.append('images', file));
+            }
 
             const token = getToken();
             if (!token) return;
@@ -529,6 +671,19 @@
                 document.getElementById('prod-tipo').value = (p.tipo || '').toLowerCase();
                 document.getElementById('prod-estilo').value = (p.estilo || '').toLowerCase();
                 document.getElementById('prod-type').value = p.description || '';
+
+                // Mostrar las fotos que el producto ya tiene guardadas.
+                resetProductImageFields();
+                const imagenes = Array.isArray(p.images) ? p.images : [];
+                const preview = document.getElementById('prod-img-preview');
+                const hint = document.getElementById('prod-img-hint');
+                if (imagenes.length > 0) {
+                    preview.innerHTML = imagenes.map(buildPreviewThumbHTML).join('');
+                    hint.textContent = `${imagenes.length} foto(s) actual(es). Elige nuevas solo si quieres reemplazarlas.`;
+                } else {
+                    hint.textContent = 'Este producto no tiene fotos todavía.';
+                }
+
                 openProductModal(true);
             } catch (error) {
                 console.error(error);
@@ -1127,7 +1282,7 @@
                     const comentarioSeguro = escapeHTML(c.comentario);
 
                     const tr = document.createElement('tr');
-                    if (!c.leido) tr.style.background = '#fff8e1';
+                    if (!c.leido) tr.style.background = '#F4D8D8';
                     tr.innerHTML = `
                         <td>${fecha}</td>
                         <td>${nombreSeguro}</td>
@@ -1247,7 +1402,214 @@
             });
             renderAdminContacts();
             renderSectionSettings();
+            renderProximaVez();
         });
+
+        // ================================================================
+        // BANNER "PRÓXIMA VEZ" — Funciones de administración
+        // ================================================================
+
+        /** Carga la configuración y la galería de imágenes */
+        async function renderProximaVez() {
+            const token = getToken();
+            if (!token) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/proxima-vez/admin`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Error al cargar Próxima Vez');
+                const data = await res.json();
+
+                // Rellenar campos de config
+                document.getElementById('pv-title').value    = data.title    || '';
+                document.getElementById('pv-subtitle').value = data.subtitle || '';
+                document.getElementById('pv-visible').checked = data.banner_visible !== false;
+
+                // Renderizar galería
+                renderPvGallery(data.images || []);
+            } catch (err) {
+                console.error(err);
+                document.getElementById('pv-gallery').innerHTML = '<p style="color:red;">Error al cargar el banner.</p>';
+            }
+        }
+
+        /** Renderiza la cuadrícula de imágenes ya subidas */
+        function renderPvGallery(images) {
+            const gallery = document.getElementById('pv-gallery');
+            if (!images.length) {
+                gallery.innerHTML = '<p style="color:var(--color-dark); grid-column:1/-1;">Aún no hay imágenes cargadas.</p>';
+                return;
+            }
+            gallery.innerHTML = images.map(img => `
+                <div style="border:1px solid var(--color-light); border-radius:8px; overflow:hidden; background:#fff;">
+                    <img src="${img.image_url}" alt="Banner img"
+                        style="width:100%; height:130px; object-fit:cover; display:block;">
+                    <div style="padding:8px; display:flex; flex-direction:column; gap:6px;">
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem;">
+                            <input type="checkbox" ${img.is_active ? 'checked' : ''}
+                                onchange="toggleProximaVezImage('${img.id}', this.checked)">
+                            ${img.is_active ? 'Visible' : 'Oculta'}
+                        </label>
+                        <button class="btn btn-danger" style="padding:5px 8px; font-size:0.78rem;"
+                            onclick="deleteProximaVezImage('${img.id}')">Eliminar</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /** Guarda título, subtítulo y visibilidad global */
+        async function saveProximaVezSettings() {
+            const token = getToken();
+            if (!token) return;
+            const msg = document.getElementById('pv-settings-msg');
+            msg.textContent = 'Guardando...';
+            msg.style.color = '#775144';
+            try {
+                const res = await fetch(`${API_BASE_URL}/proxima-vez/settings`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        title:          document.getElementById('pv-title').value.trim(),
+                        subtitle:       document.getElementById('pv-subtitle').value.trim(),
+                        banner_visible: document.getElementById('pv-visible').checked
+                    })
+                });
+                if (!res.ok) throw new Error('Error al guardar');
+                msg.textContent = '✓ Guardado';
+                msg.style.color = 'green';
+                setTimeout(() => msg.textContent = '', 3000);
+            } catch (err) {
+                console.error(err);
+                msg.textContent = 'Error al guardar';
+                msg.style.color = 'red';
+            }
+        }
+
+        /** Previsualiza los archivos seleccionados antes de subir */
+        function previewProximaVezImages() {
+            const input     = document.getElementById('pv-img-input');
+            const container = document.getElementById('pv-preview-container');
+            const uploadBtn = document.getElementById('pv-upload-btn');
+            container.innerHTML = '';
+
+            const files = Array.from(input.files || []);
+            if (!files.length) { uploadBtn.disabled = true; return; }
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const wrapper = document.createElement('div');
+                    wrapper.style.cssText = 'position:relative; width:90px; height:90px;';
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.cssText = 'width:90px; height:90px; object-fit:cover; border-radius:6px; border:1px solid var(--color-light);';
+                    wrapper.appendChild(img);
+                    container.appendChild(wrapper);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            uploadBtn.disabled = false;
+        }
+
+        /** Sube las imágenes seleccionadas al backend */
+        async function uploadProximaVezImages() {
+            const token  = getToken();
+            if (!token) return;
+            const input  = document.getElementById('pv-img-input');
+            const msg    = document.getElementById('pv-upload-msg');
+            const btn    = document.getElementById('pv-upload-btn');
+            const files  = input.files;
+
+            if (!files || files.length === 0) {
+                alert('Selecciona al menos una imagen.');
+                return;
+            }
+
+            // Validar tamaño en el cliente (5 MB por archivo)
+            const MAX_MB = 5;
+            for (const f of files) {
+                if (f.size > MAX_MB * 1024 * 1024) {
+                    alert(`"${f.name}" supera los ${MAX_MB} MB. Elige una imagen más pequeña.`);
+                    return;
+                }
+            }
+
+            msg.textContent = 'Subiendo...';
+            msg.style.color = '#775144';
+            btn.disabled = true;
+
+            const formData = new FormData();
+            Array.from(files).forEach(f => formData.append('banner_images', f));
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/proxima-vez/upload`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Error al subir');
+
+                msg.textContent = data.message;
+                msg.style.color = 'green';
+                setTimeout(() => msg.textContent = '', 4000);
+
+                // Limpiar input y preview
+                input.value = '';
+                document.getElementById('pv-preview-container').innerHTML = '';
+                btn.disabled = true;
+
+                await renderProximaVez();
+            } catch (err) {
+                console.error(err);
+                msg.textContent = err.message || 'Error al subir';
+                msg.style.color = 'red';
+                btn.disabled = false;
+            }
+        }
+
+        /** Activa o desactiva una imagen individual */
+        async function toggleProximaVezImage(id, isActive) {
+            const token = getToken();
+            if (!token) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/proxima-vez/${id}/toggle`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ is_active: isActive })
+                });
+                if (!res.ok) throw new Error('Error al actualizar');
+                await renderProximaVez();
+            } catch (err) {
+                console.error(err);
+                alert('Error al actualizar la imagen');
+            }
+        }
+
+        /** Elimina una imagen del banner (con confirmación) */
+        async function deleteProximaVezImage(id) {
+            if (!confirm('¿Eliminar esta imagen del banner?')) return;
+            const token = getToken();
+            if (!token) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/proxima-vez/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error('Error al eliminar');
+                await renderProximaVez();
+            } catch (err) {
+                console.error(err);
+                alert('Error al eliminar la imagen');
+            }
+        }
     </script>
 
 </body>

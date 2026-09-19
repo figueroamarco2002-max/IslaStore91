@@ -15,13 +15,29 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const upload = multer({
+// Máximo de fotos por producto. Subir fotos sigue siendo opcional (0 sigue
+// siendo válido); esto solo limita cuántas se aceptan cuando sí se suben.
+const MAX_PRODUCT_IMAGES = 6;
+
+const multerUpload = multer({
   storage,
   fileFilter,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5 MB máximo por archivo
-    files: 1                    // un solo archivo por petición
+    files: MAX_PRODUCT_IMAGES
   }
 });
 
-module.exports = upload;
+// Middleware final que usan las rutas de producto:
+// - 'images' (plural): campo nuevo, admite varias fotos (hasta MAX_PRODUCT_IMAGES).
+// - 'image' (singular): se mantiene por compatibilidad, por si el formulario
+//   del admin todavía no se actualizó a mandar varias fotos.
+// Si llegan ambos campos, el controlador prioriza 'images'.
+const uploadProductImages = multerUpload.fields([
+  { name: 'images', maxCount: MAX_PRODUCT_IMAGES },
+  { name: 'image', maxCount: 1 }
+]);
+
+uploadProductImages.MAX_PRODUCT_IMAGES = MAX_PRODUCT_IMAGES;
+
+module.exports = uploadProductImages;

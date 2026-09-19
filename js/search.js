@@ -41,7 +41,7 @@ function buildSearchResultItem(producto) {
     // Sanitizamos todos los datos que se muestran
     const nombreSeguro = escapeHTML(producto.name || producto.nombre || 'Producto sin nombre');
     const precioSeguro = parseFloat(producto.price || producto.precio || 0).toFixed(2);
-    const imagenSrc = producto.imagen || producto.image_url || 'https://placehold.co/60x60/eeeeee/999999';
+    const imagenSrc = getProductImages(producto)[0];
     const altSeguro = nombreSeguro;
 
     return `
@@ -119,7 +119,7 @@ function buildSearchGridCardHTML(producto) {
     const idProd = producto.id || '';
     const nombreSeguro = escapeHTML(producto.name || producto.nombre || 'Producto sin nombre');
     const precioSeguro = parseFloat(producto.price || producto.precio || 0).toFixed(2);
-    const imagenSrc = producto.imagen || producto.image_url || 'https://placehold.co/300x400/eeeeee/999999';
+    const imagenSrc = getProductImages(producto)[0];
     const altSeguro = nombreSeguro;
 
     return `

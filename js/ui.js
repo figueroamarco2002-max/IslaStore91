@@ -45,7 +45,7 @@ function renderProducts() {
   if (!grid) return;
 
   if (!products || products.length === 0) {
-    grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #666; padding: 40px;">No hay productos disponibles.</p>';
+    grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #775144; padding: 40px;">No hay productos disponibles.</p>';
     return;
   }
 
@@ -65,16 +65,16 @@ function renderProducts() {
 
     // Construimos la tarjeta usando template literal, pero escapando todo lo dinámico
     const cardHTML = `
-            <div class="product-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; padding-bottom: 15px; text-align: center; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <div class="product-image" style="width: 100%; height: 250px; overflow: hidden; background: #f9f9f9; cursor: pointer;" onclick="openProductDetails('${idProd}')">
+            <div class="product-card" style="border: 1px solid #BEA8A7; border-radius: 8px; overflow: hidden; padding-bottom: 15px; text-align: center; background: #fff; box-shadow: 0 4px 6px rgba(42,8,0,0.06);">
+                <div class="product-image" style="width: 100%; height: 250px; overflow: hidden; background: #F4D8D8; cursor: pointer;" onclick="openProductDetails('${idProd}')">
                     <img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="product-info" style="padding: 15px;">
-                    <span style="font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: bold;">${textoCategoria}</span>
-                    <h3 style="margin: 10px 0; font-size: 1.1rem; color: #333; cursor: pointer;" onclick="openProductDetails('${idProd}')">${nombreSeguro}</h3>
-                    <p class="price" style="font-weight: 600; color: #e65c00; font-size: 1.2rem; margin-bottom: 15px;">$${precioSeguro}</p>
+                    <span style="font-size: 0.8rem; color: #775144; text-transform: uppercase; font-weight: bold;">${textoCategoria}</span>
+                    <h3 style="margin: 10px 0; font-size: 1.1rem; color: #2A0800; cursor: pointer;" onclick="openProductDetails('${idProd}')">${nombreSeguro}</h3>
+                    <p class="price" style="font-weight: 700; color: #775144; font-size: 1.2rem; margin-bottom: 15px;">$${precioSeguro}</p>
                     
-                    <button class="btn-primary" onclick="openProductDetails('${idProd}')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; width: 90%; transition: background 0.3s;">
+                    <button class="btn-primary" onclick="openProductDetails('${idProd}')" style="background: #2A0800; color: #F4D8D8; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; width: 90%; transition: background 0.3s;">
                         Ver Detalles
                     </button>
                 </div>
@@ -104,32 +104,48 @@ function openProductDetails(id) {
   // Sanitizamos todos los campos que se van a mostrar
   const nombreSeguro = escapeHTML(producto.name || producto.nombre || 'Producto');
   const precioSeguro = parseFloat(producto.price || producto.precio || 0).toFixed(2);
-  const imagenSrc = producto.imagen || producto.image_url || 'https://placehold.co/300x400/eeeeee/999999';
+  // Soporta 1 o varias fotos (producto.images). Si solo hay una, se comporta igual que antes.
+  const imagenes = getProductImages(producto);
   // La descripción puede contener HTML, por lo que la escapamos completamente
   const descripcionSegura = escapeHTML(producto.description || producto.descripcion ||
     'Una excelente elección para complementar tu estilo. Elaborado con materiales de alta calidad y un diseño exclusivo para destacar en cualquier ocasión.');
+
+  // Miniaturas: solo se muestran si hay más de una foto
+  const miniaturasHTML = imagenes.length > 1
+    ? `<div class="modal-thumbs" style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
+        ${imagenes.map((img, i) => `
+          <img src="${img}" alt="${nombreSeguro} - foto ${i + 1}"
+               class="modal-thumb"
+               onclick="setModalMainImage(this)"
+               style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid ${i === 0 ? '#775144' : 'transparent'};">
+        `).join('')}
+      </div>`
+    : '';
 
   const modalContent = document.getElementById('modal-content-area');
   // Ahora todo lo dinámico está escapado, pero las etiquetas HTML fijas (como <ul>, <li>, <h4>) son seguras
   modalContent.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 20px; text-align: left;">
-            <img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 100%; max-height: 350px; object-fit: contain; border-radius: 8px; background: #f9f9f9;">
             <div>
-                <h2 style="margin: 0 0 10px 0; font-size: 1.8rem; color: #222;">${nombreSeguro}</h2>
-                <p style="font-size: 1.5rem; color: #e65c00; font-weight: bold; margin: 0 0 20px 0;">$${precioSeguro}</p>
+                <img id="modal-main-image" src="${imagenes[0]}" alt="${nombreSeguro}" style="width: 100%; max-height: 350px; object-fit: contain; border-radius: 8px; background: #F4D8D8;">
+                ${miniaturasHTML}
+            </div>
+            <div>
+                <h2 style="margin: 0 0 10px 0; font-size: 1.8rem; color: #2A0800;">${nombreSeguro}</h2>
+                <p style="font-size: 1.5rem; color: #775144; font-weight: bold; margin: 0 0 20px 0;">$${precioSeguro}</p>
                 
                 <div style="margin-bottom: 25px;">
-                    <h4 style="margin: 0 0 8px 0; font-size: 1.1rem;">Características del Producto</h4>
-                    <p style="color: #555; line-height: 1.6; font-size: 0.95rem; text-align: justify;">${descripcionSegura}</p>
+                    <h4 style="margin: 0 0 8px 0; font-size: 1.1rem; color: #2A0800;">Características del Producto</h4>
+                    <p style="color: #775144; line-height: 1.6; font-size: 0.95rem; text-align: justify;">${descripcionSegura}</p>
                     
-                    <ul style="color: #666; font-size: 0.9rem; margin-top: 15px; padding-left: 20px;">
+                    <ul style="color: #775144; font-size: 0.9rem; margin-top: 15px; padding-left: 20px;">
                         <li>Materiales resistentes y duraderos.</li>
                         <li>Diseño pensado para máxima comodidad.</li>
                         <li>Envío disponible a través de compras por WhatsApp.</li>
                     </ul>
                 </div>
 
-                <button onclick="addToCart('${id}'); closeProductModal()" style="background: #e65c00; color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(230,92,0,0.3);">
+                <button onclick="addToCart('${id}'); closeProductModal()" style="background: #2A0800; color: #F4D8D8; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(42,8,0,0.3);">
                     Añadir a la bolsa
                 </button>
             </div>
@@ -138,6 +154,19 @@ function openProductDetails(id) {
 
   document.getElementById('product-modal-overlay').classList.add('active');
   document.getElementById('product-modal').classList.add('active');
+}
+
+// ====================================================================
+// 4.1 CAMBIAR FOTO PRINCIPAL DEL MODAL (al hacer clic en una miniatura)
+// ====================================================================
+function setModalMainImage(thumbEl) {
+  const mainImg = document.getElementById('modal-main-image');
+  if (mainImg) mainImg.src = thumbEl.src;
+
+  document.querySelectorAll('.modal-thumb').forEach(t => {
+    t.style.border = '2px solid transparent';
+  });
+  thumbEl.style.border = '2px solid #775144';
 }
 
 // ====================================================================
@@ -167,7 +196,7 @@ function showToast() {
 
   const toast = document.createElement('div');
   toast.className = 'toast';
-  toast.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #4CAF50; font-size: 1.2rem;"></i> ¡Agregado a la bolsa!';
+  toast.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #C09891; font-size: 1.2rem;"></i> ¡Agregado a la bolsa!';
   container.appendChild(toast);
 
   setTimeout(() => toast.classList.add('show'), 10);

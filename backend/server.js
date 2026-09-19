@@ -96,6 +96,7 @@ const settingsRoutes = require('./src/routes/settingsRoutes');
 const sectionRoutes = require('./src/routes/sectionRoutes');
 const typeRoutes = require('./src/routes/typeRoutes');
 const styleRoutes = require('./src/routes/styleRoutes');
+const proximaVezRoutes = require('./src/routes/proximaVezRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
@@ -105,6 +106,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/sections', sectionRoutes);
 app.use('/api/types', typeRoutes);
 app.use('/api/styles', styleRoutes);
+app.use('/api/proxima-vez', proximaVezRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {

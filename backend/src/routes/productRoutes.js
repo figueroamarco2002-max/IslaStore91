@@ -81,7 +81,7 @@ router.get(
 router.post(
     '/',
     auth,
-    upload.single('image'),
+    upload,
     validateProduct,
     (req, res, next) => {
         const errors = validationResult(req);
@@ -104,7 +104,7 @@ router.post(
 router.put(
     '/:id',
     auth,
-    upload.single('image'),
+    upload,
     validateId,
     validateProduct,
     (req, res, next) => {

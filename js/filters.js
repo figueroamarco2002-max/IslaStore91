@@ -1,14 +1,14 @@
 /**
- * ====================================================================
- * ARCHIVO: filters.js
- * DEPENDENCIAS: config.js (API_BASE_URL, escapeHTML)
- *               products.js (fetchProducts, renderProducts, products global)
- * DESCRIPCIÓN: Maneja el sistema de filtrado por categoría, estilo y
- *              búsqueda por nombre (filtrado local sobre el arreglo global).
- * SEGURIDAD: Todos los datos dinámicos que se insertan en el DOM
- *            mediante innerHTML son sanitizados con escapeHTML().
- * ====================================================================
- */
+     * ====================================================================
+     * ARCHIVO: filters.js
+     * DEPENDENCIAS: config.js (API_BASE_URL, escapeHTML)
+     *               products.js (fetchProducts, renderProducts, products global)
+     * DESCRIPCIÓN: Maneja el sistema de filtrado por categoría, estilo y
+     *              búsqueda por nombre (filtrado local sobre el arreglo global).
+     * SEGURIDAD: Todos los datos dinámicos que se insertan en el DOM
+     *            mediante innerHTML son sanitizados con escapeHTML().
+     * ====================================================================
+     */
 
 // ====================================================================
 // 1. FUNCIÓN PRINCIPAL: setFilter (maneja clics en botones de filtro)
@@ -124,7 +124,7 @@ function renderFilteredProducts(arrayProductos) {
     if (!grid) return;
 
     if (!arrayProductos || arrayProductos.length === 0) {
-        grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #666; padding: 40px; font-size: 1.1rem;">No se encontraron productos que coincidan con tu búsqueda.</p>';
+        grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #775144; padding: 40px; font-size: 1.1rem;">No se encontraron productos que coincidan con tu búsqueda.</p>';
         return;
     }
 
@@ -135,7 +135,7 @@ function renderFilteredProducts(arrayProductos) {
         const idProd = producto.id || '';
         const nombreSeguro = escapeHTML(producto.name || producto.nombre || 'Producto sin nombre');
         const precioSeguro = parseFloat(producto.price || producto.precio || 0).toFixed(2);
-        const imagenSrc = producto.imagen || producto.image_url || 'https://placehold.co/300x400/eeeeee/999999';
+        const imagenSrc = getProductImages(producto)[0];
 
         let idCategoria = producto.category_id || producto.categoria;
         let textoCategoria = idCategoria == 1 ? 'Hombre' : idCategoria == 2 ? 'Mujer' : 'Sin categoría';
@@ -143,21 +143,21 @@ function renderFilteredProducts(arrayProductos) {
 
         // Construir tarjeta con todos los datos sanitizados
         const cardHTML = `
-            <div class="product-card" style="border: 1px solid #eee; border-radius: 8px; overflow: hidden; padding-bottom: 15px; text-align: center; background: #fff; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <div class="product-image" style="width: 100%; height: 250px; overflow: hidden; background: #f9f9f9; cursor: pointer;" onclick="openProductDetails('${idProd}')">
-                    <img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="product-card" style="border: 1px solid #BEA8A7; border-radius: 8px; overflow: hidden; padding-bottom: 15px; text-align: center; background: #fff; box-shadow: 0 4px 6px rgba(42,8,0,0.06);">
+                    <div class="product-image" style="width: 100%; height: 250px; overflow: hidden; background: #F4D8D8; cursor: pointer;" onclick="openProductDetails('${idProd}')">
+                        <img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <div class="product-info" style="padding: 15px;">
+                        <span style="font-size: 0.8rem; color: #775144; text-transform: uppercase; font-weight: bold;">${textoCategoria}</span>
+                        <h3 style="margin: 10px 0; font-size: 1.1rem; color: #2A0800; cursor: pointer;" onclick="openProductDetails('${idProd}')">${nombreSeguro}</h3>
+                        <p class="price" style="font-weight: 700; color: #775144; font-size: 1.2rem; margin-bottom: 15px;">$${precioSeguro}</p>
+                        
+                        <button class="btn-primary" onclick="openProductDetails('${idProd}')" style="background: #2A0800; color: #F4D8D8; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; width: 90%; transition: background 0.3s;">
+                            Ver Detalles
+                        </button>
+                    </div>
                 </div>
-                <div class="product-info" style="padding: 15px;">
-                    <span style="font-size: 0.8rem; color: #888; text-transform: uppercase; font-weight: bold;">${textoCategoria}</span>
-                    <h3 style="margin: 10px 0; font-size: 1.1rem; color: #333; cursor: pointer;" onclick="openProductDetails('${idProd}')">${nombreSeguro}</h3>
-                    <p class="price" style="font-weight: 600; color: #e65c00; font-size: 1.2rem; margin-bottom: 15px;">$${precioSeguro}</p>
-                    
-                    <button class="btn-primary" onclick="openProductDetails('${idProd}')" style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; width: 90%; transition: background 0.3s;">
-                        Ver Detalles
-                    </button>
-                </div>
-            </div>
-        `;
+            `;
         grid.innerHTML += cardHTML;
     });
 
