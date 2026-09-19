@@ -74,9 +74,23 @@ async function initCarousel(containerId, filters) {
     if (!track) return;
 
     const productos = await fetchProductsFiltered(filters);
+    const wrapper = track.closest('.carousel-wrapper');
+
     if (!productos || productos.length === 0) {
-        track.innerHTML = '<p style="padding: 1rem; color: #775144;">No hay productos disponibles en esta categoría todavía.</p>';
+        // Sin productos no tiene sentido mostrar flechas de navegación (no hay
+        // nada que recorrer), y además así el mensaje deja de quedar tapado
+        // por los círculos de las flechas.
+        if (wrapper) {
+            wrapper.querySelectorAll('.carousel-arrow').forEach(arrow => arrow.style.display = 'none');
+        }
+        track.innerHTML = '<p style="padding: 1rem 3.5rem; text-align: center; width: 100%; color: #3D3D3D;">No hay productos disponibles en esta categoría todavía.</p>';
         return;
+    }
+
+    // Si en una carga anterior se ocultaron las flechas (categoría vacía) y
+    // ahora sí hay productos, se restauran.
+    if (wrapper) {
+        wrapper.querySelectorAll('.carousel-arrow').forEach(arrow => arrow.style.display = 'flex');
     }
 
     registerProductsGlobally(productos);
@@ -211,7 +225,7 @@ function buildProximaVezBannerHTML(data) {
         return '';
     }
 
-    const title    = escapeHTML(data.title    || 'Próxima Vez');
+    const title = escapeHTML(data.title || 'Próxima Vez');
     const subtitle = escapeHTML(data.subtitle || '');
 
     const cardsHTML = data.images.map(img => `
@@ -294,7 +308,7 @@ async function initDynamicSections() {
     // Si no hay secciones de mujer o de gorras urbanas visibles hoy, los
     // banners no desaparecen silenciosamente: se agregan al final.
     if (!womenBannerInserted) html += buildWomenBannerHTML();
-    if (!igBannerInserted)    html += buildIgBannerHTML();
+    if (!igBannerInserted) html += buildIgBannerHTML();
 
     // El banner "Próxima Vez" siempre va al final, después del ig-banner.
     // Si no hay imágenes activas o banner_visible = false, buildProximaVezBannerHTML
