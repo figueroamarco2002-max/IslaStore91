@@ -15,9 +15,9 @@
     --surface-color: #ffffff;
     --text-main: #0D0D0D;
     --text-muted: #3D3D3D;
-    --accent-color: #3D3D3D;
-    --accent-hover: #0D0D0D;
-    --accent-light: #6E6E6E;
+    --accent-color: #E63946;
+    --accent-hover: #C1121F;
+    --accent-light: #F28482;
     --border-color: #B6B6B6;
     --shadow-sm: 0 2px 8px rgba(13, 13, 13, 0.07);
     --shadow-md: 0 8px 24px rgba(13, 13, 13, 0.14);
@@ -662,7 +662,7 @@ nav a.active-link {
 .product-price {
     font-size: 1.2rem;
     font-weight: 800;
-    color: var(--text-main);
+    color: var(--accent-color);
 }
 
 .product-price .old-price {
@@ -895,7 +895,7 @@ footer {
 }
 
 .footer-brand .logo-footer span {
-    color: var(--color-medium);
+    color: var(--accent-color);
 }
 
 .footer-brand p {
@@ -929,7 +929,7 @@ footer {
     transform: translateX(-50%);
     width: 40px;
     height: 2px;
-    background: var(--color-medium);
+    background: var(--accent-color);
     border-radius: 2px;
 }
 
@@ -970,8 +970,8 @@ footer {
 }
 
 .social-icons a:hover {
-    background: var(--color-medium);
-    color: var(--color-very-dark);
+    background: var(--accent-color);
+    color: #FFFFFF;
     transform: translateY(-3px);
 }
 
@@ -1269,7 +1269,10 @@ footer {
     width: 42px;
     height: 42px;
     border-radius: 50%;
-    background: var(--surface-color);
+    background: rgba(13, 13, 13, 0.1);
+    border: 1px solid rgba(13, 13, 13, 0.15);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     box-shadow: var(--shadow-md);
     display: flex;
     align-items: center;
@@ -1325,9 +1328,9 @@ footer {
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1.5rem;
-    border: 1.5px solid var(--color-medium);
+    border: 1.5px solid var(--accent-color);
     border-radius: 30px;
-    color: var(--color-medium);
+    color: var(--accent-color);
     font-weight: 700;
     font-size: 0.9rem;
     letter-spacing: 0.5px;
@@ -1336,8 +1339,8 @@ footer {
 }
 
 .ig-handle-btn:hover {
-    background: var(--color-medium);
-    color: var(--color-very-dark);
+    background: var(--accent-color);
+    color: #FFFFFF;
 }
 
 .ig-banner h2 {
@@ -1349,7 +1352,7 @@ footer {
 }
 
 .ig-banner h2 .accent {
-    color: var(--color-medium);
+    color: var(--accent-color);
 }
 
 /* ================= BANNER MUJERES ================= */
@@ -1562,7 +1565,7 @@ footer {
 .search-result-card .product-price {
     font-weight: 400;
     font-size: 0.95rem;
-    color: var(--text-main);
+    color: var(--accent-color);
 }
 
 .search-result-item .thumb {
@@ -1619,9 +1622,9 @@ footer {
     align-items: center;
     gap: 0.45rem;
     padding: 0.4rem 1.2rem;
-    border: 1.5px solid var(--color-medium);
+    border: 1.5px solid var(--accent-color);
     border-radius: 30px;
-    color: var(--color-medium);
+    color: var(--accent-color);
     font-weight: 700;
     font-size: 0.82rem;
     letter-spacing: 0.8px;
@@ -1634,11 +1637,11 @@ footer {
 
     0%,
     100% {
-        box-shadow: 0 0 0 0 rgba(110, 110, 110, 0);
+        box-shadow: 0 0 0 0 rgba(230, 57, 70, 0);
     }
 
     50% {
-        box-shadow: 0 0 0 5px rgba(110, 110, 110, 0.2);
+        box-shadow: 0 0 0 5px rgba(230, 57, 70, 0.2);
     }
 }
 
@@ -1685,7 +1688,7 @@ footer {
     position: relative;
     flex: 0 0 260px;
     height: 340px;
-    scroll-snap-align: start;
+    scroll-snap-align: center;
     border-radius: 12px;
     overflow: hidden;
     cursor: default;
@@ -1732,7 +1735,7 @@ footer {
 
 .pv-card-overlay i {
     font-size: 1.6rem;
-    color: var(--color-medium);
+    color: var(--accent-color);
     margin-bottom: 0.4rem;
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
@@ -1766,9 +1769,9 @@ footer {
 }
 
 .pv-arrow:hover {
-    background: var(--color-medium);
-    border-color: var(--color-medium);
-    color: var(--color-very-dark);
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #FFFFFF;
     transform: translateY(-50%) scale(1.08);
 }
 
@@ -1782,6 +1785,16 @@ footer {
 
 /* ── Responsive ── */
 @media (max-width: 640px) {
+    .proxima-vez-track {
+        /* Deja (mitad del viewport - mitad de la tarjeta) de aire a cada
+           lado, así la tarjeta activa queda centrada y las vecinas se ven
+           "a la mitad" en los bordes, en vez de mostrar 2 tarjetas parejas. */
+        padding-left: calc(50% - 100px);
+        padding-right: calc(50% - 100px);
+        scroll-padding-left: calc(50% - 100px);
+        scroll-padding-right: calc(50% - 100px);
+    }
+
     .pv-card {
         flex: 0 0 200px;
         height: 260px;

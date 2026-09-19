@@ -45,7 +45,7 @@ function renderProducts() {
   if (!grid) return;
 
   if (!products || products.length === 0) {
-    grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #775144; padding: 40px;">No hay productos disponibles.</p>';
+    grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #3D3D3D; padding: 40px;">No hay productos disponibles.</p>';
     return;
   }
 
@@ -65,16 +65,16 @@ function renderProducts() {
 
     // Construimos la tarjeta usando template literal, pero escapando todo lo dinámico
     const cardHTML = `
-            <div class="product-card" style="border: 1px solid #BEA8A7; border-radius: 8px; overflow: hidden; padding-bottom: 15px; text-align: center; background: #fff; box-shadow: 0 4px 6px rgba(42,8,0,0.06);">
-                <div class="product-image" style="width: 100%; height: 250px; overflow: hidden; background: #F4D8D8; cursor: pointer;" onclick="openProductDetails('${idProd}')">
+            <div class="product-card" style="border: 1px solid #B6B6B6; border-radius: 8px; overflow: hidden; padding-bottom: 15px; text-align: center; background: #fff; box-shadow: 0 4px 6px rgba(13,13,13,0.06);">
+                <div class="product-image" style="width: 100%; height: 250px; overflow: hidden; background: #E7E7E7; cursor: pointer;" onclick="openProductDetails('${idProd}')">
                     <img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
                 <div class="product-info" style="padding: 15px;">
-                    <span style="font-size: 0.8rem; color: #775144; text-transform: uppercase; font-weight: bold;">${textoCategoria}</span>
-                    <h3 style="margin: 10px 0; font-size: 1.1rem; color: #2A0800; cursor: pointer;" onclick="openProductDetails('${idProd}')">${nombreSeguro}</h3>
-                    <p class="price" style="font-weight: 700; color: #775144; font-size: 1.2rem; margin-bottom: 15px;">$${precioSeguro}</p>
+                    <span style="font-size: 0.8rem; color: #3D3D3D; text-transform: uppercase; font-weight: bold;">${textoCategoria}</span>
+                    <h3 style="margin: 10px 0; font-size: 1.1rem; color: #0D0D0D; cursor: pointer;" onclick="openProductDetails('${idProd}')">${nombreSeguro}</h3>
+                    <p class="price" style="font-weight: 700; color: #E63946; font-size: 1.2rem; margin-bottom: 15px;">$${precioSeguro}</p>
                     
-                    <button class="btn-primary" onclick="openProductDetails('${idProd}')" style="background: #2A0800; color: #F4D8D8; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; width: 90%; transition: background 0.3s;">
+                    <button class="btn-primary" onclick="openProductDetails('${idProd}')" style="background: #0D0D0D; color: #FFFFFF; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; width: 90%; transition: background 0.3s;">
                         Ver Detalles
                     </button>
                 </div>
@@ -117,7 +117,7 @@ function openProductDetails(id) {
           <img src="${img}" alt="${nombreSeguro} - foto ${i + 1}"
                class="modal-thumb"
                onclick="setModalMainImage(this)"
-               style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid ${i === 0 ? '#775144' : 'transparent'};">
+               style="width: 60px; height: 60px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid ${i === 0 ? '#E63946' : 'transparent'};">
         `).join('')}
       </div>`
     : '';
@@ -127,25 +127,25 @@ function openProductDetails(id) {
   modalContent.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 20px; text-align: left;">
             <div>
-                <img id="modal-main-image" src="${imagenes[0]}" alt="${nombreSeguro}" style="width: 100%; max-height: 350px; object-fit: contain; border-radius: 8px; background: #F4D8D8;">
+                <img id="modal-main-image" src="${imagenes[0]}" alt="${nombreSeguro}" style="width: 100%; max-height: 350px; object-fit: contain; border-radius: 8px; background: #E7E7E7;">
                 ${miniaturasHTML}
             </div>
             <div>
-                <h2 style="margin: 0 0 10px 0; font-size: 1.8rem; color: #2A0800;">${nombreSeguro}</h2>
-                <p style="font-size: 1.5rem; color: #775144; font-weight: bold; margin: 0 0 20px 0;">$${precioSeguro}</p>
+                <h2 style="margin: 0 0 10px 0; font-size: 1.8rem; color: #0D0D0D;">${nombreSeguro}</h2>
+                <p style="font-size: 1.5rem; color: #E63946; font-weight: bold; margin: 0 0 20px 0;">$${precioSeguro}</p>
                 
                 <div style="margin-bottom: 25px;">
-                    <h4 style="margin: 0 0 8px 0; font-size: 1.1rem; color: #2A0800;">Características del Producto</h4>
-                    <p style="color: #775144; line-height: 1.6; font-size: 0.95rem; text-align: justify;">${descripcionSegura}</p>
+                    <h4 style="margin: 0 0 8px 0; font-size: 1.1rem; color: #0D0D0D;">Características del Producto</h4>
+                    <p style="color: #3D3D3D; line-height: 1.6; font-size: 0.95rem; text-align: justify;">${descripcionSegura}</p>
                     
-                    <ul style="color: #775144; font-size: 0.9rem; margin-top: 15px; padding-left: 20px;">
+                    <ul style="color: #3D3D3D; font-size: 0.9rem; margin-top: 15px; padding-left: 20px;">
                         <li>Materiales resistentes y duraderos.</li>
                         <li>Diseño pensado para máxima comodidad.</li>
                         <li>Envío disponible a través de compras por WhatsApp.</li>
                     </ul>
                 </div>
 
-                <button onclick="addToCart('${id}'); closeProductModal()" style="background: #2A0800; color: #F4D8D8; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(42,8,0,0.3);">
+                <button onclick="addToCart('${id}'); closeProductModal()" style="background: #0D0D0D; color: #FFFFFF; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1.1rem; box-shadow: 0 4px 10px rgba(13,13,13,0.3);">
                     Añadir a la bolsa
                 </button>
             </div>
@@ -166,7 +166,7 @@ function setModalMainImage(thumbEl) {
   document.querySelectorAll('.modal-thumb').forEach(t => {
     t.style.border = '2px solid transparent';
   });
-  thumbEl.style.border = '2px solid #775144';
+  thumbEl.style.border = '2px solid #E63946';
 }
 
 // ====================================================================
@@ -196,7 +196,7 @@ function showToast() {
 
   const toast = document.createElement('div');
   toast.className = 'toast';
-  toast.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #C09891; font-size: 1.2rem;"></i> ¡Agregado a la bolsa!';
+  toast.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #E63946; font-size: 1.2rem;"></i> ¡Agregado a la bolsa!';
   container.appendChild(toast);
 
   setTimeout(() => toast.classList.add('show'), 10);
