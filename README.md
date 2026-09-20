@@ -1,6 +1,6 @@
 # Isla Store 91
 Link de la pagina desplegada
-https://jr-4g56.onrender.com/
+https://islastore91.onrender.com/
 
 Cualquier comentario constructivo es bienvenido para mejorar el proyecto.
 Puede contactarme en [figueroamarco2002@gmail.com]
