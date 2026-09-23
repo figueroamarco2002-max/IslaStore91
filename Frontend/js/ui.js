@@ -196,7 +196,7 @@ function showToast() {
 
   const toast = document.createElement('div');
   toast.className = 'toast';
-  toast.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #E63946; font-size: 1.2rem;"></i> ¡Agregado a la bolsa!';
+  toast.innerHTML = '<i class="fa-solid fa-circle-check" style="color: #28A745; font-size: 1.2rem;"></i> ¡Agregado a la bolsa!';
   container.appendChild(toast);
 
   setTimeout(() => toast.classList.add('show'), 10);

@@ -147,6 +147,15 @@ nav a.active-link {
     color: var(--accent-color);
 }
 
+.dropdown-empty {
+    display: block;
+    padding: 8px 0;
+    text-align: center;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--color-light);
+}
+
 .nav-dropdown.open>a {
     border: 1.5px solid var(--text-main);
     color: var(--accent-color);

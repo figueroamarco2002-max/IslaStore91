@@ -17,18 +17,17 @@ exports.getSections = async (req, res) => {
 exports.createSection = async (req, res) => {
     const { category, style, product_type, visible } = req.body;
 
-    // Segunda capa de validación (defensa en profundidad), ahora consultando
-    // las tablas dinámicas en vez de listas fijas.
     if (!validCategories.includes(category)) {
-        return res.status(400).json({ error: 'Datos de sección no válidos' });
-    }
-    const styleExists = await ProductStyle.findByKey((style || '').toLowerCase());
-    const typeExists = await ProductType.findByKey((product_type || '').toLowerCase());
-    if (!styleExists || !typeExists) {
         return res.status(400).json({ error: 'Datos de sección no válidos' });
     }
 
     try {
+        const styleExists = await ProductStyle.findByKey((style || '').toLowerCase());
+        const typeExists = await ProductType.findByKey((product_type || '').toLowerCase());
+        if (!styleExists || !typeExists) {
+            return res.status(400).json({ error: 'Datos de sección no válidos' });
+        }
+
         const existing = await Section.findByCombination(category, style, product_type);
         if (existing) {
             return res.status(400).json({ error: 'Ya existe una sección con esa combinación' });
@@ -49,13 +48,14 @@ exports.updateSection = async (req, res) => {
     if (!validCategories.includes(category)) {
         return res.status(400).json({ error: 'Datos de sección no válidos' });
     }
-    const styleExists = await ProductStyle.findByKey((style || '').toLowerCase());
-    const typeExists = await ProductType.findByKey((product_type || '').toLowerCase());
-    if (!styleExists || !typeExists) {
-        return res.status(400).json({ error: 'Datos de sección no válidos' });
-    }
 
     try {
+        const styleExists = await ProductStyle.findByKey((style || '').toLowerCase());
+        const typeExists = await ProductType.findByKey((product_type || '').toLowerCase());
+        if (!styleExists || !typeExists) {
+            return res.status(400).json({ error: 'Datos de sección no válidos' });
+        }
+
         const existing = await Section.findById(id);
         if (!existing) return res.status(404).json({ error: 'Sección no encontrada' });
 

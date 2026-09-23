@@ -200,7 +200,7 @@ function checkoutWhatsApp() {
     const numeroWhatsApp = WHATSAPP_NUMBER;
 
     // Construir mensaje (no hay riesgo de XSS porque va a WhatsApp, no al DOM)
-    let mensaje = "Hola! Jr Store 🛍️, quiero realizar el siguiente pedido:\n\n";
+    let mensaje = "Hola! Isla Store 91, quiero realizar el siguiente pedido:\n\n";
 
     let totalPrice = 0;
     cart.forEach(item => {

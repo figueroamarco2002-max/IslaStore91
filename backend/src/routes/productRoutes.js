@@ -47,6 +47,9 @@ const validateProduct = [
         .optional()
         .isInt({ min: 0 }).withMessage('El stock debe ser un número entero no negativo')
         .toInt(),
+    body('mostrar_en_home')
+        .optional()
+        .isIn(['true', 'false']).withMessage('mostrar_en_home debe ser "true" o "false"'),
 ];
 
 const validateId = oneOf(
@@ -88,7 +91,7 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const allowedFields = ['name', 'price', 'category_id', 'tipo', 'estilo', 'description', 'stock'];
+        const allowedFields = ['name', 'price', 'category_id', 'tipo', 'estilo', 'description', 'stock', 'mostrar_en_home'];
         const sanitizedBody = {};
         allowedFields.forEach(field => {
             if (req.body[field] !== undefined) {
@@ -112,7 +115,7 @@ router.put(
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        const allowedFields = ['name', 'price', 'category_id', 'tipo', 'estilo', 'description', 'stock'];
+        const allowedFields = ['name', 'price', 'category_id', 'tipo', 'estilo', 'description', 'stock', 'mostrar_en_home'];
         const sanitizedBody = {};
         allowedFields.forEach(field => {
             if (req.body[field] !== undefined) {

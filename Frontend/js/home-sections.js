@@ -31,9 +31,6 @@ async function fetchProductsFiltered(filters = {}) {
     }
 }
 
-// ====================================================================
-// 2. CONSTRUIR TARJETA DE PRODUCTO (SEGURA)
-// ====================================================================
 function buildCarouselCardHTML(producto) {
     const idProd = producto.id || '';
     const nombreSeguro = escapeHTML(producto.name || producto.nombre || 'Producto sin nombre');
@@ -54,9 +51,6 @@ function buildCarouselCardHTML(producto) {
   `;
 }
 
-// ====================================================================
-// 3. REGISTRAR PRODUCTOS EN EL ARREGLO GLOBAL
-// ====================================================================
 function registerProductsGlobally(productos) {
     if (typeof products === 'undefined') return;
     productos.forEach(p => {
@@ -66,9 +60,6 @@ function registerProductsGlobally(productos) {
     });
 }
 
-// ====================================================================
-// 4. INICIALIZAR UN CARRUSEL
-// ====================================================================
 async function initCarousel(containerId, filters) {
     const track = document.getElementById(containerId);
     if (!track) return;
@@ -77,9 +68,6 @@ async function initCarousel(containerId, filters) {
     const wrapper = track.closest('.carousel-wrapper');
 
     if (!productos || productos.length === 0) {
-        // Sin productos no tiene sentido mostrar flechas de navegación (no hay
-        // nada que recorrer), y además así el mensaje deja de quedar tapado
-        // por los círculos de las flechas.
         if (wrapper) {
             wrapper.querySelectorAll('.carousel-arrow').forEach(arrow => arrow.style.display = 'none');
         }
@@ -87,8 +75,6 @@ async function initCarousel(containerId, filters) {
         return;
     }
 
-    // Si en una carga anterior se ocultaron las flechas (categoría vacía) y
-    // ahora sí hay productos, se restauran.
     if (wrapper) {
         wrapper.querySelectorAll('.carousel-arrow').forEach(arrow => arrow.style.display = 'flex');
     }
@@ -97,33 +83,22 @@ async function initCarousel(containerId, filters) {
     track.innerHTML = productos.map(buildCarouselCardHTML).join('');
 }
 
-// ====================================================================
-// 5. DESPLAZAR CARRUSEL
-// ====================================================================
 function scrollCarousel(containerId, direction) {
     const track = document.getElementById(containerId);
     if (!track) return;
     track.scrollBy({ left: direction * 260, behavior: 'smooth' });
 }
 
-// ====================================================================
-// 6. SCROLL SUAVE A LA SECCIÓN DE MUJERES
-// ====================================================================
 function scrollToMujeres() {
     const target = document.querySelector('[data-section-key="mujeres_banner"]');
     if (target) {
         target.scrollIntoView({ behavior: 'smooth' });
         return;
     }
-    // Respaldo: si el banner no se llegó a insertar (no había secciones de
-    // mujer visibles), se hace scroll al contenedor completo.
     const container = document.getElementById('home-sections-container');
     if (container) container.scrollIntoView({ behavior: 'smooth' });
 }
 
-// ====================================================================
-// 7. OBTENER SECCIONES DESDE EL BACKEND
-// ====================================================================
 async function fetchSections() {
     try {
         const response = await fetch(`${API_BASE_URL}/sections`);
@@ -135,9 +110,17 @@ async function fetchSections() {
     }
 }
 
-// ====================================================================
-// 8. GENERAR HTML DE UNA SECCIÓN DE CARRUSEL
-// ====================================================================
+async function fetchSectionSettings() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/settings`);
+        if (!response.ok) throw new Error('Error al cargar configuración de secciones');
+        return await response.json();
+    } catch (error) {
+        console.error('❌ Error fetchSectionSettings:', error);
+        return {};
+    }
+}
+
 function buildSectionHTML(section) {
     const categoryLabel = section.category === 'hombre' ? 'Hombre' : section.category === 'mujer' ? 'Mujer' : section.category;
     const styleLabel = section.style ? (section.style === 'urbano' ? 'Urbano' : section.style === 'deportivo' ? 'Deportivo' : section.style) : '';
@@ -165,7 +148,6 @@ function buildSectionHTML(section) {
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
             <div class="carousel-track" id="${carouselId}">
-                <!-- Se inyecta vía JS -->
             </div>
             <button class="carousel-arrow right" aria-label="Siguiente" onclick="scrollCarousel('${carouselId}', 1)">
                 <i class="fa-solid fa-chevron-right"></i>
@@ -175,9 +157,6 @@ function buildSectionHTML(section) {
     `;
 }
 
-// ====================================================================
-// 8.1 HTML DE LOS BANNERS INTERCALADOS (antes vivían fijos en index.html)
-// ====================================================================
 function buildWomenBannerHTML() {
     return `
     <section class="women-banner" data-section-key="mujeres_banner">
@@ -200,9 +179,6 @@ function buildIgBannerHTML() {
     `;
 }
 
-// ====================================================================
-// 8.2 FETCH Y HTML DEL BANNER "PRÓXIMA VEZ"
-// ====================================================================
 async function fetchProximaVez() {
     try {
         const response = await fetch(`${API_BASE_URL}/proxima-vez`);
@@ -263,17 +239,20 @@ function buildProximaVezBannerHTML(data) {
     `;
 }
 
-// ====================================================================
-// 9. INICIALIZAR TODAS LAS SECCIONES DINÁMICAS (+ banners intercalados)
-// ====================================================================
 async function initDynamicSections() {
     const container = document.getElementById('home-sections-container');
     if (!container) return;
 
-    // Cargamos secciones y datos de "Próxima Vez" en paralelo
-    const [sections, proximaVezData] = await Promise.all([
+    // Además de secciones/Próxima Vez/configuración, pedimos los productos
+    // de mujer YA FILTRADOS (el backend usa ILIKE, así que no importan
+    // mayúsculas/minúsculas) — así confirmamos que además de estar
+    // "visible" la sección, hay contenido real detrás. El banner de
+    // Instagram no depende de nada de esto: solo de su propio interruptor.
+    const [sections, proximaVezData, sectionSettings, productosMujer] = await Promise.all([
         fetchSections(),
-        fetchProximaVez()
+        fetchProximaVez(),
+        fetchSectionSettings(),
+        fetchProductsFiltered({ categoria: 'mujer' })
     ]);
 
     const visibleSections = sections.filter(s => s.visible !== false);
@@ -283,41 +262,56 @@ async function initDynamicSections() {
         return;
     }
 
+    const mujeresBannerHabilitado = sectionSettings.mujeres_banner !== false;
+    const igBannerHabilitado = sectionSettings.ig_banner !== false;
+
+    const hayMujerVisible = visibleSections.some(s => String(s.category).toLowerCase() === 'mujer');
+
+    // Contenido real: al menos un producto que respalde la sección, no solo
+    // el flag "visible". Si desactivas todos los productos de mujer pero
+    // te olvidas de apagar la sección/el interruptor, el banner igual se
+    // oculta solo.
+    const hayProductoDeMujer = Array.isArray(productosMujer) && productosMujer.length > 0;
+
+    const mostrarWomenBanner = mujeresBannerHabilitado && hayMujerVisible && hayProductoDeMujer;
+    // El banner de Instagram es puramente decorativo: se muestra o se
+    // oculta según su propio interruptor, sin depender de secciones,
+    // estilos ni productos.
+    const mostrarIgBanner = igBannerHabilitado;
+
     let womenBannerInserted = false;
     let igBannerInserted = false;
     let html = '';
 
     visibleSections.forEach(section => {
-        // El banner "De las Mujeres" va justo antes de la primera sección
-        // cuya categoría sea 'mujer', sin importar el orden en que llegaron.
-        if (!womenBannerInserted && section.category === 'mujer') {
+        const cat = String(section.category).toLowerCase();
+        const style = String(section.style).toLowerCase();
+        const type = String(section.product_type).toLowerCase();
+
+        if (mostrarWomenBanner && !womenBannerInserted && cat === 'mujer') {
             html += buildWomenBannerHTML();
             womenBannerInserted = true;
         }
 
         html += buildSectionHTML(section);
 
-        // El banner de Instagram va justo después de la primera sección de
-        // "Gorras Urbano" (de cualquier categoría, la que aparezca primero).
-        if (!igBannerInserted && section.style === 'urbano' && section.product_type === 'gorra') {
+        if (mostrarIgBanner && !igBannerInserted && style === 'urbano' && type === 'gorra') {
             html += buildIgBannerHTML();
             igBannerInserted = true;
         }
     });
 
-    // Si no hay secciones de mujer o de gorras urbanas visibles hoy, los
-    // banners no desaparecen silenciosamente: se agregan al final.
-    if (!womenBannerInserted) html += buildWomenBannerHTML();
-    if (!igBannerInserted) html += buildIgBannerHTML();
+    // El banner de Instagram no depende de que exista una sección de
+    // gorras urbano: si el interruptor está activo pero no hubo dónde
+    // insertarlo "en contexto", se agrega igual al final.
+    if (mostrarIgBanner && !igBannerInserted) {
+        html += buildIgBannerHTML();
+    }
 
-    // El banner "Próxima Vez" siempre va al final, después del ig-banner.
-    // Si no hay imágenes activas o banner_visible = false, buildProximaVezBannerHTML
-    // devuelve '' y no se renderiza nada.
     html += buildProximaVezBannerHTML(proximaVezData);
 
     container.innerHTML = html;
 
-    // Animar entrada del banner "Próxima Vez" con IntersectionObserver
     const pvSection = container.querySelector('.proxima-vez-section');
     if (pvSection) {
         const observer = new IntersectionObserver((entries) => {
@@ -344,9 +338,6 @@ async function initDynamicSections() {
     });
 }
 
-// ====================================================================
-// 10. INICIALIZAR AL CARGAR LA PÁGINA
-// ====================================================================
 window.addEventListener('DOMContentLoaded', () => {
     initDynamicSections();
 });

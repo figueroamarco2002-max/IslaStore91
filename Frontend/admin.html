@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Administración - Jr Store</title>
     <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='black' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23f97316' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFFFFF'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%230D0D0D' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%233D3D3D' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
     <style>
         :root {
-            --color-very-dark: #2A0800;
-            --color-dark: #775144;
-            --color-medium: #C09891;
-            --color-light: #BEA8A7;
-            --color-very-light: #F4D8D8;
+            --color-very-dark: #0D0D0D;
+            --color-dark: #3D3D3D;
+            --color-medium: #6E6E6E;
+            --color-light: #B6B6B6;
+            --color-very-light: #E7E7E7;
+            --accent-color: #E63946;
+            --accent-hover: #C1121F;
         }
 
         body {
@@ -31,7 +33,7 @@
             padding: 24px;
             border-radius: 12px;
             border: 1px solid var(--color-light);
-            box-shadow: 0 4px 16px rgba(42, 8, 0, 0.08);
+            box-shadow: 0 4px 16px rgba(13, 13, 13, 0.08);
         }
 
         header {
@@ -73,21 +75,21 @@
         }
 
         .btn-danger {
-            background: var(--color-dark);
-            color: var(--color-very-light);
+            background: var(--accent-color);
+            color: #ffffff;
         }
 
         .btn-danger:hover {
-            background: var(--color-very-dark);
+            background: var(--accent-hover);
         }
 
         .btn-edit {
             background: var(--color-medium);
-            color: var(--color-very-dark);
+            color: #ffffff;
         }
 
         .btn-edit:hover {
-            background: var(--color-light);
+            background: var(--color-dark);
         }
 
         .btn-primary {
@@ -96,7 +98,13 @@
         }
 
         .btn-primary:hover {
-            background: var(--color-dark);
+            background: var(--accent-color);
+            color: #ffffff;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .modal {
@@ -106,7 +114,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(42, 8, 0, 0.5);
+            background: rgba(13, 13, 13, 0.5);
             z-index: 9999;
         }
 
@@ -117,7 +125,7 @@
             padding: 24px;
             border-radius: 12px;
             border: 1px solid var(--color-light);
-            box-shadow: 0 10px 30px rgba(42, 8, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(13, 13, 13, 0.2);
             max-height: 90vh;
             overflow-y: auto;
         }
@@ -137,6 +145,84 @@
         .modal select:focus {
             outline: none;
             border-color: var(--color-dark);
+        }
+
+        /* ============================================================
+           INTERRUPTOR (toggle switch) — reemplaza los checkboxes planos
+           en todo el panel: Secciones de la Tienda, Gestión de Secciones
+           de Home, Próxima Vez, y el nuevo "Mostrar en la página
+           principal" del modal de producto.
+           ============================================================ */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+            vertical-align: middle;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--color-light);
+            transition: background-color 0.2s ease;
+            border-radius: 24px;
+        }
+
+        .switch .slider::before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #ffffff;
+            transition: transform 0.2s ease;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(13, 13, 13, 0.35);
+        }
+
+        .switch input:checked+.slider {
+            background-color: var(--accent-color);
+        }
+
+        .switch input:checked+.slider::before {
+            transform: translateX(20px);
+        }
+
+        .switch input:focus-visible+.slider {
+            outline: 2px solid var(--color-very-dark);
+            outline-offset: 2px;
+        }
+
+        .switch-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .save-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .save-msg {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-dark);
         }
     </style>
 </head>
@@ -173,6 +259,9 @@
                 </tr>
             </tbody>
         </table>
+        </table>
+        <div id="admin-product-pagination"
+            style="display:flex; align-items:center; justify-content:center; gap:12px; margin-top:16px;"></div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
             <h3>Gestión de Categorías</h3>
@@ -281,6 +370,9 @@
                 </tr>
             </tbody>
         </table>
+        </table>
+        <div id="admin-contact-pagination"
+            style="display:flex; align-items:center; justify-content:center; gap:12px; margin-top:16px;"></div>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 40px;">
             <h3>Secciones de la Tienda</h3>
@@ -298,6 +390,10 @@
                 </tr>
             </tbody>
         </table>
+        <div class="save-bar">
+            <button class="btn btn-primary" onclick="saveSectionSettings()">Guardar Cambios</button>
+            <span id="section-settings-msg" class="save-msg"></span>
+        </div>
 
         <!-- ======================================================
              SECCIÓN: BANNER "PRÓXIMA VEZ"
@@ -308,7 +404,8 @@
             </div>
 
             <!-- Config: título, subtítulo y visibilidad global -->
-            <div style="background: var(--color-very-light); border: 1px solid var(--color-light); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+            <div
+                style="background: var(--color-very-light); border: 1px solid var(--color-light); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
                 <h4 style="margin: 0 0 16px; font-size: 1rem;">Configuración del banner</h4>
 
                 <label style="display:block; margin-bottom:4px; font-weight:600;">Título:</label>
@@ -319,30 +416,39 @@
                 <input type="text" id="pv-subtitle" maxlength="300" placeholder="Ej: Esto es lo que viene..."
                     style="width:100%; padding:8px; border:1px solid var(--color-light); border-radius:4px; box-sizing:border-box; margin-bottom:14px; background:#fff;">
 
-                <label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin-bottom:16px;">
-                    <input type="checkbox" id="pv-visible" style="width:18px; height:18px;">
+                <div class="switch-row" style="margin-bottom:16px;">
+                    <label class="switch">
+                        <input type="checkbox" id="pv-visible">
+                        <span class="slider"></span>
+                    </label>
                     <span style="font-weight:600;">Banner visible en la tienda</span>
-                </label>
+                </div>
 
                 <button class="btn btn-primary" onclick="saveProximaVezSettings()">Guardar Configuración</button>
-                <span id="pv-settings-msg" style="margin-left:12px; color:var(--color-dark); font-size:0.9rem; font-weight:600;"></span>
+                <span id="pv-settings-msg"
+                    style="margin-left:12px; color:var(--color-dark); font-size:0.9rem; font-weight:600;"></span>
             </div>
 
             <!-- Subida de imágenes -->
-            <div style="background: var(--color-very-light); border: 1px solid var(--color-light); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
+            <div
+                style="background: var(--color-very-light); border: 1px solid var(--color-light); border-radius: 8px; padding: 20px; margin-bottom: 24px;">
                 <h4 style="margin: 0 0 8px; font-size: 1rem;">Subir imágenes (máx. 10 en total, 5 MB c/u)</h4>
-                <p style="color:var(--color-dark); font-size:0.85rem; margin-bottom:14px;">Se aceptan todos los formatos de imagen. Las imágenes se agregan al carrusel.</p>
+                <p style="color:var(--color-dark); font-size:0.85rem; margin-bottom:14px;">
+                    Se aceptan JPG, PNG, WEBP, GIF, AVIF, BMP y TIFF (no SVG).
+                </p>
 
-                <input type="file" id="pv-img-input" accept="image/*" multiple
-                    style="margin-bottom:12px;"
-                    onchange="previewProximaVezImages()">
+                <input type="file" id="pv-img-input"
+                    accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/bmp,image/tiff" multiple
+                    style="margin-bottom:12px;" onchange="previewProximaVezImages()">
 
                 <!-- Preview antes de subir -->
-                <div id="pv-preview-container"
-                    style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;"></div>
+                <div id="pv-preview-container" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+                </div>
 
-                <button class="btn btn-primary" id="pv-upload-btn" onclick="uploadProximaVezImages()" disabled>Subir Imágenes</button>
-                <span id="pv-upload-msg" style="margin-left:12px; color:var(--color-dark); font-size:0.9rem; font-weight:600;"></span>
+                <button class="btn btn-primary" id="pv-upload-btn" onclick="uploadProximaVezImages()" disabled>Subir
+                    Imágenes</button>
+                <span id="pv-upload-msg"
+                    style="margin-left:12px; color:var(--color-dark); font-size:0.9rem; font-weight:600;"></span>
             </div>
 
             <!-- Galería de imágenes ya subidas -->
@@ -377,7 +483,24 @@
                 onchange="previewSelectedImages()">
             <div id="prod-img-preview" style="display: flex; gap: 8px; flex-wrap: wrap; margin: -8px 0 15px;"></div>
             <small id="prod-img-hint"
-                style="display: block; margin-top: -10px; margin-bottom: 15px; color: #775144;"></small>
+                style="display: block; margin-top: -10px; margin-bottom: 15px; color: #3D3D3D;"></small>
+
+            <!-- Mostrar en la página principal: crea/activa la sección de
+                 home para la categoría de este producto. La sección espejo
+                 de la otra categoría también se crea, pero siempre oculta,
+                 para que el admin la active manualmente si quiere. -->
+            <div class="switch-row" style="margin-bottom: 6px;">
+                <label class="switch">
+                    <input type="checkbox" id="prod-mostrar-home">
+                    <span class="slider"></span>
+                </label>
+                <span style="font-weight:600;">Mostrar en la página principal</span>
+            </div>
+            <small style="display:block; margin-bottom:15px; color: var(--color-dark);">
+                Se crea automáticamente la sección de esta categoría+estilo+tipo para Hombres y para Mujeres;
+                la otra categoría queda oculta hasta que la actives desde "Gestión de Secciones de Home".
+            </small>
+
             <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                 <button class="btn btn-primary" style="width: 48%;" onclick="saveProduct()">Guardar</button>
                 <button class="btn btn-danger" style="width: 48%;" onclick="closeProductModal()">Cancelar</button>
@@ -413,10 +536,13 @@
             <select id="hs-style" required></select>
             <label>Tipo de prenda:</label>
             <select id="hs-type" required></select>
-            <label style="display:flex; align-items:center; gap:8px; margin-top:10px;">
-                <input type="checkbox" id="hs-visible" style="width:auto;" checked>
-                Visible en el home
-            </label>
+            <div class="switch-row" style="margin-top:10px;">
+                <label class="switch">
+                    <input type="checkbox" id="hs-visible" checked>
+                    <span class="slider"></span>
+                </label>
+                <span>Visible en el home</span>
+            </div>
             <div style="display: flex; justify-content: space-between; margin-top: 15px;">
                 <button class="btn btn-primary" style="width: 48%;" onclick="saveHomeSection()">Guardar</button>
                 <button class="btn btn-danger" style="width: 48%;" onclick="closeHomeSectionModal()">Cancelar</button>
@@ -497,7 +623,7 @@
         // recién seleccionadas, antes de subirlas).
         function buildPreviewThumbHTML(src) {
             const srcSeguro = escapeHTML(src);
-            return `<img src="${srcSeguro}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd;">`;
+            return `<img src="${srcSeguro}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px; border: 1px solid var(--color-light);">`;
         }
 
         // Se ejecuta al elegir archivos en el <input type="file">. Como el
@@ -537,6 +663,8 @@
                 document.getElementById('prod-estilo').value = 'Urbano';
                 document.getElementById('prod-type').value = '';
                 resetProductImageFields();
+                // Por defecto NO se muestra: el admin decide activarla.
+                document.getElementById('prod-mostrar-home').checked = false;
                 if (categories.length > 0) {
                     document.getElementById('prod-cat').value = categories[0].id;
                 }
@@ -547,61 +675,97 @@
         function closeProductModal() {
             document.getElementById('product-modal').style.display = 'none';
         }
+        let productsCurrentPage = 1;
+        let productsTotalPages = 1;
 
         async function renderAdminProducts() {
             const tbody = document.getElementById('admin-product-list');
+            const pagination = document.getElementById('admin-product-pagination');
             tbody.innerHTML = '<tr><td colspan="8">Cargando...</td></tr>';
+            if (pagination) pagination.innerHTML = '';
+
             const token = getToken();
             if (!token) return;
+
             try {
-                const response = await fetch(`${API_BASE_URL}/products`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const url = `${API_BASE_URL}/products?page=${productsCurrentPage}&limit=10`;
+                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
                 if (!response.ok) throw new Error('Error al cargar productos');
-                const data = await response.json();
-                products = data;
+
+                const { data: productos, pagination: pageInfo } = await response.json();
+                products = productos;
+                productsTotalPages = pageInfo.totalPages || 1;
+
                 tbody.innerHTML = '';
 
-                if (products.length === 0) {
+                if (productos.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;">No hay productos registrados.</td></tr>';
+                    renderProductsPagination(pageInfo);
                     return;
                 }
 
-                products.forEach(p => {
+                productos.forEach(p => {
                     const imagenRaw = p.imagen || p.image_url || 'https://placehold.co/50x50/eeeeee/999999?text=Sin+Img';
                     const imagenSrc = escapeHTML(imagenRaw);
                     const nombreSeguro = escapeHTML(p.name || p.nombre);
                     const skuSeguro = escapeHTML(p.sku || '-');
                     const cat = categories.find(c => c.id == p.category_id);
                     const catNombre = cat ? escapeHTML(cat.name) : (p.category_id == 1 ? 'Hombre' : 'Mujer');
-                    // Si el producto tiene más de una foto, se muestra un
-                    // pequeño contador sobre la miniatura de portada.
                     const totalFotos = Array.isArray(p.images) ? p.images.length : (imagenRaw ? 1 : 0);
                     const badgeFotos = totalFotos > 1
-                        ? `<span style="display:block; font-size: 0.75rem; color: #775144; text-align:center;">+${totalFotos - 1} foto(s)</span>`
+                        ? `<span style="display:block; font-size: 0.75rem; color: #3D3D3D; text-align:center;">+${totalFotos - 1} foto(s)</span>`
                         : '';
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>
-                            <img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
-                            ${badgeFotos}
-                        </td>
-                        <td><strong>${skuSeguro}</strong></td>
-                        <td>${p.id}</td>
-                        <td>${nombreSeguro}</td>
-                        <td>$${parseFloat(p.price || p.precio || 0).toFixed(2)}</td>
-                        <td>${p.stock ?? 0}</td>
-                        <td>${catNombre}</td>
-                        <td>
-                            <button class="btn btn-edit" onclick="editProduct('${p.id}')">Editar</button>
-                            <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Eliminar</button>
-                        </td>
-                    `;
+                <td>
+                    <img src="${imagenSrc}" alt="${nombreSeguro}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                    ${badgeFotos}
+                </td>
+                <td><strong>${skuSeguro}</strong></td>
+                <td>${p.id}</td>
+                <td>${nombreSeguro}</td>
+                <td>$${parseFloat(p.price || p.precio || 0).toFixed(2)}</td>
+                <td>${p.stock ?? 0}</td>
+                <td>${catNombre}</td>
+                <td>
+                    <button class="btn btn-edit" onclick="editProduct('${p.id}')">Editar</button>
+                    <button class="btn btn-danger" onclick="deleteProduct('${p.id}')">Eliminar</button>
+                </td>
+            `;
                     tbody.appendChild(tr);
                 });
+
+                renderProductsPagination(pageInfo);
             } catch (error) {
                 console.error(error);
                 tbody.innerHTML = '<tr><td colspan="8" style="color:red; text-align:center;">Error al cargar productos</td></tr>';
             }
+        }
+
+        // Pinta los botones de paginación debajo de la tabla de productos.
+        function renderProductsPagination({ page, totalPages, total }) {
+            const container = document.getElementById('admin-product-pagination');
+            if (!container) return;
+
+            if (totalPages <= 1) {
+                container.innerHTML = `<span style="color: var(--color-dark); font-size: 0.9rem;">${total} producto(s)</span>`;
+                return;
+            }
+
+            container.innerHTML = `
+        <button class="btn btn-edit" onclick="goToProductsPage(${page - 1})" ${page <= 1 ? 'disabled' : ''}>« Anterior</button>
+        <span style="font-size: 0.9rem; color: var(--color-dark);">
+            Página <strong>${page}</strong> de <strong>${totalPages}</strong> · ${total} producto(s)
+        </span>
+        <button class="btn btn-edit" onclick="goToProductsPage(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Siguiente »</button>
+    `;
+        }
+
+        function goToProductsPage(page) {
+            if (page < 1 || page > productsTotalPages) return;
+            productsCurrentPage = page;
+            renderAdminProducts();
         }
 
         async function saveProduct() {
@@ -614,6 +778,7 @@
             const estilo = document.getElementById('prod-estilo').value;
             const description = document.getElementById('prod-type').value.trim();
             const fileInput = document.getElementById('prod-img-file');
+            const mostrarEnHome = document.getElementById('prod-mostrar-home').checked;
 
             if (!name) { alert('El nombre es obligatorio'); return; }
             if (isNaN(price) || price <= 0) { alert('Debes ingresar un precio válido mayor que 0'); return; }
@@ -626,6 +791,10 @@
             formData.append('estilo', estilo);
             formData.append('description', description);
             formData.append('stock', stock);
+            // Le dice al backend si debe activar la sección de home de esta
+            // categoría+estilo+tipo (la de la otra categoría siempre se crea
+            // oculta, para que el admin la active manualmente si quiere).
+            formData.append('mostrar_en_home', mostrarEnHome ? 'true' : 'false');
             // Fotos 100% opcionales: si se eligió una o varias, se mandan
             // todas bajo el mismo campo 'images' (el backend las sube todas
             // a Supabase y reemplaza el set de fotos anterior del producto).
@@ -643,7 +812,10 @@
                     const data = await response.json().catch(() => ({}));
                     throw new Error(data.error || data.message || 'Error al guardar');
                 }
+                // Ir a la página 1: los nuevos productos van ahí (ORDER BY created_at DESC).
+                productsCurrentPage = 1;
                 await renderAdminProducts();
+                await renderHomeSections();
                 closeProductModal();
                 alert('✅ Producto guardado correctamente');
             } catch (error) {
@@ -671,6 +843,9 @@
                 document.getElementById('prod-tipo').value = (p.tipo || '').toLowerCase();
                 document.getElementById('prod-estilo').value = (p.estilo || '').toLowerCase();
                 document.getElementById('prod-type').value = p.description || '';
+                // El backend ya calcula si la sección de home de este
+                // producto (su categoría+estilo+tipo) está visible o no.
+                document.getElementById('prod-mostrar-home').checked = !!p.mostrado_en_home;
 
                 // Mostrar las fotos que el producto ya tiene guardadas.
                 resetProductImageFields();
@@ -698,13 +873,19 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/products/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
                 if (!response.ok) throw new Error('Error al eliminar');
+
+                // Si era el último producto de la página y no estamos en la primera,
+                // retrocedemos para no quedar en una página vacía.
+                const filasRestantes = document.querySelectorAll('#admin-product-list tr').length;
+                if (filasRestantes === 1 && productsCurrentPage > 1) {
+                    productsCurrentPage -= 1;
+                }
                 await renderAdminProducts();
             } catch (error) {
                 console.error(error);
                 alert('Error al eliminar producto');
             }
         }
-
         function openCategoryModal(isEdit) {
             if (!isEdit) {
                 document.getElementById('category-modal-title').innerText = "Añadir Categoría";
@@ -834,6 +1015,12 @@
            GESTIÓN DE SECCIONES DE HOME (tabla `sections`, vía /api/sections)
            No confundir con SECTION_LABELS / renderSectionSettings más abajo,
            que es el sistema aparte de `section_settings` (llave-valor).
+           Estas secciones ahora también se crean automáticamente al
+           guardar un producto con un estilo+tipo nuevos (ver el checkbox
+           "Mostrar en la página principal" del modal de producto); esta
+           tabla sigue sirviendo para verlas todas y activarlas/editarlas
+           a mano, incluida la sección espejo de la otra categoría que
+           se crea oculta por defecto.
            ============================================================ */
         let homeSections = [];
 
@@ -879,9 +1066,9 @@
                         <td>${escapeHTML(s.style)}</td>
                         <td>${escapeHTML(s.product_type)}</td>
                         <td>
-                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                            <label class="switch">
                                 <input type="checkbox" ${s.visible ? 'checked' : ''} onchange="toggleHomeSectionVisible('${s.id}', this.checked)">
-                                ${s.visible ? 'Visible' : 'Oculta'}
+                                <span class="slider"></span>
                             </label>
                         </td>
                         <td>
@@ -1258,19 +1445,32 @@
             }
         }
 
+        // Estado de paginación de contactos (persiste entre renders)
+        let contactsCurrentPage = 1;
+        let contactsTotalPages = 1;
+
         async function renderAdminContacts() {
             const tbody = document.getElementById('admin-contact-list');
+            const pagination = document.getElementById('admin-contact-pagination');
             tbody.innerHTML = '<tr><td colspan="7">Cargando...</td></tr>';
+            pagination.innerHTML = '';
+
             const token = getToken();
             if (!token) return;
+
             try {
-                const response = await fetch(`${API_BASE_URL}/contact`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const url = `${API_BASE_URL}/contact?page=${contactsCurrentPage}&limit=5`;
+                const response = await fetch(url, { headers: { 'Authorization': `Bearer ${token}` } });
                 if (!response.ok) throw new Error('Error al cargar mensajes');
-                const contactos = await response.json();
+
+                const { data: contactos, pagination: pageInfo } = await response.json();
+                contactsTotalPages = pageInfo.totalPages || 1;
+
                 tbody.innerHTML = '';
 
                 if (contactos.length === 0) {
                     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No hay mensajes.</td></tr>';
+                    renderContactsPagination(pageInfo);
                     return;
                 }
 
@@ -1282,25 +1482,54 @@
                     const comentarioSeguro = escapeHTML(c.comentario);
 
                     const tr = document.createElement('tr');
-                    if (!c.leido) tr.style.background = '#F4D8D8';
+                    if (!c.leido) tr.style.background = '#E7E7E7';
                     tr.innerHTML = `
-                        <td>${fecha}</td>
-                        <td>${nombreSeguro}</td>
-                        <td><a href="mailto:${correoSeguro}">${correoSeguro}</a></td>
-                        <td>${telefonoSeguro ? `<a href="https://wa.me/${telefonoSeguro.replace(/\D/g, '')}" target="_blank">${telefonoSeguro}</a>` : '-'}</td>
-                        <td style="max-width:250px; white-space:normal;">${comentarioSeguro}</td>
-                        <td>${c.leido ? '✅ Leído' : '🟡 Nuevo'}</td>
-                        <td>
-                            ${!c.leido ? `<button class="btn btn-primary" onclick="marcarLeido('${c.id}')">Marcar leído</button>` : ''}
-                            <button class="btn btn-danger" onclick="eliminarContacto('${c.id}')">Eliminar</button>
-                        </td>
-                    `;
+                <td>${fecha}</td>
+                <td>${nombreSeguro}</td>
+                <td><a href="mailto:${correoSeguro}">${correoSeguro}</a></td>
+                <td>${telefonoSeguro ? `<a href="https://wa.me/${telefonoSeguro.replace(/\D/g, '')}" target="_blank">${telefonoSeguro}</a>` : '-'}</td>
+                <td style="max-width:250px; white-space:normal;">${comentarioSeguro}</td>
+                <td>${c.leido ? '✅ Leído' : '🟡 Nuevo'}</td>
+                <td>
+                    ${!c.leido ? `<button class="btn btn-primary" onclick="marcarLeido('${c.id}')">Marcar leído</button>` : ''}
+                    <button class="btn btn-danger" onclick="eliminarContacto('${c.id}')">Eliminar</button>
+                </td>
+            `;
                     tbody.appendChild(tr);
                 });
+
+                renderContactsPagination(pageInfo);
             } catch (error) {
                 console.error(error);
                 tbody.innerHTML = '<tr><td colspan="7" style="color:red; text-align:center;">Error al cargar mensajes</td></tr>';
             }
+        }
+
+        // Pinta los botones de paginación debajo de la tabla.
+        function renderContactsPagination({ page, totalPages, total }) {
+            const container = document.getElementById('admin-contact-pagination');
+            if (!container) return;
+
+            // Con una sola página, solo mostramos el conteo (sin botones).
+            if (totalPages <= 1) {
+                container.innerHTML = `<span style="color: var(--color-dark); font-size: 0.9rem;">${total} mensaje(s)</span>`;
+                return;
+            }
+
+            container.innerHTML = `
+        <button class="btn btn-edit" onclick="goToContactsPage(${page - 1})" ${page <= 1 ? 'disabled' : ''}>« Anterior</button>
+        <span style="font-size: 0.9rem; color: var(--color-dark);">
+            Página <strong>${page}</strong> de <strong>${totalPages}</strong> · ${total} mensaje(s)
+        </span>
+        <button class="btn btn-edit" onclick="goToContactsPage(${page + 1})" ${page >= totalPages ? 'disabled' : ''}>Siguiente »</button>
+    `;
+        }
+
+        // Cambia de página y vuelve a renderizar. Se auto-limita por las dudas.
+        function goToContactsPage(page) {
+            if (page < 1 || page > contactsTotalPages) return;
+            contactsCurrentPage = page;
+            renderAdminContacts();
         }
 
         async function marcarLeido(id) {
@@ -1321,13 +1550,25 @@
             if (!token) return;
             try {
                 await fetch(`${API_BASE_URL}/contact/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+
+                // Si era el último mensaje de la página y no estamos en la primera,
+                // volvemos una página atrás para no quedar en una página vacía.
+                const filasRestantes = document.querySelectorAll('#admin-contact-list tr').length;
+                if (filasRestantes === 1 && contactsCurrentPage > 1) {
+                    contactsCurrentPage -= 1;
+                }
                 await renderAdminContacts();
             } catch (error) {
                 console.error(error);
                 alert('Error al eliminar el mensaje');
             }
         }
-
+        /* ============================================================
+           SECCIONES DE LA TIENDA (tabla `section_settings`, llave-valor)
+           Ahora funciona como el banner "Próxima Vez": los interruptores
+           solo cambian el estado en memoria (sectionSettingsState); nada
+           se guarda hasta que se presiona "Guardar Cambios".
+           ============================================================ */
         const SECTION_LABELS = {
             gorras_hombre: 'Gorras (Hombres)',
             urbano_hombre: 'Camisetas Urbano (Hombres)',
@@ -1341,6 +1582,8 @@
             relojes_mujer: 'Relojes (Mujeres)'
         };
 
+        let sectionSettingsState = {};
+
         async function renderSectionSettings() {
             const tbody = document.getElementById('admin-sections-list');
             tbody.innerHTML = '<tr><td colspan="2">Cargando...</td></tr>';
@@ -1349,16 +1592,18 @@
                 if (!response.ok) throw new Error('Error al cargar secciones');
                 const settings = await response.json();
                 tbody.innerHTML = '';
+                sectionSettingsState = {};
 
                 Object.keys(SECTION_LABELS).forEach(key => {
                     const habilitado = settings[key] !== false;
+                    sectionSettingsState[key] = habilitado;
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${SECTION_LABELS[key]}</td>
                         <td>
-                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-                                <input type="checkbox" ${habilitado ? 'checked' : ''} onchange="toggleSection('${key}', this.checked)">
-                                ${habilitado ? 'Visible' : 'Oculta'}
+                            <label class="switch">
+                                <input type="checkbox" ${habilitado ? 'checked' : ''} onchange="onSectionSettingToggle('${key}', this.checked)">
+                                <span class="slider"></span>
                             </label>
                         </td>
                     `;
@@ -1370,19 +1615,35 @@
             }
         }
 
-        async function toggleSection(key, enabled) {
+        // Solo actualiza el estado en memoria; el PUT real ocurre al
+        // presionar "Guardar Cambios" (saveSectionSettings).
+        function onSectionSettingToggle(key, enabled) {
+            sectionSettingsState[key] = enabled;
+        }
+
+        async function saveSectionSettings() {
             const token = getToken();
             if (!token) return;
+            const msg = document.getElementById('section-settings-msg');
+            msg.textContent = 'Guardando...';
+            msg.style.color = '#3D3D3D';
             try {
-                await fetch(`${API_BASE_URL}/settings/${key}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                    body: JSON.stringify({ enabled })
-                });
-                await renderSectionSettings();
+                await Promise.all(
+                    Object.keys(sectionSettingsState).map(key =>
+                        fetch(`${API_BASE_URL}/settings/${key}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                            body: JSON.stringify({ enabled: sectionSettingsState[key] })
+                        })
+                    )
+                );
+                msg.textContent = '✓ Guardado';
+                msg.style.color = 'green';
+                setTimeout(() => msg.textContent = '', 3000);
             } catch (error) {
                 console.error(error);
-                alert('Error al actualizar la sección');
+                msg.textContent = 'Error al guardar';
+                msg.style.color = 'red';
             }
         }
 
@@ -1421,7 +1682,7 @@
                 const data = await res.json();
 
                 // Rellenar campos de config
-                document.getElementById('pv-title').value    = data.title    || '';
+                document.getElementById('pv-title').value = data.title || '';
                 document.getElementById('pv-subtitle').value = data.subtitle || '';
                 document.getElementById('pv-visible').checked = data.banner_visible !== false;
 
@@ -1444,12 +1705,15 @@
                 <div style="border:1px solid var(--color-light); border-radius:8px; overflow:hidden; background:#fff;">
                     <img src="${img.image_url}" alt="Banner img"
                         style="width:100%; height:130px; object-fit:cover; display:block;">
-                    <div style="padding:8px; display:flex; flex-direction:column; gap:6px;">
-                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem;">
-                            <input type="checkbox" ${img.is_active ? 'checked' : ''}
-                                onchange="toggleProximaVezImage('${img.id}', this.checked)">
-                            ${img.is_active ? 'Visible' : 'Oculta'}
-                        </label>
+                    <div style="padding:8px; display:flex; flex-direction:column; gap:8px;">
+                        <div class="switch-row">
+                            <label class="switch">
+                                <input type="checkbox" ${img.is_active ? 'checked' : ''}
+                                    onchange="toggleProximaVezImage('${img.id}', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                            <span style="font-size:0.82rem;">${img.is_active ? 'Visible' : 'Oculta'}</span>
+                        </div>
                         <button class="btn btn-danger" style="padding:5px 8px; font-size:0.78rem;"
                             onclick="deleteProximaVezImage('${img.id}')">Eliminar</button>
                     </div>
@@ -1463,7 +1727,7 @@
             if (!token) return;
             const msg = document.getElementById('pv-settings-msg');
             msg.textContent = 'Guardando...';
-            msg.style.color = '#775144';
+            msg.style.color = '#3D3D3D';
             try {
                 const res = await fetch(`${API_BASE_URL}/proxima-vez/settings`, {
                     method: 'PUT',
@@ -1472,8 +1736,8 @@
                         'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify({
-                        title:          document.getElementById('pv-title').value.trim(),
-                        subtitle:       document.getElementById('pv-subtitle').value.trim(),
+                        title: document.getElementById('pv-title').value.trim(),
+                        subtitle: document.getElementById('pv-subtitle').value.trim(),
                         banner_visible: document.getElementById('pv-visible').checked
                     })
                 });
@@ -1490,7 +1754,7 @@
 
         /** Previsualiza los archivos seleccionados antes de subir */
         function previewProximaVezImages() {
-            const input     = document.getElementById('pv-img-input');
+            const input = document.getElementById('pv-img-input');
             const container = document.getElementById('pv-preview-container');
             const uploadBtn = document.getElementById('pv-upload-btn');
             container.innerHTML = '';
@@ -1517,12 +1781,12 @@
 
         /** Sube las imágenes seleccionadas al backend */
         async function uploadProximaVezImages() {
-            const token  = getToken();
+            const token = getToken();
             if (!token) return;
-            const input  = document.getElementById('pv-img-input');
-            const msg    = document.getElementById('pv-upload-msg');
-            const btn    = document.getElementById('pv-upload-btn');
-            const files  = input.files;
+            const input = document.getElementById('pv-img-input');
+            const msg = document.getElementById('pv-upload-msg');
+            const btn = document.getElementById('pv-upload-btn');
+            const files = input.files;
 
             if (!files || files.length === 0) {
                 alert('Selecciona al menos una imagen.');
@@ -1539,7 +1803,7 @@
             }
 
             msg.textContent = 'Subiendo...';
-            msg.style.color = '#775144';
+            msg.style.color = '#3D3D3D';
             btn.disabled = true;
 
             const formData = new FormData();

@@ -4,8 +4,9 @@ const multer = require('multer');
  * Middleware de subida dedicado para las imágenes del banner "Próxima Vez".
  *
  * Diferencias con uploadProductImages (upload.js):
- *  - Acepta CUALQUIER tipo de imagen (image/*), no solo jpg/png/webp/gif.
- *    Esto incluye avif, bmp, tiff, heic, etc.
+ *  - Acepta varios formatos de imagen comunes, pero NO SVG (puede
+ *    contener <script> embebido → XSS almacenado). Misma política
+ *    de seguridad que upload.js.
  *  - El límite de archivos es 10 (vs. 6 de productos).
  *  - El campo del formulario se llama 'banner_images'.
  *  - El tamaño máximo por archivo es 5 MB (igual que productos).
@@ -13,12 +14,22 @@ const multer = require('multer');
 
 const storage = multer.memoryStorage();
 
+// Whitelist explícita. NO incluye image/svg+xml a propósito.
+const ALLOWED_BANNER_MIME_TYPES = [
+    'image/jpeg',
+    'image/png',
+    'image/webp',
+    'image/gif',
+    'image/avif',
+    'image/bmp',
+    'image/tiff'
+];
+
 const fileFilter = (req, file, cb) => {
-    // Acepta cualquier mimetype que empiece con 'image/'
-    if (file.mimetype && file.mimetype.startsWith('image/')) {
+    if (ALLOWED_BANNER_MIME_TYPES.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error('Solo se permiten archivos de imagen'), false);
+        cb(new Error('Formato no permitido. Usá JPG, PNG, WEBP, GIF, AVIF, BMP o TIFF.'), false);
     }
 };
 

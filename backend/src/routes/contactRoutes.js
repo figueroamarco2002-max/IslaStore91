@@ -23,9 +23,21 @@ const validateContact = [
         .isEmail().withMessage('Correo electrónico inválido')
         .normalizeEmail(),
     body('telefono')
+        .customSanitizer(v => {
+            if (typeof v !== 'string') return v;
+            // 1. Sacar espacios, guiones, paréntesis, puntos
+            let limpio = v.trim().replace(/[\s\-().]/g, '');
+            if (limpio === '') return undefined;
+            // 2. Sacar prefijo internacional (+58, 0058, 58)
+            limpio = limpio.replace(/^(\+?58|0058)/, '');
+            // 3. Sacar 0 inicial (formato nacional venezolano)
+            limpio = limpio.replace(/^0/, '');
+            return limpio;
+        })
         .optional()
-        .trim()
-        .isMobilePhone('es-VE').withMessage('Número de teléfono inválido para Venezuela'),
+        .isMobilePhone('es-VE').withMessage(
+            'Teléfono inválido. Ejemplos válidos: 041X-1234567, 41X1234567 o +58 41X 1234567'
+        ),
     body('comentario')
         .trim()
         .notEmpty().withMessage('El comentario es obligatorio')
@@ -53,25 +65,27 @@ const handleValidation = (req, res, next) => {
 // RUTAS
 // ================================================================
 
+// Whitelist de campos aceptados en el POST público. Previene mass assignment:
+// si alguien manda { nombre, correo, comentario, isAdmin: true }, solo pasan
+// los campos permitidos y el resto se descarta.
+const whitelistContactFields = (req, res, next) => {
+    const allowedFields = ['nombre', 'correo', 'telefono', 'comentario'];
+    const sanitizedBody = {};
+    allowedFields.forEach(field => {
+        if (req.body[field] !== undefined) {
+            sanitizedBody[field] = req.body[field];
+        }
+    });
+    req.body = sanitizedBody;
+    next();
+};
+
 router.post(
     '/',
     contactLimiter,
     validateContact,
-    (req, res, next) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            return res.status(400).json({ errors: errors.array() });
-        }
-        const allowedFields = ['nombre', 'correo', 'telefono', 'comentario'];
-        const sanitizedBody = {};
-        allowedFields.forEach(field => {
-            if (req.body[field] !== undefined) {
-                sanitizedBody[field] = req.body[field];
-            }
-        });
-        req.body = sanitizedBody;
-        next();
-    },
+    handleValidation,
+    whitelistContactFields,
     contactController.createContact
 );
 

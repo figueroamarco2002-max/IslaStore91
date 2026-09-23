@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contacto | Jr Store</title>
     <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23F4D8D8'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%232A0800' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23775144' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23F4D8D8'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%232A0800' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%23775144' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
     <meta name="description" content="Contactá a Jr Store por WhatsApp, Instagram o correo electrónico.">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -266,7 +267,7 @@
                     <input type="email" name="correo" placeholder="Correo electrónico *" required>
                 </div>
                 <div class="form-full-width">
-                    <input type="tel" name="telefono" placeholder="Número de teléfono">
+                    <input type="tel" name="telefono" placeholder="Teléfono (ej. 0414-7807688)">
                 </div>
                 <div class="form-full-width">
                     <textarea name="comentario" placeholder="Comentario" required></textarea>
@@ -289,7 +290,8 @@
                         aria-label="Instagram">
                         <i class="fa-brands fa-instagram"></i>
                     </a>
-                    <a href="https://wa.me/584147807688" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+                    <a href="https://wa.me/584147807688" target="_blank" rel="noopener noreferrer"
+                        aria-label="WhatsApp">
                         <i class="fa-brands fa-whatsapp"></i>
                     </a>
                 </div>
@@ -372,9 +374,10 @@
             const datos = {
                 nombre: form.nombre.value.trim(),
                 correo: form.correo.value.trim(),
-                telefono: form.telefono.value.trim(),
                 comentario: form.comentario.value.trim()
             };
+            const telefono = form.telefono.value.trim();
+            if (telefono) datos.telefono = telefono;
 
             btn.disabled = true;
             btn.textContent = 'Enviando...';
@@ -386,19 +389,33 @@
                     body: JSON.stringify(datos)
                 });
 
-                const resultado = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(resultado.error || 'No se pudo enviar el mensaje');
+                // Caso feliz
+                if (response.ok) {
+                    alertaExito.style.display = 'flex';
+                    setTimeout(() => alertaExito.classList.add('mostrar'), 10);
+                    form.reset();
+                    return;
                 }
 
-                alertaExito.style.display = 'flex';
-                setTimeout(() => alertaExito.classList.add('mostrar'), 10);
-                form.reset();
+                // 400: errores de validación → son seguros de mostrar (mensajes que TÚ controlás)
+                if (response.status === 400) {
+                    const resultado = await response.json().catch(() => null);
+                    if (resultado && Array.isArray(resultado.errors) && resultado.errors.length > 0) {
+                        textoError.textContent = resultado.errors.map(e => e.msg).join(' ');
+                    } else {
+                        textoError.textContent = 'Datos inválidos. Revisá el formulario.';
+                    }
+                } else {
+                    // 429, 500, etc. → NUNCA exponer detalles al usuario
+                    textoError.textContent = 'No se pudo enviar el mensaje. Intenta de nuevo en unos minutos.';
+                }
+
+                alertaError.style.display = 'flex';
+                setTimeout(() => alertaError.classList.add('mostrar'), 10);
 
             } catch (error) {
-                console.error('❌ Error al enviar contacto:', error);
-                textoError.textContent = error.message || 'Ocurrió un error al enviar tu mensaje. Intenta de nuevo.';
+                // Error de red (fetch falló) → mensaje genérico
+                textoError.textContent = 'No se pudo conectar con el servidor. Revisá tu conexión.';
                 alertaError.style.display = 'flex';
                 setTimeout(() => alertaError.classList.add('mostrar'), 10);
             } finally {

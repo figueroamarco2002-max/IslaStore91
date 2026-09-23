@@ -37,11 +37,35 @@ exports.createContact = async (req, res) => {
     }
 };
 
-// Listar mensajes (solo admin)
+// Listar mensajes con paginación (solo admin)
 exports.getContacts = async (req, res) => {
     try {
-        const contactos = await Contact.findAll();
-        res.json(contactos);
+        // Parsear y validar page/limit. Si no son válidos, usar defaults
+        // (tolerante: no rechazamos por un query param mal formado).
+        let page = parseInt(req.query.page, 10);
+        let limit = parseInt(req.query.limit, 10);
+
+        if (!Number.isInteger(page) || page < 1) page = 1;
+        if (!Number.isInteger(limit) || limit < 1) limit = 20;
+        if (limit > 100) limit = 100;   // techo duro: nadie pide 10.000 de una
+
+        const offset = (page - 1) * limit;
+
+        // Ambas consultas en paralelo → una sola ida y vuelta a la DB.
+        const [contactos, total] = await Promise.all([
+            Contact.findAll({ limit, offset }),
+            Contact.count()
+        ]);
+
+        res.json({
+            data: contactos,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit) || 1
+            }
+        });
     } catch (error) {
         return sendError(res, 500, 'Error al obtener mensajes', error);
     }

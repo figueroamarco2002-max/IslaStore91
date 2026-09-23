@@ -5,7 +5,36 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config();
 
+// ----------------------------------------------------------------
+// 0. VALIDACIÓN DE CONFIGURACIÓN CRÍTICA
+// Falla rápido si falta o está mal algo esencial. Mejor que el
+// server no levante a que lo haga con un secret undefined o
+// con NODE_ENV sin definir.
+// ----------------------------------------------------------------
+const REQUIRED_ENV = ['JWT_SECRET', 'NODE_ENV'];
+const missing = REQUIRED_ENV.filter(k => !process.env[k]);
+if (missing.length > 0) {
+    console.error(`❌ Faltan variables de entorno: ${missing.join(', ')}`);
+    process.exit(1);
+}
+
+if (!['development', 'production', 'test'].includes(process.env.NODE_ENV)) {
+    console.error(`❌ NODE_ENV inválido: "${process.env.NODE_ENV}". Debe ser development, production o test.`);
+    process.exit(1);
+}
+
+if (process.env.JWT_SECRET.length < 32) {
+    console.error('❌ JWT_SECRET debe tener al menos 32 caracteres');
+    process.exit(1);
+}
+
+if (process.env.NODE_ENV === 'production' && !process.env.FRONTEND_URL) {
+    console.error('❌ FRONTEND_URL es obligatoria en producción');
+    process.exit(1);
+}
+
 const app = express();
+
 
 // ----------------------------------------------------------------
 // 0. TRUST PROXY
@@ -16,8 +45,46 @@ app.set('trust proxy', 1);
 // 1. SEGURIDAD: Helmet
 // ----------------------------------------------------------------
 app.use(helmet({
-    contentSecurityPolicy: false, // Desactivado para no bloquear scripts/estilos externos en el frontend
-    crossOriginEmbedderPolicy: false // Permite incrustar imágenes locales y externas sin bloqueos
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: [
+                "'self'",
+                "'unsafe-inline'",              // <script> inline en el HTML
+                "https://cdnjs.cloudflare.com",
+                "https://fonts.googleapis.com"
+            ],
+            scriptSrcAttr: [
+                "'unsafe-inline'"               // onclick="..." / onchange="..." etc.
+            ],
+            styleSrc: [
+                "'self'",
+                "'unsafe-inline'",              // style="" inline
+                "https://fonts.googleapis.com",
+                "https://cdnjs.cloudflare.com"
+            ],
+            fontSrc: [
+                "'self'",
+                "https://fonts.gstatic.com",
+                "https://cdnjs.cloudflare.com"
+            ],
+            imgSrc: [
+                "'self'",
+                "data:",
+                "blob:",
+                "https://placehold.co",
+                "https://*.supabase.co",
+                "https://images.unsplash.com"
+            ],
+            connectSrc: ["'self'"],
+            objectSrc: ["'none'"],
+            frameAncestors: ["'none'"],
+            baseUri: ["'self'"],
+            formAction: ["'self'"]
+        },
+        //reportOnly: true                        // seguimos en modo observación
+    },
+    crossOriginEmbedderPolicy: false
 }));
 
 // ----------------------------------------------------------------
@@ -25,7 +92,7 @@ app.use(helmet({
 // ----------------------------------------------------------------
 const allowedOrigins = process.env.FRONTEND_URL
     ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-    : ['http://localhost:5500'];
+    : ['http://localhost:5500', 'http://localhost:3000']; // <--- ¡Añadimos el 3000 aquí!
 
 app.use(cors({
     origin: function (origin, callback) {
@@ -43,6 +110,9 @@ app.use(cors({
 // ----------------------------------------------------------------
 // 3. LIMITACIÓN DE PETICIONES
 // ----------------------------------------------------------------
+// Limiter general para toda la API. Los limiters específicos
+// (loginLimiter, contactLimiter) viven en middleware/rateLimiter.js
+// y se aplican dentro de sus respectivas rutas.
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,
     max: 100,
@@ -51,13 +121,13 @@ const limiter = rateLimit({
     legacyHeaders: false,
     skip: (req) => process.env.NODE_ENV !== 'production',
 });
-app.use('/api', limiter); // Solo aplica el limitador a las rutas de la API, no a los archivos estáticos
+app.use('/api', limiter);
 
 // ----------------------------------------------------------------
 // 4. MIDDLEWARES ESTÁNDAR
 // ----------------------------------------------------------------
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: '100kb' }));
+app.use(express.urlencoded({ extended: true, limit: '100kb' }));
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
     maxAge: '1d',
@@ -119,10 +189,6 @@ const isProd = process.env.NODE_ENV === 'production';
 app.use((err, req, res, next) => {
     console.error('❌ Error:', err.stack);
 
-    if (err.message === 'Origen no permitido por política CORS') {
-        return res.status(403).json({ message: err.message });
-    }
-
     const status = err.status || 500;
     const publicMessage = (isProd && status >= 500)
         ? 'Error interno del servidor'
@@ -133,7 +199,6 @@ app.use((err, req, res, next) => {
         ...(!isProd && { stack: err.stack })
     });
 });
-
 // ----------------------------------------------------------------
 // 8. INICIO DEL SERVIDOR
 // ----------------------------------------------------------------

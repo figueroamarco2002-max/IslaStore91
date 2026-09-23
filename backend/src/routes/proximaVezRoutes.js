@@ -16,15 +16,25 @@ const handleValidation = (req, res, next) => {
 
 // ── Manejo de errores de Multer (tamaño, tipo, límite de archivos) ──
 function handleUploadError(err, req, res, next) {
-    if (err && err.code === 'LIMIT_FILE_SIZE') {
+    if (!err) return next();
+
+    if (err.code === 'LIMIT_FILE_SIZE') {
         return res.status(400).json({ error: 'Una o más imágenes superan el límite de 5 MB' });
     }
-    if (err && err.code === 'LIMIT_FILE_COUNT') {
+    if (err.code === 'LIMIT_FILE_COUNT') {
         return res.status(400).json({ error: 'Solo se pueden subir hasta 10 imágenes a la vez' });
     }
-    if (err && err.message === 'Solo se permiten archivos de imagen') {
+    if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+        return res.status(400).json({ error: 'Campo de archivo inesperado' });
+    }
+
+    // Error del fileFilter (formato no permitido) u otro error de multer.
+    // Si tiene mensaje, es un error controlado por nosotros → 400.
+    // Si no, lo dejamos pasar al handler global.
+    if (err.message) {
         return res.status(400).json({ error: err.message });
     }
+
     next(err);
 }
 
@@ -67,7 +77,6 @@ router.patch(
     '/:id/toggle',
     auth,
     validateUUID,
-    handleValidation,
     body('is_active').isBoolean().withMessage('is_active debe ser booleano').toBoolean(),
     handleValidation,
     ctrl.toggleImage

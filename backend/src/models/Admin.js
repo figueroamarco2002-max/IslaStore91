@@ -12,7 +12,9 @@ const Admin = {
       );
       return result.rows[0];
     } catch (error) {
-      console.error('Error al buscar admin por email:', error);
+      // No logueamos el objeto `error` completo: puede contener el email
+      // (PII) en el mensaje de la query. Solo el mensaje técnico.
+      console.error('Error al buscar admin por email:', error.message);
       throw error;
     }
   }
