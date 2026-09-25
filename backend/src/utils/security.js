@@ -8,7 +8,13 @@ const isProd = process.env.NODE_ENV === 'production';
  * En producción nunca se expone error.message ni el stack al cliente.
  */
 function sendError(res, status, publicMessage, error) {
-    if (error) console.error(publicMessage, error);
+    if (error) {
+        // Loguear SOLO el mensaje, no el objeto completo, para evitar
+        // filtrar parámetros de query (que pueden contener PII) en logs.
+        // En producción no logueamos stack; en dev sí, para debug.
+        console.error(publicMessage, error.message || error);
+        if (!isProd && error.stack) console.error(error.stack);
+    }
 
     // Violación de restricción UNIQUE en Postgres (ej. SKU o slug repetido):
     // es un conflicto de datos, no un error de servidor. Se resuelve como 409
@@ -38,12 +44,6 @@ const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[
  * SERIAL, ej. sections) o un UUID v4 (ej. products, cuyo id es uuid en la
  * base de datos). Devuelve el número, el UUID en minúsculas, o null si no
  * es válido en ninguno de los dos formatos.
- *
- * Antes solo aceptaba enteros vía parseInt(): un UUID que empieza con una
- * letra hexadecimal (ej. "cf730581-...") daba NaN y se rechazaba como
- * inválido con 400, aunque la ruta ya lo hubiera aceptado con
- * oneOf(isInt, isUUID(4)) un paso antes — dos criterios distintos
- * revisando lo mismo y en desacuerdo.
  */
 function isValidId(value) {
     if (typeof value !== 'string' && typeof value !== 'number') return null;
@@ -69,25 +69,10 @@ function isValidEmail(value) {
 }
 
 /**
- * Verifica que una URL externa use un esquema http/https,
- * para evitar javascript:, data: u otros esquemas peligrosos.
- */
-function isSafeUrl(value) {
-    if (typeof value !== 'string') return false;
-    try {
-        const url = new URL(value.trim());
-        return url.protocol === 'http:' || url.protocol === 'https:';
-    } catch {
-        return false;
-    }
-}
-
-/**
  * Valida una URL externa (debe ser http/https) y devuelve su forma
  * normalizada (url.href): el parser de URL codifica automáticamente
  * comillas, espacios, < y > en sus formas %XX, por lo que el resultado
- * nunca puede romper un atributo HTML como src="" al renderizarse
- * (a diferencia del string original tal como lo mandó el usuario).
+ * nunca puede romper un atributo HTML como src="" al renderizarse.
  * Devuelve null si la URL no es válida o no usa http/https.
  */
 function sanitizeUrl(value) {
@@ -101,4 +86,4 @@ function sanitizeUrl(value) {
     }
 }
 
-module.exports = { sendError, isValidId, isValidEmail, isSafeUrl, sanitizeUrl, isProd };
+module.exports = { sendError, isValidId, isValidEmail, sanitizeUrl, isProd };

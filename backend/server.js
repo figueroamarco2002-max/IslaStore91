@@ -11,7 +11,11 @@ require('dotenv').config();
 // server no levante a que lo haga con un secret undefined o
 // con NODE_ENV sin definir.
 // ----------------------------------------------------------------
-const REQUIRED_ENV = ['JWT_SECRET', 'NODE_ENV'];
+const REQUIRED_ENV = [
+    'JWT_SECRET',
+    'NODE_ENV',
+    'SUPABASE_URL',
+    'SUPABASE_SERVICE_KEY'];
 const missing = REQUIRED_ENV.filter(k => !process.env[k]);
 if (missing.length > 0) {
     console.error(`❌ Faltan variables de entorno: ${missing.join(', ')}`);

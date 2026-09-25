@@ -47,19 +47,21 @@ const Section = {
 
     // Cuenta secciones que usan un tipo/estilo dado (para impedir borrar
     // un tipo o estilo todavía referenciado por alguna sección del home).
+    // ::int en SQL convierte el string que devuelve COUNT(*) a número,
+    // por consistencia con Contact.js y Product.js.
     countByProductType: async (typeKey) => {
         const res = await pool.query(
-            'SELECT COUNT(*) FROM sections WHERE product_type ILIKE $1',
+            'SELECT COUNT(*)::int AS total FROM sections WHERE product_type ILIKE $1',
             [typeKey]
         );
-        return parseInt(res.rows[0].count, 10);
+        return res.rows[0].total;
     },
     countByStyle: async (styleKey) => {
         const res = await pool.query(
-            'SELECT COUNT(*) FROM sections WHERE style ILIKE $1',
+            'SELECT COUNT(*)::int AS total FROM sections WHERE style ILIKE $1',
             [styleKey]
         );
-        return parseInt(res.rows[0].count, 10);
+        return res.rows[0].total;
     },
 
     // Propaga el renombrado de una clave de tipo/estilo a las secciones

@@ -55,10 +55,12 @@ const ProximaVezImage = {
         return res.rows[0];
     },
 
-    /** Cuenta cuántas imágenes hay (para validar el límite de 10) */
+    /** Cuenta cuántas imágenes hay (para validar el límite de 10).
+     *  ::int en SQL convierte el string que devuelve COUNT(*) a número,
+     *  por consistencia con Contact.js, Product.js y Section.js. */
     count: async () => {
-        const res = await pool.query('SELECT COUNT(*) FROM proxima_vez_images');
-        return parseInt(res.rows[0].count, 10);
+        const res = await pool.query('SELECT COUNT(*)::int AS total FROM proxima_vez_images');
+        return res.rows[0].total;
     }
 };
 

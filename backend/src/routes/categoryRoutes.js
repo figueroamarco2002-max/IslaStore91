@@ -1,7 +1,7 @@
 // src/routes/categoryRoutes.js
 const express = require('express');
 const router = express.Router();
-const { body, param, oneOf, validationResult } = require('express-validator');
+const { body, param, validationResult } = require('express-validator');
 const categoryController = require('../controllers/categoryController');
 const auth = require('../middleware/auth');
 
@@ -23,13 +23,10 @@ const validateCategory = [
 ];
 
 // Acepta un :id que sea entero positivo o UUID v4
-const validateId = oneOf(
-  [
-    param('id').isInt({ min: 1 }),
-    param('id').isUUID(4)
-  ],
-  { message: 'ID de categoría inválido' }
-);
+// Acepta solo enteros positivos (categories.id es integer, no UUID).
+// El código anterior aceptaba también UUID por copia de productRoutes,
+// pero esa rama era código muerto: llegaba a Postgres y rompía con 500.
+const validateId = param('id').isInt({ min: 1 }).withMessage('ID de categoría inválido');
 
 const handleValidation = (req, res, next) => {
   const errors = validationResult(req);

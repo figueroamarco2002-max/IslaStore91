@@ -1,6 +1,6 @@
 const ProximaVezImage = require('../models/ProximaVezImage');
 const ProximaVezSettings = require('../models/ProximaVezSettings');
-const { subirImagen } = require('../utils/supabaseStorage');
+const { subirImagen, eliminarImagen } = require('../utils/supabaseStorage');
 const { sendError, isValidId } = require('../utils/security');
 
 const MAX_IMAGES = 10;
@@ -144,8 +144,17 @@ exports.deleteImage = async (req, res) => {
     if (!id) return res.status(400).json({ error: 'ID inválido' });
 
     try {
+        // 1. Borrar la fila de la DB. Si no existe, cortamos acá.
         const deleted = await ProximaVezImage.delete(id);
         if (!deleted) return res.status(404).json({ error: 'Imagen no encontrada' });
+
+        // 2. Best-effort: borrar el archivo de Supabase Storage. La fila
+        // ya está borrada de la DB, así que no rompemos la respuesta si
+        // Storage falla (solo queda un archivo huérfano, que no es visible).
+        if (deleted.image_url) {
+            await eliminarImagen(deleted.image_url);
+        }
+
         res.json({ message: 'Imagen eliminada' });
     } catch (error) {
         return sendError(res, 500, 'Error al eliminar imagen', error);

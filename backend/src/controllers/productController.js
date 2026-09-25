@@ -4,7 +4,7 @@ const Category = require('../models/Category');
 const Section = require('../models/Section');
 const fs = require('fs');
 const path = require('path');
-const { subirImagen } = require('../utils/supabaseStorage');
+const { subirImagen, eliminarImagen } = require('../utils/supabaseStorage');
 const { sendError, isValidId, sanitizeUrl } = require('../utils/security');
 
 const UPLOADS_DIR = path.join(__dirname, '..', '..', 'uploads');
@@ -311,7 +311,7 @@ exports.updateProduct = async (req, res) => {
 
         const productData = {
             name: name.trim(),
-            description: (description && typeof description === 'string') ? description.trim().slice(0, 5000) : '',
+            description: (description && typeof description === 'string') ? description.trim().slice(0, 500) : '',
             price: priceNum,
             stock: stockNum,
             category_id: categoryIdNum,
@@ -342,14 +342,36 @@ exports.updateProduct = async (req, res) => {
         const archivosSubidos = extraerArchivosSubidos(req);
 
         if (archivosSubidos.length > 0) {
+            // Capturar URLs viejas ANTES de borrar las filas.
+            const oldImages = await ProductImage.findByProduct(id);
+
             const imageUrls = await Promise.all(archivosSubidos.map(file => subirImagen(file)));
             await ProductImage.deleteByProduct(id);
             for (let i = 0; i < imageUrls.length; i++) {
                 await ProductImage.create(id, imageUrls[i], i === 0);
             }
+
+            // Best-effort: limpiar los archivos viejos.
+            await Promise.allSettled(
+                oldImages.map(img => {
+                    if (!img.image_url) return Promise.resolve();
+                    eliminarArchivoLocalSeguro(img.image_url);
+                    return eliminarImagen(img.image_url);
+                })
+            );
         } else if (sanitizedImageUrl) {
+            const oldImages = await ProductImage.findByProduct(id);
+
             await ProductImage.deleteByProduct(id);
             await ProductImage.create(id, sanitizedImageUrl, true);
+
+            await Promise.allSettled(
+                oldImages.map(img => {
+                    if (!img.image_url) return Promise.resolve();
+                    eliminarArchivoLocalSeguro(img.image_url);
+                    return eliminarImagen(img.image_url);
+                })
+            );
         }
 
         res.json({
@@ -366,15 +388,25 @@ exports.deleteProduct = async (req, res) => {
     if (!id) return res.status(400).json({ error: 'ID de producto inválido' });
 
     try {
+        // 1. Capturar las URLs de las imágenes ANTES de borrar las filas.
         const images = await ProductImage.findByProduct(id);
-        for (let img of images) {
-            eliminarArchivoLocalSeguro(img.image_url);
-        }
+
+        // 2. Borrar de la DB: primero las imágenes, después el producto.
         await ProductImage.deleteByProduct(id);
         const product = await Product.delete(id);
         if (!product) {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
+
+        // 3. Best-effort: limpiar los archivos. Local + Supabase en paralelo.
+        await Promise.allSettled(
+            images.map(img => {
+                if (!img.image_url) return Promise.resolve();
+                eliminarArchivoLocalSeguro(img.image_url);
+                return eliminarImagen(img.image_url);
+            })
+        );
+
         res.json({ message: 'Producto eliminado correctamente' });
     } catch (error) {
         return sendError(res, 500, 'Error al eliminar producto', error);

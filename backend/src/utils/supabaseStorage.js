@@ -64,5 +64,50 @@ async function subirImagen(file, subfolder = '') {
     const { data } = supabase.storage.from(BUCKET_NAME).getPublicUrl(storagePath);
     return data.publicUrl;
 }
+if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    throw new Error('SUPABASE_URL y SUPABASE_SERVICE_KEY son obligatorias para subir imágenes.');
+}
+/**
+ * Extrae el path relativo dentro del bucket a partir de una URL pública.
+ * Ej: https://xxx.supabase.co/storage/v1/object/public/productos/proxima-vez/123-456.jpg
+ *     -> "proxima-vez/123-456.jpg"
+ * Devuelve null si la URL no pertenece a este bucket o no tiene el formato esperado.
+ */
+function pathFromPublicUrl(publicUrl) {
+    if (typeof publicUrl !== 'string') return null;
+    const marker = `/storage/v1/object/public/${BUCKET_NAME}/`;
+    const idx = publicUrl.indexOf(marker);
+    if (idx === -1) return null;
 
-module.exports = { subirImagen };
+    const encodedPath = publicUrl.slice(idx + marker.length).split('?')[0].split('#')[0];
+    try {
+        return decodeURIComponent(encodedPath);
+    } catch {
+        return encodedPath;
+    }
+}
+
+/**
+ * Elimina un archivo de Supabase Storage a partir de su URL pública.
+ * Best-effort: nunca lanza. Devuelve true si se eliminó, false si no se
+ * pudo (URL inválida, archivo inexistente, error de red, etc.).
+ * Pensado para llamarse DESPUÉS de borrar la fila de la DB, para no
+ * bloquear la operación principal si Supabase tiene un hipo.
+ */
+async function eliminarImagen(publicUrl) {
+    const path = pathFromPublicUrl(publicUrl);
+    if (!path) return false;
+    try {
+        const { error } = await supabase.storage.from(BUCKET_NAME).remove([path]);
+        if (error) {
+            console.error('Error al eliminar imagen de Supabase:', error.message);
+            return false;
+        }
+        return true;
+    } catch (err) {
+        console.error('Error inesperado al eliminar imagen de Supabase:', err.message || err);
+        return false;
+    }
+}
+
+module.exports = { subirImagen, eliminarImagen };
