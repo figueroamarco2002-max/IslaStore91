@@ -116,27 +116,16 @@
             <div class="filters-container"
                 style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
 
-                <!-- Filtro Principal: Categoría -->
-                <div class="filter-group" id="filter-category" style="display: none;">
-                    <button class="filter-btn active" data-filter="Todos"
-                        onclick="setFilter('categoria', 'Todos')">Todos</button>
-                    <button class="filter-btn" data-filter="Hombre"
-                        onclick="setFilter('categoria', 'Hombre')">Hombres</button>
-                    <button class="filter-btn" data-filter="Mujer"
-                        onclick="setFilter('categoria', 'Mujer')">Mujeres</button>
+                <!-- Filtros de categoría (dinámicos, se reemplazan al cargar) -->
+                <div id="filter-category">
+                    <button class="filter-btn active" data-filter="Todos">Todas</button>
                 </div>
 
-                <!-- Sub-Filtro: Estilo -->
-                <div class="filter-group" id="filter-style">
-                    <button class="filter-btn active" data-filter="Todos"
-                        onclick="setFilter('estilo', 'Todos')">Cualquier Estilo</button>
-                    <button class="filter-btn" data-filter="Urbano"
-                        onclick="setFilter('estilo', 'Urbano')">Urbano</button>
-                    <button class="filter-btn" data-filter="Deportivo"
-                        onclick="setFilter('estilo', 'Deportivo')">Deportivo</button>
+                <!-- Filtros de estilo (dinámicos, se reemplazan al cargar) -->
+                <div id="filter-style">
+                    <button class="filter-btn active" data-filter="Todos">Cualquier Estilo</button>
                 </div>
             </div>
-
             <!-- GRID DE PRODUCTOS -->
             <div class="product-grid" id="product-grid">
                 <!-- Los productos se inyectan vía JS -->
@@ -249,4 +238,4 @@
     <script src="js/search.js"></script>
 </body>
 
-</html> 
+</html>

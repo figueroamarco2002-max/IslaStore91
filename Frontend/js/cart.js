@@ -40,7 +40,6 @@ function saveCart() {
 // 3. AÑADIR PRODUCTO AL CARRITO (con validación)
 // ====================================================================
 function addToCart(id) {
-    // Usamos el arreglo global products (definido en products.js)
     const productList = typeof products !== 'undefined' ? products : [];
     const product = productList.find(p => p.id === id);
     if (!product) {
@@ -53,7 +52,6 @@ function addToCart(id) {
     if (existItem) {
         existItem.qty = (existItem.qty || 1) + 1;
     } else {
-        // Guardamos una copia segura (no hace falta sanitizar aquí, solo almacenamos)
         cart.push({ ...product, qty: 1 });
     }
 
@@ -73,10 +71,10 @@ function removeFromCart(id) {
 }
 
 // ====================================================================
-// 5. ACTUALIZAR LA UI DEL CARRITO (SEGURA)
-//    - Actualiza el badge del carrito (contador)
-//    - Renderiza los items en el sidebar con escapeHTML
-//    - Actualiza el total
+// 5. ACTUALIZAR LA UI DEL CARRITO
+//    - Badge con contador de items
+//    - Lista de items (o estado vacío con CTA)
+//    - Total
 // ====================================================================
 function updateCartUI() {
     // ----- 5.1 Actualizar contador del badge -----
@@ -86,21 +84,38 @@ function updateCartUI() {
         badge.textContent = totalItems;
     });
 
-    // ----- 5.2 Renderizar productos en el sidebar -----
+    // ----- 5.2 Renderizar el cuerpo del carrito -----
     const cartItemsContainer = document.getElementById('cart-items');
     if (!cartItemsContainer) return;
 
-    // Limpiar contenedor
     cartItemsContainer.innerHTML = '';
 
     let totalPrice = 0;
 
+    // ----- 5.2.A Estado vacío (diseño con ícono + CTA) -----
     if (cart.length === 0) {
-        // Mensaje estático, seguro
-        cartItemsContainer.innerHTML = '<p style="text-align:center; color: var(--text-muted); padding: 20px;">Tu bolsa está vacía.</p>';
+        cartItemsContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; gap: 14px;">
+                <div style="width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-bag-shopping" style="font-size: 2.2rem; color: var(--text-muted); opacity: 0.5;"></i>
+                </div>
+                <h3 style="margin: 0; font-size: 1.2rem; color: var(--text-main); font-weight: 700; letter-spacing: 1px; text-transform: uppercase;">
+                    Carrito vacío
+                </h3>
+                <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem; max-width: 260px; line-height: 1.5;">
+                    Explora nuestro catálogo urbano para añadir prendas.
+                </p>
+                <button onclick="toggleCart()"
+                    style="margin-top: 8px; background: var(--accent-color); color: #FFFFFF; border: none; padding: 12px 28px; border-radius: 999px; font-weight: 700; cursor: pointer; letter-spacing: 1px; font-size: 0.85rem; text-transform: uppercase; transition: background 0.2s;"
+                    onmouseover="this.style.background='var(--accent-hover)'"
+                    onmouseout="this.style.background='var(--accent-color)'">
+                    Ver catálogo
+                </button>
+            </div>
+        `;
     } else {
+        // ----- 5.2.B Items del carrito -----
         cart.forEach(item => {
-            // === SANITIZAMOS TODOS LOS DATOS DINÁMICOS ===
             const nombreSeguro = escapeHTML(item.name || item.nombre || 'Producto sin nombre');
             const precioItem = parseFloat(item.price || item.precio || 0);
             const precioSeguro = precioItem.toFixed(2);
@@ -109,21 +124,24 @@ function updateCartUI() {
             totalPrice += subtotal;
 
             const imagenSrc = item.imagen || item.image_url || 'https://placehold.co/100x100/eeeeee/999999?text=Img';
-            // El alt también debe ser sanitizado
             const altSeguro = nombreSeguro;
-
-            // El id se usa en el onclick, no necesita escape (es numérico o UUID)
             const itemId = item.id;
 
             cartItemsContainer.innerHTML += `
-                <div class="cart-item" style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid #B6B6B6; padding-bottom: 10px;">
-                    <img src="${imagenSrc}" alt="${altSeguro}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;">
-                    <div class="cart-item-info" style="flex-grow: 1;">
-                        <h4 class="cart-item-title" style="margin: 0; font-size: 0.95rem; color: #0D0D0D;">${nombreSeguro}</h4>
-                        <span class="cart-item-price" style="color: #E63946; font-weight: bold;">$${precioSeguro}</span>
-                        <span class="cart-item-qty" style="color: #3D3D3D; font-size: 0.85rem;">x ${qty}</span>
+                <div class="cart-item" style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+                    <img src="${imagenSrc}" alt="${altSeguro}" style="width: 64px; height: 64px; object-fit: cover; border-radius: 8px; flex-shrink: 0;">
+                    <div style="flex-grow: 1; min-width: 0;">
+                        <h4 style="margin: 0 0 4px 0; font-size: 0.95rem; color: var(--text-main); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            ${nombreSeguro}
+                        </h4>
+                        <span style="color: var(--accent-color); font-weight: 700; font-size: 0.95rem;">$${precioSeguro}</span>
+                        <span style="color: var(--text-muted); font-size: 0.82rem; margin-left: 6px;">× ${qty}</span>
                     </div>
-                    <button class="remove-item" onclick="removeFromCart('${itemId}')" style="background: none; border: none; color: #E63946; cursor: pointer; font-size: 1.1rem;">
+                    <button onclick="removeFromCart('${itemId}')"
+                        aria-label="Eliminar producto"
+                        style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 8px; border-radius: 8px; transition: color 0.2s, background 0.2s;"
+                        onmouseover="this.style.color='var(--accent-color)'; this.style.background='rgba(230,57,70,0.08)'"
+                        onmouseout="this.style.color='var(--text-muted)'; this.style.background='transparent'">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
                 </div>
@@ -140,7 +158,6 @@ function updateCartUI() {
 
 // ====================================================================
 // 6. GARANTIZAR QUE EL SIDEBAR EXISTA (creación dinámica)
-//    - No contiene datos del usuario, así que es seguro.
 // ====================================================================
 function ensureCartSidebar() {
     if (!document.getElementById('cart-sidebar')) {
@@ -155,7 +172,7 @@ function ensureCartSidebar() {
         sidebar.innerHTML = `
             <div class="cart-header">
                 <h2>Tu Bolsa</h2>
-                <button class="close-cart" onclick="toggleCart()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="close-cart" onclick="toggleCart()" aria-label="Cerrar carrito"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="cart-body" id="cart-items"></div>
             <div class="cart-footer">
@@ -184,11 +201,7 @@ function toggleCart() {
 }
 
 // ====================================================================
-// 8. FINALIZAR COMPRA POR WHATSAPP (SEGURO)
-//    - El mensaje se construye con datos del carrito, pero no se muestra
-//      en el DOM, solo se envía por URL. Aún así, sanitizamos el nombre
-//      por si acaso, aunque no es necesario para seguridad (solo afecta
-//      al mensaje de texto).
+// 8. FINALIZAR COMPRA POR WHATSAPP
 // ====================================================================
 function checkoutWhatsApp() {
     if (cart.length === 0) {
@@ -196,16 +209,13 @@ function checkoutWhatsApp() {
         return;
     }
 
-    // Tu número de WhatsApp real configurado en config.js
     const numeroWhatsApp = WHATSAPP_NUMBER;
 
-    // Construir mensaje (no hay riesgo de XSS porque va a WhatsApp, no al DOM)
     let mensaje = "Hola! Isla Store 91, quiero realizar el siguiente pedido:\n\n";
 
     let totalPrice = 0;
     cart.forEach(item => {
         const nombreItem = item.name || item.nombre || 'Producto';
-        // Sanitizamos por si acaso (aunque no afecta al DOM)
         const nombreSeguro = escapeHTML(nombreItem);
         const precioItem = parseFloat(item.price || item.precio || 0);
         const qty = item.qty || 1;
@@ -217,11 +227,9 @@ function checkoutWhatsApp() {
 
     mensaje += `\n*Total a pagar: $${totalPrice.toFixed(2)}*\n\nQuedo atento para coordinar el pago y el envío. ¡Gracias!`;
 
-    // Codificamos el mensaje para que la URL de WhatsApp lo lea sin errores
     const mensajeCodificado = encodeURIComponent(mensaje);
     const urlWhatsApp = `https://wa.me/${numeroWhatsApp}?text=${mensajeCodificado}`;
 
-    // Abrimos WhatsApp en una pestaña nueva
     window.open(urlWhatsApp, '_blank');
 }
 
