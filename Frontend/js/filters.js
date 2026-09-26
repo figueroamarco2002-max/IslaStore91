@@ -13,18 +13,11 @@
  * ====================================================================
  */
 
-// ====================================================================
-// 1. setFilter — maneja los clics en los botones de filtro
-//    Actualiza currentFilters, cambia la clase visual 'active',
-//    vuelve a consultar al backend y re-renderiza la grilla.
-// ====================================================================
 async function setFilter(tipoFiltro, valor) {
-    // 1. Guardar el filtro seleccionado
     if (typeof currentFilters !== 'undefined') {
         currentFilters[tipoFiltro] = valor;
     }
 
-    // 2. Actualizar el estado visual (botón negro = activo)
     let grupoId = '';
     if (tipoFiltro === 'categoria') grupoId = 'filter-category';
     if (tipoFiltro === 'estilo') grupoId = 'filter-style';
@@ -40,12 +33,56 @@ async function setFilter(tipoFiltro, valor) {
         if (botonSeleccionado) botonSeleccionado.classList.add('active');
     }
 
-    // 3. Consultar al backend con los filtros actualizados
+    if (typeof fetchProducts === 'function') {
+        await fetchProducts(currentFilters);
+    }
+    if (typeof renderProducts === 'function') {
+        renderProducts();
+    }
+}
+
+// ====================================================================
+// 1. setFilters — aplica VARIOS filtros de una vez con una sola petición
+// Evita el race condition de llamar setFilter múltiples veces seguidas
+// (cada setFilter hace su propio fetch + render, y las respuestas se
+// pisan entre sí).
+//
+// @param {Object} filtros - ej: { categoria: 'Hombre', tipo: 'ropa' }
+// ====================================================================
+async function setFilters(filtros) {
+    // 1. Guardar todos los filtros de una vez
+    if (typeof currentFilters !== 'undefined') {
+        Object.assign(currentFilters, filtros);
+    }
+
+    // 2. Actualizar el estado visual de los botones afectados
+    const grupoPorFiltro = {
+        categoria: 'filter-category',
+        estilo: 'filter-style',
+        tipo: 'filter-tipo'
+    };
+
+    Object.keys(filtros).forEach(nombreFiltro => {
+        const grupoId = grupoPorFiltro[nombreFiltro];
+        if (!grupoId) return;
+
+        const valor = filtros[nombreFiltro];
+
+        document.querySelectorAll(`#${grupoId} .filter-btn`).forEach(btn =>
+            btn.classList.remove('active')
+        );
+        const botonSeleccionado = document.querySelector(
+            `#${grupoId} .filter-btn[data-filter="${valor}"]`
+        );
+        if (botonSeleccionado) botonSeleccionado.classList.add('active');
+    });
+
+    // 3. UNA sola petición al backend con todos los filtros aplicados
     if (typeof fetchProducts === 'function') {
         await fetchProducts(currentFilters);
     }
 
-    // 4. Re-renderizar
+    // 4. UNA sola renderizada
     if (typeof renderProducts === 'function') {
         renderProducts();
     }

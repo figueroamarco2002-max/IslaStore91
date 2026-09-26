@@ -4,20 +4,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Ritual | Jr Store</title>
-    <!-- ========== FAVICON: J negra + S naranja sobre fondo blanco ========== -->
+    <title>El Ritual | Isla Store 91</title>
+    <!-- ========== FAVICON: Isla Store 91 ========== -->
     <link rel="icon" type="image/svg+xml"
-        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFFFFF'/%3E%3Ctext x='30' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%230D0D0D' text-anchor='middle'%3EJ%3C/text%3E%3Ctext x='70' y='70' font-family='Arial' font-size='70' font-weight='bold' fill='%233D3D3D' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E">
-    <meta name="description" content="Más que vestirse: una forma de ser">
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23FFFFFF'/%3E%3Ctext x='50' y='70' font-family='Arial' font-size='50' font-weight='bold' fill='%232A6B76' text-anchor='middle'%3EIS%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="Más que vestirse: una forma de ser | Isla Store 91">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
+
+    <!-- ========== ESTILOS DEL LOGO RECREADO EN CÓDIGO ========== -->
+    <style>
+        /* Logo SVG (Header y Footer) */
+        .logo-svg {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            gap: 4px;
+        }
+
+        .logo-svg svg {
+            height: 55px;
+            width: auto;
+        }
+
+        .logo-texto {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-texto .isla {
+            color: #2A6B76;
+        }
+
+        .logo-texto .store {
+            color: #3E7B9B;
+        }
+
+        .logo-texto .linea-91 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #D1B99B;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .logo-texto .linea-91::before,
+        .logo-texto .linea-91::after {
+            content: "";
+            display: block;
+            width: 22px;
+            height: 1px;
+            background-color: #D1B99B;
+        }
+
+        /* Adaptación para el Footer (fondo oscuro) */
+        .footer-brand .logo-texto .isla,
+        .footer-brand .logo-texto .store {
+            color: #ffffff;
+        }
+
+        /* Ajuste Responsive */
+        @media (max-width: 768px) {
+            .logo-svg svg {
+                height: 45px;
+            }
+
+            .logo-texto {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <!-- HEADER -->
     <header>
-        <a href="index.html" class="logo">Jr <span>Store</span></a>
+        <!-- LOGO RECREADO EN CÓDIGO -->
+        <a href="index.html" class="logo-svg">
+            <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                <!-- Ola superior (Teal) -->
+                <path d="M 30 40 Q 70 0 120 30 Q 160 50 180 40 Q 150 60 110 50 Q 60 35 30 40 Z" fill="#2A6B76"
+                    stroke="#ffffff" stroke-width="4" stroke-linejoin="round" />
+                <!-- Ola media (Azul) -->
+                <path d="M 20 60 Q 70 30 130 55 Q 160 70 180 60 Q 150 80 110 70 Q 60 55 20 60 Z" fill="#3E7B9B"
+                    stroke="#ffffff" stroke-width="4" stroke-linejoin="round" />
+                <!-- Ola inferior (Beige) -->
+                <path d="M 40 80 Q 80 55 130 75 Q 160 90 170 80 Q 140 100 100 90 Q 50 75 40 80 Z" fill="#D1B99B"
+                    stroke="#ffffff" stroke-width="4" stroke-linejoin="round" />
+            </svg>
+            <div class="logo-texto">
+                <div><span class="isla">Isla</span> <span class="store">Store</span></div>
+                <div class="linea-91">91</div>
+            </div>
+        </a>
 
         <nav id="navbar">
             <a href="index.html" class="active-link">Inicio</a>
@@ -146,9 +235,9 @@
                         style="font-size: 2.5rem; color: var(--accent-color); margin-bottom: 1rem;"></i>
                     <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 0.75rem;">Súmate al Ritual</h3>
                     <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Síguenos en Instagram y comparte tu look
-                        con <strong>#JrStoreRitual</strong></p>
-                    <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer"
-                        class="btn-primary" style="display: inline-block;">@JrStore en Instagram</a>
+                        con <strong>#IslaStore91Ritual</strong></p>
+                    <a href="https://www.instagram.com/IslaStore91" target="_blank" rel="noopener noreferrer"
+                        class="btn-primary" style="display: inline-block;">@IslaStore91 en Instagram</a>
                 </div>
             </div>
 
@@ -159,10 +248,24 @@
     <footer>
         <div class="footer-content">
             <div class="footer-brand">
-                <div class="logo-footer">Jr <span>Store</span></div>
-                <p>Viste tu esencia. Estilo urbano y deportivo para quienes marcan la diferencia.</p>
+                <!-- LOGO RECREADO EN CÓDIGO PARA EL FOOTER -->
+                <div class="logo-svg">
+                    <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 30 40 Q 70 0 120 30 Q 160 50 180 40 Q 150 60 110 50 Q 60 35 30 40 Z" fill="#2A6B76"
+                            stroke="#ffffff" stroke-width="4" stroke-linejoin="round" />
+                        <path d="M 20 60 Q 70 30 130 55 Q 160 70 180 60 Q 150 80 110 70 Q 60 55 20 60 Z" fill="#3E7B9B"
+                            stroke="#ffffff" stroke-width="4" stroke-linejoin="round" />
+                        <path d="M 40 80 Q 80 55 130 75 Q 160 90 170 80 Q 140 100 100 90 Q 50 75 40 80 Z" fill="#D1B99B"
+                            stroke="#ffffff" stroke-width="4" stroke-linejoin="round" />
+                    </svg>
+                    <div class="logo-texto">
+                        <div><span class="isla">Isla</span> <span class="store">Store</span></div>
+                        <div class="linea-91">91</div>
+                    </div>
+                </div>
+                <p>Viste tu esencia. Diferentes estilos para quienes marcan la diferencia.</p>
                 <div class="social-icons">
-                    <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer"
+                    <a href="https://www.instagram.com/IslaStore91" target="_blank" rel="noopener noreferrer"
                         aria-label="Instagram">
                         <i class="fa-brands fa-instagram"></i>
                     </a>
@@ -206,9 +309,10 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 Jr Store. Todos los derechos reservados.</p>
+            <p>&copy; 2026 Isla Store 91. Todos los derechos reservados.</p>
         </div>
     </footer>
+
     <script src="js/config.js"></script>
     <script src="js/nav-types.js"></script>
     <script src="js/cart.js"></script>

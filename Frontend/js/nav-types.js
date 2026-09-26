@@ -74,10 +74,10 @@ function buildTypeLinkHTML(categoria, type) {
     const label = escapeHTML(type.label);
     const key = escapeHTML(type.key);
 
-    // index.html tiene setFilter()/irAlCatalogo() disponibles globalmente;
+    // index.html tiene setFilters()/irAlCatalogo() disponibles globalmente;
     // el resto de páginas usa sessionStorage + navega a index.html#catalogo.
-    if (typeof setFilter === 'function' && typeof irAlCatalogo === 'function') {
-        return `<a href="#" onclick="setFilter('categoria', '${categoria}'); setFilter('tipo', '${key}'); irAlCatalogo(); event.preventDefault();">${label}</a>`;
+    if (typeof setFilters === 'function' && typeof irAlCatalogo === 'function') {
+        return `<a href="#" onclick="event.preventDefault(); setFilters({ categoria: '${categoria}', tipo: '${key}' }).then(irAlCatalogo);">${label}</a>`;
     }
     return `<a href="index.html#catalogo" onclick="sessionStorage.setItem('filter_categoria','${categoria}'); sessionStorage.setItem('filter_tipo','${key}');">${label}</a>`;
 }

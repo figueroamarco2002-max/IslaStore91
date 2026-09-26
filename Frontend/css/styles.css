@@ -1421,9 +1421,9 @@ footer {
     left: 0;
     width: 100%;
     background: var(--surface-color);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 8px 24px rgba(13, 13, 13, 0.12);
     z-index: 1050;
-    padding: 1rem 5%;
+    padding: 1.2rem 5%;
     transform: translateY(-100%);
     opacity: 0;
     visibility: hidden;
@@ -1437,35 +1437,79 @@ footer {
 }
 
 .search-panel-inner {
-    max-width: 700px;
+    max-width: 720px;
     margin: 0 auto;
 }
 
+
+/* Fila del input: input + 2 botones. El input crece, los botones
+   mantienen su tamaño. min-width: 0 en el input evita que empuje
+   los botones fuera de la pantalla. */
 .search-input-row {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    width: 100%;
+    background: var(--bg-color, #F5F5F5);
+    border: 2px solid transparent;
+    border-radius: 999px;
+    padding: 0.35rem 0.5rem 0.35rem 1.1rem;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.search-input-row:focus-within {
+    border-color: var(--accent-color);
+    background: #ffffff;
 }
 
 .search-input-row input {
-    flex: 1;
-    padding: 0.9rem 1.2rem;
-    border: 2px solid var(--border-color);
-    border-radius: 30px;
+    flex: 1 1 auto;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
     font-family: inherit;
     font-size: 1rem;
-    outline: none;
-    transition: var(--transition);
+    color: var(--text-main);
+    padding: 0.6rem 0;
 }
 
-.search-input-row input:focus {
-    border-color: var(--accent-color);
+.search-input-row input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
+/* Botones del panel (lupa y X): cuadrados redondeados, con hover */
+.search-input-row button {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.search-input-row button:hover {
+    background: rgba(13, 13, 13, 0.06);
+    color: var(--text-main);
 }
 
 .search-close-btn {
-    font-size: 1.3rem;
-    color: var(--text-muted);
-    padding: 0.5rem;
+    /* ya no hace falta font-size: 1.3rem ni padding: 0.5rem, la regla
+       de .search-input-row button los maneja a todos por igual */
+}
+
+.search-panel.active {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
 }
 
 .search-close-btn:hover {
@@ -1477,6 +1521,8 @@ footer {
     max-height: 60vh;
     overflow-y: auto;
 }
+
+/* Porción de resultados en tiempo real (dentro del panel) */
 
 .search-result-item {
     display: flex;

@@ -82,8 +82,15 @@ function buildFilterConditions(filters, values) {
     values.push(filters.tipo);
   }
   if (filters.search && filters.search.trim() !== '') {
-    conditions.push(`p.name ILIKE $${values.length + 1}`);
-    values.push(`%${filters.search.trim()}%`);
+    // Buscar en nombre, tipo y estilo, para que "gorra" encuentre
+    // productos cuyo nombre no contiene la palabra pero su tipo sí.
+    const term = `%${filters.search.trim()}%`;
+    conditions.push(`(
+            p.name ILIKE $${values.length + 1}
+            OR p.tipo ILIKE $${values.length + 1}
+            OR p.estilo ILIKE $${values.length + 1}
+        )`);
+    values.push(term);
   }
 
   return conditions;
