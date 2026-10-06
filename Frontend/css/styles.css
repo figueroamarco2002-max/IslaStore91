@@ -1929,3 +1929,21 @@ footer {
     font-size: 1rem;
     border-radius: 10px;
 }
+
+/* Badge "Agotado" — mismo efecto glass que .carousel-arrow (pegar al final de css/styles.css) */
+.sold-out-glass {
+    background: rgba(13, 13, 13, 0.1);
+    border: 1px solid rgba(13, 13, 13, 0.15);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    box-shadow: var(--shadow-md);
+    color: #FFFFFF;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 12px 26px;
+    border-radius: 999px;
+}

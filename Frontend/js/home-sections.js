@@ -2,12 +2,6 @@
  * ====================================================================
  * ARCHIVO: home-sections.js (carruseles dinámicos)
  * DEPENDENCIA: config.js (debe cargarse antes para tener escapeHTML)
- * DESCRIPCIÓN: Obtiene las secciones visibles desde /api/sections,
- *              genera dinámicamente los carruseles de productos y los
- *              inicializa respetando la visibilidad configurada.
- *              También intercala los banners de "Mujeres", Instagram
- *              y "Próxima Vez" en puntos específicos del recorrido.
- * SEGURIDAD: Todos los datos dinámicos se sanitizan con escapeHTML().
  * ====================================================================
  */
 
@@ -53,6 +47,10 @@ function buildCarouselCardHTML(producto) {
     }
     const categoriaSegura = escapeHTML(categoriaRaw);
 
+    const stockNum = parseInt(producto.stock, 10);
+    const stock = Number.isFinite(stockNum) ? stockNum : 0;
+    const agotado = stock <= 0;
+
     return `
     <div class="product-card show" onclick="openProductDetails('${idProd}')"
          style="border: 1px solid #B6B6B6; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(13,13,13,0.06); display: flex; flex-direction: column; cursor: pointer; min-width: 220px; max-width: 260px; flex-shrink: 0;">
@@ -68,6 +66,13 @@ function buildCarouselCardHTML(producto) {
                     ${categoriaSegura}
                 </span>` : ''}
             </div>
+
+            ${agotado ? `
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2;">
+                <span class="sold-out-glass" style="font-size: 0.72rem; letter-spacing: 2.5px; padding: 10px 20px;">
+                    Agotado
+                </span>
+            </div>` : ''}
         </div>
 
         <div class="product-info" style="padding: 14px; display: flex; flex-direction: column; gap: 6px; flex: 1;">
@@ -85,10 +90,11 @@ function buildCarouselCardHTML(producto) {
                     <span style="font-size: 0.65rem; color: #6E6E6E; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">Precio</span>
                     <span style="font-size: 1.25rem; color: #0D0D0D; font-weight: 800; line-height: 1;">$${precioSeguro}</span>
                 </div>
+                ${!agotado ? `
                 <button class="product-action-btn product-action-btn--sm" aria-label="Añadir a la bolsa"
-    onclick="event.stopPropagation(); addToCart('${idProd}')">
-    <i class="fa-solid fa-cart-plus"></i>
-</button>
+                    onclick="event.stopPropagation(); addToCart('${idProd}')">
+                    <i class="fa-solid fa-cart-plus"></i>
+                </button>` : ''}
             </div>
         </div>
     </div>
@@ -286,11 +292,6 @@ async function initDynamicSections() {
     const container = document.getElementById('home-sections-container');
     if (!container) return;
 
-    // Además de secciones/Próxima Vez/configuración, pedimos los productos
-    // de mujer YA FILTRADOS (el backend usa ILIKE, así que no importan
-    // mayúsculas/minúsculas) — así confirmamos que además de estar
-    // "visible" la sección, hay contenido real detrás. El banner de
-    // Instagram no depende de nada de esto: solo de su propio interruptor.
     const [sections, proximaVezData, sectionSettings, productosMujer] = await Promise.all([
         fetchSections(),
         fetchProximaVez(),
@@ -309,17 +310,9 @@ async function initDynamicSections() {
     const igBannerHabilitado = sectionSettings.ig_banner !== false;
 
     const hayMujerVisible = visibleSections.some(s => String(s.category).toLowerCase() === 'mujer');
-
-    // Contenido real: al menos un producto que respalde la sección, no solo
-    // el flag "visible". Si desactivas todos los productos de mujer pero
-    // te olvidas de apagar la sección/el interruptor, el banner igual se
-    // oculta solo.
     const hayProductoDeMujer = Array.isArray(productosMujer) && productosMujer.length > 0;
 
     const mostrarWomenBanner = mujeresBannerHabilitado && hayMujerVisible && hayProductoDeMujer;
-    // El banner de Instagram es puramente decorativo: se muestra o se
-    // oculta según su propio interruptor, sin depender de secciones,
-    // estilos ni productos.
     const mostrarIgBanner = igBannerHabilitado;
 
     let womenBannerInserted = false;
@@ -344,9 +337,6 @@ async function initDynamicSections() {
         }
     });
 
-    // El banner de Instagram no depende de que exista una sección de
-    // gorras urbano: si el interruptor está activo pero no hubo dónde
-    // insertarlo "en contexto", se agrega igual al final.
     if (mostrarIgBanner && !igBannerInserted) {
         html += buildIgBannerHTML();
     }

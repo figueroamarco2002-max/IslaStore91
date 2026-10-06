@@ -8,14 +8,8 @@
  * ====================================================================
  */
 
-// ====================================================================
-// 1. VARIABLE GLOBAL DE PRODUCTOS
-// ====================================================================
 let products = [];
 
-// ====================================================================
-// 2. OBTENER PRODUCTOS DESDE EL BACKEND
-// ====================================================================
 async function fetchProducts(filters = {}) {
     try {
         const validFilters = {};
@@ -40,16 +34,10 @@ async function fetchProducts(filters = {}) {
     }
 }
 
-// ====================================================================
-// 3. FUNCIÓN OBSOLETA (mantenida por compatibilidad)
-// ====================================================================
 function saveProductsToStorage() {
     console.warn('saveProductsToStorage está obsoleto, usar API');
 }
 
-// ====================================================================
-// 4. RENDERIZADO DE PRODUCTOS
-// ====================================================================
 function renderProducts() {
     let grid = document.getElementById('product-grid') || document.querySelector('.product-grid');
     if (!grid) return;
@@ -83,6 +71,10 @@ function renderProducts() {
         }
         const categoriaSegura = escapeHTML(categoriaRaw);
 
+        const stockNum = parseInt(producto.stock, 10);
+        const stock = Number.isFinite(stockNum) ? stockNum : 0;
+        const agotado = stock <= 0;
+
         const cardHTML = `
             <div class="product-card" style="border: 1px solid #B6B6B6; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(13,13,13,0.06); display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
                 <div class="product-image" style="position: relative; width: 100%; aspect-ratio: 3 / 4; overflow: hidden; background: #E7E7E7; cursor: pointer;" onclick="openProductDetails('${idProd}')">
@@ -97,6 +89,13 @@ function renderProducts() {
                             ${categoriaSegura}
                         </span>` : ''}
                     </div>
+
+                    ${agotado ? `
+                    <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2;">
+                        <span class="sold-out-glass">
+                            Agotado
+                        </span>
+                    </div>` : ''}
                 </div>
 
                 <div class="product-info" style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1;">
@@ -114,10 +113,11 @@ function renderProducts() {
                             <span style="font-size: 0.7rem; color: #6E6E6E; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">Precio</span>
                             <span style="font-size: 1.4rem; color: #0D0D0D; font-weight: 800; line-height: 1;">$${precioSeguro}</span>
                         </div>
+                        ${!agotado ? `
                         <button class="product-action-btn" aria-label="Añadir a la bolsa"
-    onclick="event.stopPropagation(); addToCart('${idProd}')">
-    <i class="fa-solid fa-cart-plus"></i>
-</button>
+                            onclick="event.stopPropagation(); addToCart('${idProd}')">
+                            <i class="fa-solid fa-cart-plus"></i>
+                        </button>` : ''}
                     </div>
                 </div>
             </div>

@@ -1,26 +1,9 @@
 /**
  * ====================================================================
  * ARCHIVO: ui.js
- * DESCRIPCIÓN: Modal de detalles del producto, menú móvil y animaciones
- *              del carrito.
- *
- * IMPORTANTE: Este archivo NO declara `escapeHTML` ni `renderProducts`.
- *  - `escapeHTML` vive en config.js
- *  - `renderProducts` vive en products.js
- * Si los declarás acá, tenés funciones duplicadas y la que se cargue
- * última pisa a la otra (bug del 2026-09-25 con el catálogo).
- *
- * SEGURIDAD: Todos los datos dinámicos se escapan con escapeHTML()
- *            antes de insertarse con innerHTML.
  * ====================================================================
  */
 
-// ====================================================================
-// 1. INICIALIZACIÓN: al cargar la página se obtienen los productos y
-//    se renderizan. También se actualiza la UI del carrito.
-//    El chequeo de `currentFilters` evita un ReferenceError si el
-//    archivo filters.js se cargara después por algún motivo.
-// ====================================================================
 window.addEventListener('DOMContentLoaded', async () => {
   const filtros = (typeof currentFilters !== 'undefined') ? currentFilters : {};
   await fetchProducts(filtros);
@@ -28,11 +11,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (typeof updateCartUI === 'function') updateCartUI();
 });
 
-// ====================================================================
-// 2. MODAL DE DETALLES DEL PRODUCTO
-//    Al abrir el modal, se muestran nombre, precio, imágenes y
-//    descripción. Todos los datos se escapan con escapeHTML().
-// ====================================================================
 function openProductDetails(id) {
   const producto = products.find(p => p.id === id);
   if (!producto) return;
@@ -43,14 +21,12 @@ function openProductDetails(id) {
   const descripcionSegura = escapeHTML(producto.description || producto.descripcion ||
     'Una excelente elección para complementar tu estilo.');
 
-  // Badge superior: tipo de producto ("ropa" → "ROPA")
   const tipoRaw = (producto.tipo || '').trim();
   const tipoLabel = tipoRaw
     ? tipoRaw.replace(/_/g, ' ').toUpperCase()
     : 'PRODUCTO';
   const tipoSeguro = escapeHTML(tipoLabel);
 
-  // Badge inferior: categoría
   let categoriaRaw = producto.category_name || '';
   if (!categoriaRaw) {
     const idCat = producto.category_id || producto.categoria;
@@ -58,9 +34,11 @@ function openProductDetails(id) {
   }
   const categoriaSegura = escapeHTML(categoriaRaw);
 
-  // Alerta de stock bajo (solo si hay stock y es <= 5)
-  const stock = parseInt(producto.stock, 10);
-  const mostrarAlertaStock = Number.isFinite(stock) && stock > 0 && stock <= 5;
+  const stockNum = parseInt(producto.stock, 10);
+  const stock = Number.isFinite(stockNum) ? stockNum : 0;
+  const agotado = stock <= 0;
+
+  const mostrarAlertaStock = stock > 0 && stock <= 5;
   const alertaStock = mostrarAlertaStock ? `
       <div style="background: rgba(230,57,70,0.08); border: 1px solid rgba(230,57,70,0.25); border-radius: 12px; padding: 12px 16px; display: flex; align-items: flex-start; gap: 10px;">
         <i class="fa-solid fa-fire" style="color: var(--accent-color); font-size: 1rem; margin-top: 2px; flex-shrink: 0;"></i>
@@ -70,7 +48,14 @@ function openProductDetails(id) {
       </div>
   ` : '';
 
-  // Miniaturas (solo si hay > 1 foto)
+  const alertaAgotado = agotado ? `
+      <div style="display: flex; justify-content: center; padding: 6px 0;">
+        <span class="sold-out-glass">
+            Agotado
+        </span>
+      </div>
+  ` : '';
+
   const miniaturasHTML = imagenes.length > 1
     ? `<div class="modal-thumbs" style="display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;">
         ${imagenes.map((img, i) => `
@@ -86,14 +71,12 @@ function openProductDetails(id) {
   modalContent.innerHTML = `
     <div style="display: flex; flex-direction: column; gap: 20px; text-align: left;">
 
-      <!-- Imagen principal + miniaturas -->
       <div>
         <img id="modal-main-image" src="${imagenes[0]}" alt="${nombreSeguro}"
              style="width: 100%; max-height: 400px; object-fit: contain; border-radius: 12px; background: #E7E7E7; display: block;">
         ${miniaturasHTML}
       </div>
 
-      <!-- Info del producto -->
       <div style="display: flex; flex-direction: column; gap: 14px;">
 
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
@@ -119,16 +102,17 @@ function openProductDetails(id) {
         </p>
 
         ${alertaStock}
+        ${alertaAgotado}
       </div>
 
-      <!-- Botón de acción -->
+      ${!agotado ? `
       <button onclick="addToCart('${id}'); closeProductModal()"
         style="background: var(--text-main); color: #FFFFFF; border: none; padding: 16px; border-radius: 12px; cursor: pointer; font-weight: 700; width: 100%; font-size: 1.05rem; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.2s;"
         onmouseover="this.style.background='var(--accent-color)'"
         onmouseout="this.style.background='var(--text-main)'">
         <i class="fa-solid fa-bag-shopping"></i>
         Añadir a la bolsa
-      </button>
+      </button>` : ''}
 
     </div>
   `;
@@ -136,9 +120,7 @@ function openProductDetails(id) {
   document.getElementById('product-modal-overlay').classList.add('active');
   document.getElementById('product-modal').classList.add('active');
 }
-// ====================================================================
-// 3. CAMBIAR FOTO PRINCIPAL DEL MODAL (al hacer clic en una miniatura)
-// ====================================================================
+
 function setModalMainImage(thumbEl) {
   const mainImg = document.getElementById('modal-main-image');
   if (mainImg) mainImg.src = thumbEl.src;
@@ -149,17 +131,11 @@ function setModalMainImage(thumbEl) {
   thumbEl.style.border = '2px solid #E63946';
 }
 
-// ====================================================================
-// 4. CERRAR MODAL
-// ====================================================================
 function closeProductModal() {
   document.getElementById('product-modal-overlay').classList.remove('active');
   document.getElementById('product-modal').classList.remove('active');
 }
 
-// ====================================================================
-// 5. MENÚ MÓVIL
-// ====================================================================
 function toggleMenu() {
   const nav = document.getElementById('navbar');
   if (nav) {
@@ -167,9 +143,6 @@ function toggleMenu() {
   }
 }
 
-// ====================================================================
-// 6. TOAST DE NOTIFICACIÓN (sin datos del usuario, es seguro)
-// ====================================================================
 function showToast() {
   const container = document.getElementById('toast-container');
   if (!container) return;
@@ -187,14 +160,11 @@ function showToast() {
   }, 2500);
 }
 
-// ====================================================================
-// 7. ANIMACIÓN DEL BADGE DEL CARRITO (seguro, sin datos externos)
-// ====================================================================
 function animateBadge() {
   const badge = document.getElementById('cart-badge');
   if (!badge) return;
 
   badge.classList.remove('bounce');
-  void badge.offsetWidth; // Refresca la animación del navegador
+  void badge.offsetWidth;
   badge.classList.add('bounce');
 }

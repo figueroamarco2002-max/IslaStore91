@@ -1,11 +1,7 @@
 /**
  * ====================================================================
- * ARCHIVO: busqueda.js (búsqueda en tiempo real)
+ * ARCHIVO: search.js (búsqueda en tiempo real)
  * DEPENDENCIA: config.js (debe cargarse antes para tener escapeHTML)
- * DESCRIPCIÓN: Maneja el panel de búsqueda, búsqueda en vivo con
- *              debounce, y la página de resultados de búsqueda completa.
- * SEGURIDAD: Todos los datos dinámicos se sanitizan con escapeHTML()
- *            antes de insertarse en el DOM.
  * ====================================================================
  */
 
@@ -33,12 +29,10 @@ function toggleSearch() {
 }
 
 // ====================================================================
-// 3. CONSTRUIR ITEM DE RESULTADO (para la vista en vivo) - SEGURO
-//    Se usa escapeHTML en nombre, precio y alt de la imagen.
+// 3. CONSTRUIR ITEM DE RESULTADO (para la vista en vivo)
 // ====================================================================
 function buildSearchResultItem(producto) {
     const idProd = producto.id || '';
-    // Sanitizamos todos los datos que se muestran
     const nombreSeguro = escapeHTML(producto.name || producto.nombre || 'Producto sin nombre');
     const precioSeguro = parseFloat(producto.price || producto.precio || 0).toFixed(2);
     const imagenSrc = getProductImages(producto)[0];
@@ -57,16 +51,12 @@ function buildSearchResultItem(producto) {
 
 // ====================================================================
 // 4. SELECCIONAR UN RESULTADO DE BÚSQUEDA
-//    - Cierra el panel, limpia el input y los resultados.
-//    - Asegura que el producto esté registrado globalmente.
-//    - Abre el modal de detalles.
 // ====================================================================
 async function seleccionarResultadoBusqueda(id) {
     document.getElementById('search-panel').classList.remove('active');
     document.getElementById('search-input').value = '';
     document.getElementById('search-live-results').innerHTML = '';
 
-    // Aseguramos que el producto esté disponible antes de abrir el modal
     if (typeof products !== 'undefined' && !products.find(p => p.id === id)) {
         const encontrados = await fetchProductsFiltered({});
         registerProductsGlobally(encontrados);
@@ -79,9 +69,6 @@ async function seleccionarResultadoBusqueda(id) {
 
 // ====================================================================
 // 5. MANEJAR BÚSQUEDA EN VIVO (con debounce)
-//    - Obtiene productos filtrados por el término de búsqueda.
-//    - Los registra globalmente.
-//    - Renderiza los resultados usando buildSearchResultItem (seguro).
 // ====================================================================
 async function manejarBusquedaEnVivo() {
     const termino = document.getElementById('search-input').value.trim();
@@ -112,8 +99,7 @@ function onSearchInput() {
 }
 
 // ====================================================================
-// 7. CONSTRUIR TARJETA PARA LA PÁGINA DE RESULTADOS (SEGURO)
-//    Similar a buildSearchResultItem, pero con estructura de grid.
+// 7. CONSTRUIR TARJETA PARA LA PÁGINA DE RESULTADOS
 // ====================================================================
 function buildSearchGridCardHTML(producto) {
     const idProd = producto.id || '';
@@ -137,6 +123,10 @@ function buildSearchGridCardHTML(producto) {
     }
     const categoriaSegura = escapeHTML(categoriaRaw);
 
+    const stockNum = parseInt(producto.stock, 10);
+    const stock = Number.isFinite(stockNum) ? stockNum : 0;
+    const agotado = stock <= 0;
+
     return `
     <div class="search-result-card show" onclick="openProductDetails('${idProd}')"
          style="border: 1px solid #B6B6B6; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 4px 12px rgba(13,13,13,0.06); display: flex; flex-direction: column; cursor: pointer;">
@@ -152,6 +142,13 @@ function buildSearchGridCardHTML(producto) {
                     ${categoriaSegura}
                 </span>` : ''}
             </div>
+
+            ${agotado ? `
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; z-index: 2;">
+                <span class="sold-out-glass">
+                    Agotado
+                </span>
+            </div>` : ''}
         </div>
 
         <div class="product-info" style="padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1;">
@@ -169,20 +166,18 @@ function buildSearchGridCardHTML(producto) {
                     <span style="font-size: 0.7rem; color: #6E6E6E; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">Precio</span>
                     <span style="font-size: 1.4rem; color: #0D0D0D; font-weight: 800; line-height: 1;">$${precioSeguro}</span>
                 </div>
+                ${!agotado ? `
                 <button class="product-action-btn" aria-label="Añadir a la bolsa"
-    onclick="event.stopPropagation(); addToCart('${idProd}')">
-    <i class="fa-solid fa-cart-plus"></i>
-</button>
+                    onclick="event.stopPropagation(); addToCart('${idProd}')">
+                    <i class="fa-solid fa-cart-plus"></i>
+                </button>` : ''}
             </div>
         </div>
     </div>
     `;
 }
-
 // ====================================================================
 // 8. EJECUTAR BÚSQUEDA COMPLETA (al enviar el formulario)
-//    - Muestra los resultados en una sección especial.
-//    - Usa buildSearchGridCardHTML (seguro).
 // ====================================================================
 async function ejecutarBusquedaCompleta(event) {
     if (event) event.preventDefault();
@@ -197,7 +192,6 @@ async function ejecutarBusquedaCompleta(event) {
     const grid = document.getElementById('search-results-grid');
     const titulo = document.getElementById('search-results-title');
 
-    // El título no necesita escape porque es un texto fijo con el término
     titulo.textContent = `Resultados para "${termino}" (${resultados.length})`;
 
     if (resultados.length === 0) {
