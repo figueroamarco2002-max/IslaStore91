@@ -222,8 +222,7 @@ nav a.active-link {
 .hero {
     margin-top: 70px;
     height: 60vh;
-    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
-    display: flex;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)), url('https://ohgmhkpqkkinnkobjril.supabase.co/storage/v1/object/public/productos/2d1e144b-ef34-4ab7-a05d-e58e85dd507d.jpg') center/cover;
     flex-direction: column;
     justify-content: center;
     align-items: center;
