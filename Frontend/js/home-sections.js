@@ -220,8 +220,8 @@ function buildWomenBannerHTML() {
 function buildIgBannerHTML() {
     return `
     <section class="ig-banner" data-section-key="ig_banner">
-        <a href="https://www.instagram.com/JrStore" target="_blank" rel="noopener noreferrer" class="ig-handle-btn">
-            <i class="fa-brands fa-instagram"></i> @JrStore
+        <a href="https://www.instagram.com/isla.store91" target="_blank" rel="noopener noreferrer" class="ig-handle-btn">
+            <i class="fa-brands fa-instagram"></i> @isla.store91
         </a>
         <h2>El estilo se vive,<br>se comparte y <span class="accent">se inspira</span></h2>
     </section>
